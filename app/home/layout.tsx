@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import "./globals.css";
 import { Suspense } from "react";
-import RouteLoader from "./loading";
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
-import { CustomThemeProvider } from "@/context/ThemeContext";
+import RouteLoader from "../loading";
+import Header from "@/components/Home/Header";
 
 
 const montserrat = Montserrat({
@@ -15,8 +13,8 @@ const montserrat = Montserrat({
 
 
 export const metadata: Metadata = {
-  title: `FeedBoard`,
-  description: "FeedBoard",
+  title: `IT`,
+  description: "Internet Banking",
 };
 
 export default function RootLayout({
@@ -27,11 +25,10 @@ export default function RootLayout({
   return (
     <html lang="pt">
       <body className={`h-full w-full ${montserrat.className}`}>
-        <AppRouterCacheProvider>
-          <CustomThemeProvider>
-            <Suspense>{children}</Suspense>
-          </CustomThemeProvider>
-        </AppRouterCacheProvider>
+        <div className="shadow-md">
+        <Header />
+        </div>
+        <Suspense fallback={<RouteLoader />}>{children}</Suspense>
       </body>
     </html>
   );

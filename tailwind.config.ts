@@ -8,9 +8,31 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundColor: {
+        primary: {
+          DEFAULT: '#F5F2EA',
+          50: '#F5F5F5',
+          100: '#E7E8E4'
+        },
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: {
+          light: '#9B5DE5', 
+          DEFAULT: '#6A0DAD',
+          dark: '#4C0070',
+        },
+        secondary: {
+          DEFAULT: '#FFFFFF',
+        },
+        keyframes: {
+          progress: {
+            '0%': { width: '0%' },
+            '100%': { width: '100%' },
+          },
+        },
+        animation: {
+          progress: 'progress 2s linear infinite',
+        },
       },
     },
   },
