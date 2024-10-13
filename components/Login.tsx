@@ -33,16 +33,18 @@ const LoginPage = () => {
     e.preventDefault();
     setErrorMessage("");
     setLoading(true);
-  
+
     try {
       const response = await login(auth.email, auth.password);
       console.log(response);
-      if (response) {        
+      if (response && response.access_token) {  
         Cookies.set('token', response.access_token, { expires: 7, secure: true }); 
         router.push("/home");
+      } else {
+        setErrorMessage("Usuário ou senha incorretos.");
+        setOpenSnackbar(true);
       }
     } catch (e) {
-      console.error(e);
       setErrorMessage("Usuário ou senha incorretos.");
       setOpenSnackbar(true);
     } finally {
@@ -118,7 +120,7 @@ const LoginPage = () => {
               fullWidth
               className="bg-primary text-white p-2 rounded-lg hover:bg-primary-dark transition"
             >
-              {loading ? <CircularProgress size={30} color="secondary" /> : "Entrar"}
+              {loading ? <CircularProgress size={25} color="secondary" /> : "Entrar"}
             </Button>
             <p className="font-medium pt-2">
               <a href="#" className="text-primary mt-4">Esqueceu sua senha?</a>

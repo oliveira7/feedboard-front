@@ -9,8 +9,8 @@ interface LeftBarProps {
 
 export default function LeftBar({ user }: LeftBarProps) {
   return (
-    <div className="w-64 bg-primary-100 text-black rounded-lg shadow-lg p-4 h-fit">
-      <div className="flex flex-col items-center mb-6">
+    <div className="w-1/4 bg-primary-50 text-black rounded-lg shadow-lg p-4 h-fit">
+      <div className="flex flex-col items-center mb-6 gap-2">
       {user ? (
         <>
           {user.avatar_url ? (
@@ -26,9 +26,11 @@ export default function LeftBar({ user }: LeftBarProps) {
               {user.name ? user.name.charAt(0) : 'U'}
             </Avatar>
           )}
-          <h3 className="text-lg font-bold text-primary">{user.name}</h3>
-          <p className="text-gray-400 text-sm">{user.description}</p>
-          <p className="text-gray-400 text-sm">{user.course}</p>
+          <h3 className="text-base font-bold text-gray-600">{user.name}</h3>
+          <div>
+          <p className="text-gray-500 text-xs">🎓 {user.course}</p>
+          <p className="text-gray-500 text-xs"><i>💬 {user.description}</i></p>
+          </div>
         </>
       ) : (
         <Skeleton variant="circular" width={80} height={80} animation="wave" />

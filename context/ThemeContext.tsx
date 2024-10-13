@@ -4,14 +4,12 @@ import React, { createContext, useState, ReactNode, useContext, useEffect } from
 import { ThemeProvider as MuiThemeProvider, createTheme } from "@mui/material/styles";
 import RouteLoader from "@/app/loading";
 
-// Definir o tipo do contexto de tema
 interface ThemeContextType {
   themeMode: "light" | "dark";
   toggleTheme: () => void;
   theme: ReturnType<typeof createTheme>;
 }
 
-// Criar o contexto inicial
 const ThemeContext = createContext<ThemeContextType>({
   themeMode: "light",
   toggleTheme: () => {},

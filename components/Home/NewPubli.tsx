@@ -52,7 +52,7 @@ export default function NewPubli() {
           }}
         >
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Nova Publicação</h2>
+            <h2 className="text-lg font-bold text-primary">Nova Publicação</h2>
             <IconButton onClick={handleCloseModal}>
               <Close />
             </IconButton>

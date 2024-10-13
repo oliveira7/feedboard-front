@@ -1,7 +1,6 @@
 'use client';
 
 import { getUserById } from '@/api/user-endpoint.service';
-import { Feed } from '@mui/icons-material';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react'
@@ -9,6 +8,8 @@ import LeftBar from './LeftBar';
 import NewPubli from './NewPubli';
 import RightBar from './RightBar';
 import { UserModel } from '@/schema/user.model';
+import { GroupProvider } from '@/context/GroupContext';
+import Feed from './Feed';
 
 export default function HomeContent() {
     const [user, setUser] = useState<UserModel>();
@@ -24,7 +25,7 @@ export default function HomeContent() {
             const response = await getUserById(id!)
             setUser(response);
         } catch (e) {
-        
+
 
         }
     }
@@ -33,19 +34,22 @@ export default function HomeContent() {
         getUser();
     }, [])
 
-
     return (
-        <div className='flex justify-center gap-8 p-8 bg-primary'>
-            <LeftBar user={user!}/>
-            <div className='w-3/4'>
-                <div className='pb-4'>
-                    <NewPubli />
-                </div>
-                <div>
-                    <Feed />
+        <GroupProvider>
+            <div className='flex justify-center p-8 bg-primary min-h'>
+                <div className='flex gap-8 justify-around w-full pl-20 pr-20'>
+                    <LeftBar user={user!} />
+                    <div className='w-full'>
+                        <div className='pb-4 w-full'>
+                            <NewPubli />
+                        </div>
+                        <div>
+                            <Feed />
+                        </div>
+                    </div>
+                    <RightBar />
                 </div>
             </div>
-            <RightBar />
-        </div>
+        </GroupProvider>
     )
 }

@@ -1,4 +1,4 @@
-import HomeContent from '@/components/Home/LoginContent'
+import HomeContent from '@/components/Home/HomeContent'
 import React from 'react'
 
 

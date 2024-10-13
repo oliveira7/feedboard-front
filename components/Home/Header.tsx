@@ -25,8 +25,6 @@ export default function Header() {
       <div className="flex space-x-8">
         <NavItem icon={<Home className="text-primary" />} label="Início" />
         <NavItem icon={<People className="text-primary" />} label="Minha rede" />
-        <NavItem icon={<Work className="text-primary" />} label="Vagas" />
-        <NavItem icon={<Chat className="text-primary" />} label="Mensagens" />
         <NavItem icon={<Notifications className="text-primary" />} label="Notificações" />
         
         <div className="flex items-center space-x-1 cursor-pointer">
