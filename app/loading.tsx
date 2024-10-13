@@ -10,7 +10,6 @@ const LoaderWithProgressBar = () => {
       
     <LinearProgress
       variant="indeterminate"
-      color="primary"
       className="w-3/4 mt-8"
       />
     </div>

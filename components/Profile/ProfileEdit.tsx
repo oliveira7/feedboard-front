@@ -1,21 +1,39 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Avatar, CircularProgress, Snackbar, Alert } from '@mui/material';
+import { TextField, Button, Avatar, CircularProgress, Snackbar, Alert, Modal, Box } from '@mui/material';
 import { UserModel } from '@/schema/user.model';
 import Cookies from 'js-cookie';
 import { getUserById, updateUser } from '@/api/user-endpoint.service';
 import Image from 'next/image';
 import { jwtDecode } from 'jwt-decode';
 
-export default function ProfileEdit() {
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  borderRadius: '8px',
+};
+
+export default function ProfileEdit({
+  modalOpen, 
+  handleModalClose
+}: {
+  modalOpen: boolean,
+  handleModalClose: () => void,
+}) {
   const [user, setUser] = useState<UserModel | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Estados para os valores dos campos
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [description, setDescription] = useState('');
@@ -60,6 +78,7 @@ export default function ProfileEdit() {
     try {
       await updateUser(user!._id, { name, course, description, avatar_url: avatarBase64 });
       setSnackbarOpen(true);
+      handleModalClose(); // Fechar o modal após salvar
     } catch (error) {
       setErrorMessage('Erro ao salvar as alterações.');
     } finally {
@@ -74,72 +93,74 @@ export default function ProfileEdit() {
   if (loading) return <CircularProgress />;
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 space-y-4">
-        <div className="flex flex-col items-center">
-          {avatarBase64 ? (
-            <Image src={avatarBase64} alt="Profile" width={80} height={80} className="rounded-full" />
-          ) : (
-            <Avatar sx={{ width: 80, height: 80 }}>
-              {user?.name ? user.name.charAt(0) : 'U'}
-            </Avatar>
-          )}
-          <h2 className="text-xl font-bold text-gray-800 mt-4">Editar Perfil</h2>
+    <>
+      <Modal
+        open={modalOpen}
+        onClose={handleModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <div className="flex flex-col items-center">
+            {avatarBase64 ? (
+              <Image src={avatarBase64} alt="Profile" width={80} height={80} className="rounded-full" />
+            ) : (
+              <Avatar sx={{ width: 80, height: 80 }}>
+                {user?.name ? user.name.charAt(0) : 'U'}
+              </Avatar>
+            )}
+            <h2 className="text-xl font-bold text-gray-800 mt-4">Editar Perfil</h2>
 
-          {/* Input para upload de imagem */}
-          <input
-            accept="image/*"
-            type="file"
-            onChange={handleImageUpload}
-            className="mt-2"
-          />
-        </div>
+            {/* Input para upload de imagem */}
+            <input accept="image/*" type="file" onChange={handleImageUpload} className="mt-2" />
+          </div>
 
-        <form>
-          {/* Nome */}
-          <TextField
-            label="Nome"
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <form>
+            {/* Nome */}
+            <TextField
+              label="Nome"
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
 
-          {/* Curso */}
-          <TextField
-            label="Curso"
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            value={course}
-            onChange={(e) => setCourse(e.target.value)}
-          />
+            {/* Curso */}
+            <TextField
+              label="Curso"
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              value={course}
+              onChange={(e) => setCourse(e.target.value)}
+            />
 
-          {/* Descrição */}
-          <TextField
-            label="Descrição"
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            multiline
-            minRows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+            {/* Descrição */}
+            <TextField
+              label="Descrição"
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              multiline
+              minRows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
 
-          {/* Botão de salvar */}
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? <CircularProgress size={24} /> : 'Salvar'}
-          </Button>
-        </form>
-      </div>
+            {/* Botão de salvar */}
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? <CircularProgress size={24} /> : 'Salvar'}
+            </Button>
+          </form>
+        </Box>
+      </Modal>
 
       {/* Snackbar para mostrar feedback */}
       <Snackbar
@@ -166,6 +187,6 @@ export default function ProfileEdit() {
           </Alert>
         </Snackbar>
       )}
-    </div>
+    </>
   );
 }

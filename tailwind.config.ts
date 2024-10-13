@@ -10,32 +10,39 @@ const config: Config = {
     extend: {
       backgroundColor: {
         primary: {
-          DEFAULT: '#DEDEDE',
-          50: '#F5F5F5',
-          100: '#E7E8E4'
+          DEFAULT: '#1A1A1A', // Preto escuro para o fundo principal
+          50: '#2A2A2A', // Cinza escuro para variações
+          100: '#333333', // Cinza um pouco mais claro
         },
       },
       colors: {
         primary: {
-          light: '#9B5DE5', 
-          DEFAULT: '#6A0DAD',
-          dark: '#4C0070',
+          light: '#4CAF50', // Verde claro para realces
+          DEFAULT: '#388E3C', // Verde médio para elementos principais
+          dark: '#1B5E20', // Verde escuro para textos ou botões
         },
         secondary: {
-          DEFAULT: '#FFFFFF',
+          DEFAULT: '#F1F1F1', // Branco suave para contraste com os fundos escuros
         },
-        keyframes: {
-          progress: {
-            '0%': { width: '0%' },
-            '100%': { width: '100%' },
-          },
+        // Neutros
+        neutral: {
+          100: '#E0E0E0', // Cinza claro
+          200: '#BDBDBD', // Cinza médio
+          300: '#9E9E9E', // Cinza escuro
         },
-        animation: {
-          progress: 'progress 2s linear infinite',
+      },
+      keyframes: {
+        progress: {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
         },
+      },
+      animation: {
+        progress: 'progress 2s linear infinite',
       },
     },
   },
   plugins: [],
 };
+
 export default config;

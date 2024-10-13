@@ -15,7 +15,11 @@ export const getUserById = async (id: string) => {
  }
 
  export const updateUser = async (id: string, updatedData: Partial<UserModel>) => {
+    try {
     const response = await api.put(`/users/${id}`, updatedData);
     return response.data;
+} catch (e) {
+    console.error(e);
+}
   };
   

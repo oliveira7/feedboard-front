@@ -2,57 +2,114 @@
 
 import React, { useState } from 'react';
 import { ThumbUp, Comment } from '@mui/icons-material';
-import { Button } from "@mui/material";
 import { motion } from 'framer-motion';
+import { newPost } from '@/api/post-endpoint.service';
+import { useGroup } from '@/context/GroupContext';
+
+interface Reply {
+  _id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+}
 
 interface Comment {
-  user: string;
-  comment: string;
-  replies?: Comment[];  // Cada comentário pode ter respostas
+  _id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  replies?: Reply[];
 }
 
 interface Post {
   _id: string;
   user_id: { _id: string, name: string, avatar_url: string };
   content: string;
-  media_urls: { url: string, type: 'image' }[];
+  media: { base64?: string; url?: string; type: 'image' | 'video' }[];
   created_at: string;
   likes: number;
   comments: Comment[];
 }
 
 export default function PostItem({ post }: { post: Post }) {
-  const { user_id, content, media_urls, created_at, likes, comments } = post;
+  const { _id, user_id, content, media, created_at, likes, comments } = post;
 
   const [liked, setLiked] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [commentList, setCommentList] = useState(comments);
   const [replyText, setReplyText] = useState('');
   const [replyToCommentIndex, setReplyToCommentIndex] = useState<number | null>(null);
+  const { user } = useGroup();
+
+  const handleAddComment = async () => {
+    console.log(commentText);
+    if (!commentText.trim()) return;
+    console.log('passou pelo trim');
+    console.log(user);
+
+
+    try {
+      const newComment = {
+        user_id: user._id,
+        parent_id: _id,
+        content: commentText,
+        pinned: false,
+      };
+      console.log(newComment)
+
+      const response = await newPost(newComment);
+      console.log(response);
+
+      if (response) {
+        setCommentList([...commentList, {
+          _id: response._id,
+          user_id: user._id,
+          content: commentText,
+          created_at: new Date().toISOString(),
+          replies: [],
+        }]);
+        setCommentText('');
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar comentário:', error);
+    }
+  };
+
+  const handleReply = async (index: number) => {
+    if (!replyText.trim()) return;
+
+    try {
+      const parentCommentId = commentList[index]._id;
+      const newReply = {
+        user_id: user._id,
+        parent_id: parentCommentId,
+        content: replyText,
+        pinned: false,
+      };
+
+      const response = await newPost(newReply);
+
+      if (response) {
+        const updatedComments = [...commentList];
+        updatedComments[index].replies = updatedComments[index].replies || [];
+        updatedComments[index].replies!.push({
+          _id: response._id,
+          user_id: user._id,
+          content: replyText,
+          created_at: new Date().toISOString(),
+        });
+
+        setCommentList(updatedComments);
+        setReplyText('');
+        setReplyToCommentIndex(null);
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar resposta:', error);
+    }
+  };
 
   const handleLike = () => {
     setLiked(!liked);
-  };
-
-  const handleAddComment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (commentText.trim()) {
-      const newComment = { user: "Usuário atual", comment: commentText, replies: [] };
-      setCommentList([...commentList, newComment]);
-      setCommentText('');
-    }
-  };
-
-  const handleReply = (e: React.FormEvent, index: number) => {
-    e.preventDefault();
-    if (replyText.trim()) {
-      const updatedComments = [...commentList];
-      updatedComments[index].replies = updatedComments[index].replies || [];
-      updatedComments[index].replies!.push({ user: "Usuário atual", comment: replyText });
-      setCommentList(updatedComments);
-      setReplyText('');
-      setReplyToCommentIndex(null);
-    }
   };
 
   return (
@@ -70,32 +127,36 @@ export default function PostItem({ post }: { post: Post }) {
         />
         <div>
           <h3 className="font-bold text-gray-600">{user_id.name}</h3>
-          <p className="text-sm text-gray-400">{new Date(created_at).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-400">{`${new Date(created_at).toLocaleDateString()} - ${new Date(created_at).toLocaleTimeString()}`}</p>
         </div>
       </div>
       <p className="mb-4">{content}</p>
 
-      {media_urls.length > 0 && (
+      {media && media.length > 0 && (
         <div className="flex space-x-2 mb-4">
-          {media_urls.map((media, idx) => (
+          {media.map((item, idx) => (
             <div key={idx} className="w-full">
-              <img src={media.url} alt="Post media" className="rounded-lg" />
+              {item.type === 'image' ? (
+                <img src={item.url || item.base64} alt="Post media" className="rounded-lg" />
+              ) : (
+                <video controls className="rounded-lg w-full">
+                  <source src={item.url || item.base64} type="video/mp4" />
+                </video>
+              )}
             </div>
           ))}
         </div>
       )}
 
       <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center space-x-1 cursor-pointer" onClick={handleLike}
-        >
+        <div className="flex items-center space-x-1 cursor-pointer" onClick={handleLike}>
           <ThumbUp
-            className={`cursor-pointer text-lg ${liked ? 'text-primary' : 'text-gray-400'} hover:text-primary`} // Aplica hover no ícone
+            className={`cursor-pointer text-lg ${liked ? 'text-primary' : 'text-gray-400'} hover:text-primary`}
           />
           <span className={`${liked ? 'text-primary' : 'text-gray-400'}`}>
             {liked ? likes + 1 : likes}
           </span>
         </div>
-
 
         <div className="flex items-center space-x-1">
           <Comment className="text-primary" />
@@ -103,28 +164,29 @@ export default function PostItem({ post }: { post: Post }) {
         </div>
       </div>
 
-      {commentList.length > 0 && (
+      {/* Renderizando os comentários */}
+      {commentList && commentList.length > 0 && (
         <div className="mb-4">
           {commentList.map((comment, index) => (
-            <div key={index} className="bg-primary-100 p-2 rounded-lg mb-2">
-              <p className="text-sm font-bold text-primary">{comment.user}</p>
-              <p className="text-sm text-black">{comment.comment}</p>
+            <div key={comment._id} className="bg-primary-100 p-2 rounded-lg mb-2">
+              <p className="text-sm font-bold text-primary">{comment.user_id}</p>
+              <p className="text-sm text-black">{comment.content}</p>
 
-              {/* Exibir respostas */}
+              {/* Renderizando as respostas */}
               {comment.replies && comment.replies.length > 0 && (
                 <div className="ml-4 mt-2 space-y-2">
-                  {comment.replies.map((reply, replyIndex) => (
-                    <div key={replyIndex} className="bg-gray-200 p-2 rounded-lg">
-                      <p className="text-sm font-bold text-primary">{reply.user}</p>
-                      <p className="text-sm text-black">{reply.comment}</p>
+                  {comment.replies.map((reply) => (
+                    <div key={reply._id} className="bg-gray-200 p-2 rounded-lg">
+                      <p className="text-sm font-bold text-primary">{reply.user_id}</p>
+                      <p className="text-sm text-black">{reply.content}</p>
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Formulário para responder a um comentário */}
+              {/* Campo para responder ao comentário */}
               {replyToCommentIndex === index ? (
-                <form onSubmit={(e) => handleReply(e, index)} className="flex items-center space-x-2 mt-2">
+                <div className="flex items-center space-x-2 mt-2">
                   <input
                     type="text"
                     placeholder="Escreva uma resposta..."
@@ -132,8 +194,13 @@ export default function PostItem({ post }: { post: Post }) {
                     onChange={(e) => setReplyText(e.target.value)}
                     className="flex-1 bg-primary-100 p-2 rounded-lg text-sm text-black outline-none"
                   />
-                  <button type="submit" className="text-primary">Responder</button>
-                </form>
+                  <button
+                    onClick={() => handleReply(index)}
+                    className="text-primary"
+                  >
+                    Responder
+                  </button>
+                </div>
               ) : (
                 <button
                   onClick={() => setReplyToCommentIndex(index)}
@@ -147,7 +214,8 @@ export default function PostItem({ post }: { post: Post }) {
         </div>
       )}
 
-      <form onSubmit={handleAddComment} className="flex items-center space-x-2">
+      {/* Campo para adicionar novo comentário */}
+      <div className="flex items-center space-x-2">
         <input
           type="text"
           placeholder="Escreva um comentário..."
@@ -155,8 +223,10 @@ export default function PostItem({ post }: { post: Post }) {
           onChange={(e) => setCommentText(e.target.value)}
           className="flex-1 bg-primary-100 p-2 rounded-lg text-sm text-black outline-none"
         />
-        <button type="submit" className="text-primary">Comentar</button>
-      </form>
+        <button onClick={handleAddComment} className="text-primary">
+          Comentar
+        </button>
+      </div>
     </motion.div>
   );
 }

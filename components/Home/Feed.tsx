@@ -1,21 +1,10 @@
-'use client';
-
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { fetchPosts } from '@/api/post-endpoint.service';
-import React, { useEffect, useState } from 'react';
-import PostItem from './PostItem';  // Importa o PostItem
+import PostItem from './PostItem';
+import { PostModel } from '@/schema/posts.model';
 
-interface Post {
-  _id: string;
-  user_id: { _id: string, name: string, avatar_url: string };
-  content: string;
-  media_urls: { url: string, type: 'image' | 'video' }[];
-  created_at: string;
-  likes: number;
-  comments: { user: string, comment: string }[];
-}
-
-export default function Feed() {
-  const [posts, setPosts] = useState<Post[]>([]);
+const Feed = forwardRef((props, ref) => {
+  const [posts, setPosts] = useState<PostModel[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -24,20 +13,24 @@ export default function Feed() {
     if (loading) return;
 
     setLoading(true);
-    const newPosts = await fetchPosts(page, 5);
-    console.log(newPosts);
-    if (newPosts && newPosts.length > 0) {
-      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+    const response = await fetchPosts(page, 5);
+    if (response && response.length > 0) {
+      setPosts((prevPosts) => [...prevPosts, ...response]);
       setPage((prevPage) => prevPage + 1);
     } else {
       setHasMore(false);
     }
+    console.log(response);
     setLoading(false);
   };
 
   useEffect(() => {
     loadPosts();
   }, []);
+
+  useImperativeHandle(ref, () => ({
+    loadPosts,
+  }));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,4 +53,6 @@ export default function Feed() {
       {!hasMore && <div>Não há mais posts</div>}
     </div>
   );
-}
+});
+
+export default Feed;

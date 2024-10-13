@@ -1,14 +1,22 @@
 'use client';
 
 import React, { useState } from "react";
-import { Modal, Box, Button, IconButton, TextField } from "@mui/material";
+import { Modal, Box, Button, IconButton, TextField, Avatar } from "@mui/material";
 import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
+import { newPost } from "@/api/post-endpoint.service";
+import { CreatePostModel } from "../../schema/posts.model";
+import { UserModel } from "@/schema/user.model";
+import { useGroup } from "@/context/GroupContext";
+import Image from "next/image";
+
 
 export default function NewPubli() {
   const [openModal, setOpenModal] = useState(false);
   const [postText, setPostText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
+  const [media, setMedia] = useState<{ base64: string; type: 'image' | 'video' }[]>([]);
+  const { user } = useGroup(); 
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
@@ -18,13 +26,49 @@ export default function NewPubli() {
     setShowEmojis(false);
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setMedia([{ base64: base64String, type: 'image' }]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const createPost = async () => {
+    const post: CreatePostModel = {
+      user_id: user._id,
+      content: postText,
+      media: media.length ? media : undefined,
+    };
+
+    console.log(post);
+    try {
+      const response = await newPost(post);
+      console.log(response);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
-    <div className="flex items-center p-4 bg-gray-100 rounded-lg shadow-md">
-      <img 
-        src="https://via.placeholder.com/40" 
-        alt="Profile" 
-        className="rounded-full mr-4"
-      />
+    <div className="flex items-center p-4 bg-primary-50 rounded-lg shadow-md">
+          {user?.avatar_url ? (
+            <Image
+              src={user?.avatar_url}
+              alt="Profile"
+              className="rounded-full w-20 h-20 mb-4"
+              width={40} 
+              height={40}
+            />
+          ) : (
+            <Avatar sx={{ width: 80, height: 80 }}>
+              {user.name ? user.name.charAt(0) : 'U'}
+            </Avatar>
+          )}
       <div
         className="bg-primary-100 text-gray-400 p-2 w-full rounded-lg cursor-pointer"
         onClick={handleOpenModal}
@@ -81,22 +125,38 @@ export default function NewPubli() {
                 </div>
               )}
 
-              <IconButton>
+              <IconButton component="label">
                 <Add />
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={handleImageUpload}
+                />
               </IconButton>
             </div>
 
             <Button
               variant="contained"
-              disabled={!postText.trim()}
+              disabled={!postText.trim() && media.length === 0}
               onClick={() => {
-                console.log("Postar:", postText);
+                createPost();
                 setOpenModal(false);
               }}
             >
               Publicar
             </Button>
           </div>
+
+          {media.length > 0 && (
+            <div className="mt-4">
+              <img
+                src={media[0].base64}
+                alt="Preview"
+                className="max-h-40 rounded-lg"
+              />
+            </div>
+          )}
         </Box>
       </Modal>
     </div>

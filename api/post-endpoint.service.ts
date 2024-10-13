@@ -1,4 +1,8 @@
 // services/postService.ts
+'use server';
+
+import { CreatePostModel } from "@/schema/posts.model";
+import api from "./api";
 
 const mockPosts = [
   {
@@ -95,14 +99,25 @@ const mockPosts = [
 
 export const fetchPosts = async (page: number, limit: number) => {
   try {
-    // Simulando a lógica de paginação:
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    
-    const paginatedPosts = mockPosts.slice(startIndex, endIndex);
-    return paginatedPosts;
+    const response = await api.get(`/posts?page=${page}&limit=${limit}`);
+    if (!response) {
+      throw new Error('Erro ao buscar posts');
+    }
+    return await response.data;
   } catch (error) {
-    console.error("Erro ao buscar posts:", error);
+    console.error('Erro ao carregar os posts:', error);
     return [];
   }
 };
+
+
+  export const newPost = async (post: CreatePostModel) => { 
+    try {
+      const response = await api.post('/posts', post);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao criar nova publicação:", error);
+      return null;
+    }
+  }
