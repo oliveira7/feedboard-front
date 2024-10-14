@@ -9,6 +9,7 @@ import { useGroup } from '@/context/GroupContext';
 const Feed = forwardRef((props, ref) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const { setAtualizarFeed, atualizarFeed, selectedGroup } = useGroup();
@@ -17,7 +18,7 @@ const Feed = forwardRef((props, ref) => {
     if (loading) return;
 
     setLoading(true);
-    const response = await fetchPosts(page, 5, selectedGroup);
+    const response = await fetchPosts(page, limit, selectedGroup);
     if (response && response.length > 0) {
       setPosts((prevPosts) => [...prevPosts, ...response]);
       setPage((prevPage) => prevPage + 1);
@@ -31,6 +32,7 @@ const Feed = forwardRef((props, ref) => {
   const resetAndLoadPosts = async () => {
     setPosts([]); 
     setPage(1); 
+    setLimit(5);
     setHasMore(true);
     await loadPosts();
     setAtualizarFeed(false);

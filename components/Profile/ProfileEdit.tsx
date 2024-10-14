@@ -107,7 +107,7 @@ export default function ProfileEdit({
                 {user?.name ? user.name.charAt(0) : 'U'}
               </Avatar>
             )}
-            <h2 className="text-xl font-bold text-gray-800 mt-4">Editar Perfil</h2>
+            <h2 className="text-xl font-bold mt-4">Editar Perfil</h2>
 
             {/* Input para upload de imagem */}
             <input accept="image/*" type="file" onChange={handleImageUpload} className="mt-2" />

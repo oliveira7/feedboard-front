@@ -126,7 +126,6 @@ export default function NewPubli() {
                         sx={{
                           minWidth: '120px',
                           height: '40px',
-                          background: '#f5f5f5',
                           borderRadius: '4px',
                         }}
                       >
