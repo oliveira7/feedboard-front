@@ -90,8 +90,6 @@ export default function ProfileEdit({
     setSnackbarOpen(false);
   };
 
-  if (loading) return <CircularProgress />;
-
   return (
     <>
       <Modal

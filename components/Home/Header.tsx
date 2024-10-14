@@ -1,16 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Home, People, Notifications } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import Image from 'next/image';
 import logo from '../../public/assets/logo.svg';
 import ProfileEdit from '../Profile/ProfileEdit';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function Header() {
   const [modalOpen, setModalOpen] = useState(false);
-  const router = usePathname();
+  const [currentPath, setCurrentPath] = useState('');
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    setCurrentPath(pathname);
+  }, [pathname]);
 
   const handleModalOpen = () => {
     setModalOpen(true);
@@ -38,13 +44,13 @@ export default function Header() {
       </div>
 
       <div className="flex space-x-8">
-        <NavItem icon={<Home />} label="Início" href="/" active={router.includes('/home')} />
-        <NavItem icon={<People />} label="Minha rede" href="/network" active={router.includes('/network')} />
-        <NavItem icon={<Notifications />} label="Notificações" href="/notifications" active={router.includes('/notifications')} />
+        <NavItem icon={<Home />} label="Início" href="/home" active={currentPath.includes('/home')} />
+        <NavItem icon={<People />} label="Minha rede" href="/network" active={currentPath.includes('/network')} />
+        <NavItem icon={<Notifications />} label="Notificações" href="/notifications" active={currentPath.includes('/notifications')} />
 
         <div className="flex items-center space-x-1 cursor-pointer" onClick={handleModalOpen}>
           <Avatar src="https://via.placeholder.com/40" alt="User Avatar" className="w-8 h-8" />
-          <span className="text-sm text-primary">Eu</span>
+          <span className="text-sm text-highlight">Eu</span>
         </div>
       </div>
 
@@ -53,14 +59,15 @@ export default function Header() {
   );
 }
 
-// Componente NavItem para os itens de navegação
 const NavItem = ({ icon, label, href, active }: { icon: React.ReactNode, label: string, href: string, active: boolean }) => {
+  const router = useRouter(); // Usar o hook de navegação do Next.js
+
   return (
     <div
-      className={`relative flex flex-col items-center cursor-pointer text-primary group transition-colors ${
-        active ? 'text-primary-light' : 'text-neutral-300'
-      } hover:text-primary-light`}
-      onClick={() => (window.location.href = href)} // Navega para a rota correspondente
+      className={`relative flex flex-col items-center cursor-pointer transition-colors ${
+        active ? 'text-highlight' : 'text-neutral'
+      } hover:text-highlight`} // Aplicar as classes corretas
+      onClick={() => router.push(href)} // Navegação sem recarregar
     >
       {icon}
       <span className="text-xs">{label}</span>

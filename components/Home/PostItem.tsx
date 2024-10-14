@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ThumbUp, Comment } from '@mui/icons-material';
+import { ThumbUp, Comment, Delete } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-import { newPost } from '@/api/post-endpoint.service';
+import { deletePostById, newPost } from '@/api/post-endpoint.service';
 import { useGroup } from '@/context/GroupContext';
 
 interface Reply {
@@ -31,7 +31,7 @@ interface Post {
   comments: Comment[];
 }
 
-export default function PostItem({ post }: { post: Post }) {
+export default function PostItem({ post, onDelete }: { post: Post; onDelete: () => void }) {
   const { _id, user_id, content, media, created_at, likes, comments } = post;
 
   const [liked, setLiked] = useState(false);
@@ -108,6 +108,16 @@ export default function PostItem({ post }: { post: Post }) {
     }
   };
 
+  const handleDeletePost = async () => {
+    try {
+      await deletePostById(_id);
+      onDelete(); 
+    } catch (error) {
+      console.error('Erro ao deletar post:', error);
+    }
+  };
+
+
   const handleLike = () => {
     setLiked(!liked);
   };
@@ -117,7 +127,7 @@ export default function PostItem({ post }: { post: Post }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-primary-50 text-black p-4 rounded-lg w-full max-w-xl shadow-md"
+      className="bg-primary-50 p-4 rounded-lg w-full max-w-xl shadow-md"
     >
       <div className="flex items-center mb-4">
         <img
@@ -129,6 +139,11 @@ export default function PostItem({ post }: { post: Post }) {
           <h3 className="font-bold text-gray-600">{user_id.name}</h3>
           <p className="text-sm text-gray-400">{`${new Date(created_at).toLocaleDateString()} - ${new Date(created_at).toLocaleTimeString()}`}</p>
         </div>
+                {user && user._id === user_id._id && (
+          <button onClick={handleDeletePost} className="text-red-500 hover:text-red-700">
+            <Delete /> 
+          </button>
+        )}
       </div>
       <p className="mb-4">{content}</p>
 
@@ -151,40 +166,37 @@ export default function PostItem({ post }: { post: Post }) {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-1 cursor-pointer" onClick={handleLike}>
           <ThumbUp
-            className={`cursor-pointer text-lg ${liked ? 'text-primary' : 'text-gray-400'} hover:text-primary`}
+            className={`cursor-pointer text-lg ${liked ? 'text-highlight' : 'text-gray-200'} hover:text-highlight`}
           />
-          <span className={`${liked ? 'text-primary' : 'text-gray-400'}`}>
+          <span className={`${liked ? 'text-highlight' : 'text-gray-200'}`}>
             {liked ? likes + 1 : likes}
           </span>
         </div>
 
         <div className="flex items-center space-x-1">
-          <Comment className="text-primary" />
-          <span className="text-primary">{commentList.length}</span>
+          <Comment className="text-highlight" />
+          <span className="text-highlight">{commentList.length}</span>
         </div>
       </div>
 
-      {/* Renderizando os comentários */}
       {commentList && commentList.length > 0 && (
         <div className="mb-4">
           {commentList.map((comment, index) => (
             <div key={comment._id} className="bg-primary-100 p-2 rounded-lg mb-2">
-              <p className="text-sm font-bold text-primary">{comment.user_id}</p>
-              <p className="text-sm text-black">{comment.content}</p>
+              <p className="text-sm font-bold text-highlight">{comment.user_id}</p>
+              <p className="text-sm">{comment.content}</p>
 
-              {/* Renderizando as respostas */}
               {comment.replies && comment.replies.length > 0 && (
                 <div className="ml-4 mt-2 space-y-2">
                   {comment.replies.map((reply) => (
-                    <div key={reply._id} className="bg-gray-200 p-2 rounded-lg">
-                      <p className="text-sm font-bold text-primary">{reply.user_id}</p>
-                      <p className="text-sm text-black">{reply.content}</p>
+                    <div key={reply._id} className="bg-primary-100 p-2 rounded-lg">
+                      <p className="text-sm font-bold text-highlight">{reply.user_id}</p>
+                      <p className="text-sm">{reply.content}</p>
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Campo para responder ao comentário */}
               {replyToCommentIndex === index ? (
                 <div className="flex items-center space-x-2 mt-2">
                   <input
@@ -192,11 +204,11 @@ export default function PostItem({ post }: { post: Post }) {
                     placeholder="Escreva uma resposta..."
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
-                    className="flex-1 bg-primary-100 p-2 rounded-lg text-sm text-black outline-none"
+                    className="flex-1 bg-primary-200 p-2 rounded-lg text-sm outline-none"
                   />
                   <button
                     onClick={() => handleReply(index)}
-                    className="text-primary"
+                    className="text-highlight"
                   >
                     Responder
                   </button>
@@ -204,7 +216,7 @@ export default function PostItem({ post }: { post: Post }) {
               ) : (
                 <button
                   onClick={() => setReplyToCommentIndex(index)}
-                  className="text-sm text-primary mt-1"
+                  className="text-sm text-highlight mt-1"
                 >
                   Responder
                 </button>
@@ -221,9 +233,9 @@ export default function PostItem({ post }: { post: Post }) {
           placeholder="Escreva um comentário..."
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
-          className="flex-1 bg-primary-100 p-2 rounded-lg text-sm text-black outline-none"
+          className="flex-1 bg-primary-100 p-2 rounded-lg text-sm outline-none"
         />
-        <button onClick={handleAddComment} className="text-primary">
+        <button onClick={handleAddComment} className="text-highlight">
           Comentar
         </button>
       </div>

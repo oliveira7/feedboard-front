@@ -6,7 +6,6 @@ import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
 import { newPost } from "@/api/post-endpoint.service";
 import { CreatePostModel } from "../../schema/posts.model";
-import { UserModel } from "@/schema/user.model";
 import { useGroup } from "@/context/GroupContext";
 import Image from "next/image";
 
@@ -21,7 +20,8 @@ export default function NewPubli() {
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
-  const handleEmojiClick = (event: any, emojiObject: any) => {
+  // Corrigido: o emoji é acessado corretamente
+  const handleEmojiClick = (emojiObject: any) => {
     setPostText(prevText => prevText + emojiObject.emoji);
     setShowEmojis(false);
   };
@@ -56,19 +56,19 @@ export default function NewPubli() {
 
   return (
     <div className="flex items-center p-4 bg-primary-50 rounded-lg shadow-md">
-          {user?.avatar_url ? (
-            <Image
-              src={user?.avatar_url}
-              alt="Profile"
-              className="rounded-full w-20 h-20 mb-4"
-              width={40} 
-              height={40}
-            />
-          ) : (
-            <Avatar sx={{ width: 80, height: 80 }}>
-              {user.name ? user.name.charAt(0) : 'U'}
-            </Avatar>
-          )}
+      {user && user?.avatar_url ? (
+        <Image
+          src={user?.avatar_url}
+          alt="Profile"
+          className="rounded-full w-20 h-20 mb-4"
+          width={40} 
+          height={40}
+        />
+      ) : (
+        <Avatar sx={{ width: 40, height: 40 }}>
+          {user && user.name ? user.name.charAt(0) : 'U'}
+        </Avatar>
+      )}
       <div
         className="bg-primary-100 text-gray-400 p-2 w-full rounded-lg cursor-pointer"
         onClick={handleOpenModal}
@@ -96,7 +96,7 @@ export default function NewPubli() {
           }}
         >
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold text-primary">Nova Publicação</h2>
+            <h2 className="text-lg font-bold text-highlight">Nova Publicação</h2>
             <IconButton onClick={handleCloseModal}>
               <Close />
             </IconButton>

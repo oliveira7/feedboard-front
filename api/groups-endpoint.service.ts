@@ -6,8 +6,18 @@ import api from "./api";
 export const getGroups = async (): Promise<GroupModel[]> => {
     try {
         const response = await api.get('/groups');
-        return response.data;
+        return response.data.data;
+    } catch (e: any) {
+        return e.response.data.data;;
+    }
+ }
+
+export const createGroup = async (group: any) => { 
+    try {
+        const response = await api.post('/groups', group);
+        console.log(response);
+        return response.data.data;
     } catch (e: any) {
         return e.response.data;
     }
- }
+}

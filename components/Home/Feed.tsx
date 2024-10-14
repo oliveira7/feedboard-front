@@ -24,6 +24,13 @@ const Feed = forwardRef((props, ref) => {
     setLoading(false);
   };
 
+
+const handleDelete = () => {
+  loadPosts();
+};
+
+
+
   useEffect(() => {
     loadPosts();
   }, []);
@@ -43,10 +50,12 @@ const Feed = forwardRef((props, ref) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [hasMore, loading]);
 
+  
+
   return (
     <div className="flex flex-col items-center space-y-4">
       {posts.map((post) => (
-        <PostItem key={post._id} post={post} />
+        <PostItem key={post._id} post={post} onDelete={handleDelete}/>
       ))}
 
       {loading && <div>Carregando...</div>}

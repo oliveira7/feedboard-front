@@ -29,7 +29,7 @@ export default function RootLayout({
       <body className={`h-full w-full ${montserrat.className}`}>
         <AppRouterCacheProvider>
           <CustomThemeProvider>
-            <Suspense>{children}</Suspense>
+            {children}
           </CustomThemeProvider>
         </AppRouterCacheProvider>
       </body>

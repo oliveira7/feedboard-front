@@ -11,3 +11,20 @@ export interface UserModel {
     updated_at: Date;
     deleted_at: Date | null;
 }
+
+export enum Role {
+    STUDENT = 'student',
+    TEACHER = 'teacher',
+    COORDINATOR = 'coordinator',
+  }
+  
+export interface CreateUsersModel {
+    name: string;
+    course?: string;
+    description?: string;
+    email: string;
+    password_hash: string;
+    avatar_url?: string;
+    role: string;
+  }
+  

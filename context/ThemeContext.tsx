@@ -1,11 +1,10 @@
 "use client";
 
-import React, { createContext, useState, ReactNode, useContext, useEffect } from "react";
+import React, { createContext, useState, ReactNode, useContext } from "react";
 import { ThemeProvider as MuiThemeProvider, createTheme } from "@mui/material/styles";
-import RouteLoader from "@/app/loading";
 
 interface ThemeContextType {
-  themeMode: "light" | "dark";
+  themeMode: "light"; // Somente light mode por enquanto
   toggleTheme: () => void;
   theme: ReturnType<typeof createTheme>;
 }
@@ -18,151 +17,91 @@ const ThemeContext = createContext<ThemeContextType>({
 
 const lightTheme = createTheme({
   palette: {
-    mode: "light",
-    primary: {
-      light: "#9B5DE5",
-      main: "#6A0DAD",
-      dark: "#4C0070",
-      contrastText: "#FFFFFF",
-    },
-    secondary: {
-      main: "#e0b60f",
-    },
-    background: {
-      default: "#FFFFFF",
-      paper: "#EEEEEE", 
-    },
-    text: {
-      primary: "#4A494A",
-      secondary: "#B1B1B1",
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: '20px',
-          padding: "8px 16px",
-          textTransform: "none",
-          fontWeight: 600,
-          transition: "background-color 0.3s ease",
-          '&:hover': {
-            backgroundColor: '#6A0DAD',
-          },
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '20px',
-            '& fieldset': {
-              borderColor: '#6A0DAD',
-              borderRadius: '20px',
-            },
-            '&:hover fieldset': {
-              borderColor: '#6A0DAD',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#6A0DAD',
-            },
-          },
-        },
-      },
-    }
-  },
-  typography: {
-    fontFamily: 'Roboto, sans-serif',
-  },
-});
-
-const darkTheme = createTheme({
-  palette: {
     mode: "dark",
     primary: {
-      light: "#9B5DE5",
-      main: "#6A0DAD",
-      dark: "#4C0070",
-      contrastText: "#FFFFFF",
+      light: "#4CAF50",
+      main: "#388E3C",
+      dark: "#1B5E20",
     },
     secondary: {
-      main: "#c0a60d",
+      main: "#F1F1F1",
     },
     background: {
       default: "#212121",
-      paper: "#414141",
+      paper: "#333333",
     },
     text: {
-      primary: "#E0E0E0",
-      secondary: "#A4A4A4",
+      primary: "#FFFFFF",
+      secondary: "#E0E0E0",
     },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '20px',
+          borderRadius: 12,
           padding: "8px 16px",
-          textTransform: "none",
-          fontWeight: 600,
-          transition: "background-color 0.3s ease",
-          '&:hover': {
-            backgroundColor: '#9B5DE5',
+          backgroundColor: "#388E3C",
+          "&:hover": {
+            backgroundColor: "#4CAF50",
           },
         },
+        contained: {
+          color: "#FFFFFF",
+        },
+      },
+      defaultProps: {
+        variant: "contained",
+        color: "primary",
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '20px',
-            '& fieldset': {
-              borderColor: '#9B5DE5',
-              borderRadius: '20px',
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "20px",
+            "& fieldset": {
+              borderColor: "#388E3C",
             },
-            '&:hover fieldset': {
-              borderColor: '#9B5DE5',
+            "&:hover fieldset": {
+              borderColor: "#4CAF50",
             },
-            '&.Mui-focused fieldset': {
-              borderColor: '#9B5DE5',
+            "&.Mui-focused fieldset": {
+              borderColor: "#4CAF50",
+            },
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          borderRadius: "20px", // Arredondamento igual ao TextField
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "20px",
+            "& fieldset": {
+              borderColor: "#388E3C", // Verde médio nas bordas
+            },
+            "&:hover fieldset": {
+              borderColor: "#4CAF50", // Verde claro no hover
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#4CAF50", // Verde claro ao focar
             },
           },
         },
       },
     },
   },
-  typography: {
-    fontFamily: 'Roboto, sans-serif',
-  },
 });
+
 export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("light");
-  const [isThemeLoaded, setIsThemeLoaded] = useState(false);
+  const [themeMode] = useState<"light">("light");
 
-  // Carregar o tema inicial do localStorage
-  useEffect(() => {
-    const storedTheme =
-      (typeof window !== "undefined" && localStorage.getItem("theme")) || "light";
-    setThemeMode(storedTheme as "light" | "dark");
-    setIsThemeLoaded(true);
-  }, []);
-
-  const toggleTheme = () => {
-    const newThemeMode = themeMode === "light" ? "dark" : "light";
-    localStorage.setItem("theme", newThemeMode);
-    setThemeMode(newThemeMode);
-  };
-
-  const theme = themeMode === "light" ? lightTheme : darkTheme;
-
-  if (!isThemeLoaded) {
-    return <RouteLoader />;
-  }
+  const theme = lightTheme;
 
   return (
-    <ThemeContext.Provider value={{ themeMode, toggleTheme, theme }}>
+    <ThemeContext.Provider value={{ themeMode, toggleTheme: () => {}, theme }}>
       <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
     </ThemeContext.Provider>
   );

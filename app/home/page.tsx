@@ -1,16 +1,9 @@
-'use client';
-
 import HomeContent from '@/components/Home/HomeContent'
+import HomeProviderContent from '@/components/Home/HomeProviderContent'
 import { GroupProvider } from '@/context/GroupContext'
 import React from 'react'
 
 
 export default function Home() {
-    return (
-        <>
-            <GroupProvider>
-                <HomeContent />
-            </GroupProvider>
-        </>
-    )
+    return (<HomeProviderContent />)
 }

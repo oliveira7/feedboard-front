@@ -10,19 +10,20 @@ const config: Config = {
     extend: {
       backgroundColor: {
         primary: {
-          DEFAULT: '#1A1A1A', // Preto escuro para o fundo principal
-          50: '#2A2A2A', // Cinza escuro para variações
-          100: '#333333', // Cinza um pouco mais claro
+          DEFAULT: '#1A1A1A',
+          50: '#2A2A2A',
+          100: '#333333',
+          200: '#4D4D4D',
         },
       },
       colors: {
         primary: {
-          light: '#4CAF50', // Verde claro para realces
-          DEFAULT: '#388E3C', // Verde médio para elementos principais
-          dark: '#1B5E20', // Verde escuro para textos ou botões
+          light: '#4CAF50',
+          DEFAULT: '#388E3C',
+          dark: '#1B5E20',
         },
         secondary: {
-          DEFAULT: '#F1F1F1', // Branco suave para contraste com os fundos escuros
+          DEFAULT: '#F1F1F1',
         },
         // Neutros
         neutral: {
@@ -30,6 +31,12 @@ const config: Config = {
           200: '#BDBDBD', // Cinza médio
           300: '#9E9E9E', // Cinza escuro
         },
+      },
+      textColor: {
+        primary: '#FFFFFF', // Branco para textos principais em fundos escuros
+        secondary: '#BDBDBD', // Cinza claro para textos secundários
+        neutral: '#9E9E9E', // Cinza médio para textos descritivos
+        highlight: '#4CAF50', // Verde claro para destaques, como links ou botões
       },
       keyframes: {
         progress: {

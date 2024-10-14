@@ -18,7 +18,7 @@ const LoaderWithProgressBar = () => {
 
 export default function RouteLoader() {
   return (
-    <div className="fixed top-0 left-0 w-screen h-screen z-[99999999999999] flex items-center justify-center bg-gradient-to-br from-primary-light to-primary-dark flex ">
+    <div className="fixed top-0 left-0 w-screen h-screen z-[99999999999999] flex items-center justify-center bg-gradient-to-br from-primary-light to-primary-dark ">
       <LoaderWithProgressBar />
     </div>
   );
