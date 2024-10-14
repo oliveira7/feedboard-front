@@ -121,6 +121,7 @@ export default function PostItem({ post, onDelete }: { post: Post; onDelete: () 
 
   const handleDeletePost = async () => {
     try {
+      console.log('vai deletar')
      const response = await deletePostById(_id);
      console.log(response);
       onDelete();
@@ -152,19 +153,17 @@ export default function PostItem({ post, onDelete }: { post: Post; onDelete: () 
           <p className="text-sm text-gray-400">{`${new Date(created_at).toLocaleDateString()} - ${new Date(created_at).toLocaleTimeString()}`}</p>
         </div>
         <div>
-          {/* Botão de três pontinhos */}
           <IconButton onClick={handleClick}>
             <MoreVert />
           </IconButton>
 
-          {/* Menu suspenso */}
           <Menu
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
             PaperProps={{
               style: {
-                maxHeight: 200, // Altura máxima, pode ajustar conforme necessário
+                maxHeight: 200,
                 width: '20ch',
               },
             }}

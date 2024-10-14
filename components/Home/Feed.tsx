@@ -17,7 +17,7 @@ const Feed = forwardRef((props, ref) => {
     if (loading) return;
 
     setLoading(true);
-    const response = await fetchPosts(page, 5);
+    const response = await fetchPosts(page, 5, selectedGroup);
     if (response && response.length > 0) {
       setPosts((prevPosts) => [...prevPosts, ...response]);
       setPage((prevPage) => prevPage + 1);

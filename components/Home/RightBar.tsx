@@ -10,13 +10,13 @@ export default function RightBar() {
   const [groups, setGroups] = useState<GroupModel[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { setSelectedGroup } = useGroup();
+  const { setSelectedGroup, setGroupsContext } = useGroup();
 
   const getGroupsAsync = async () => {
     try {
       const response = await getGroups();
-      console.log(response);
       setGroups(response);
+      setGroupsContext(response);
     } catch (e) {
       console.error(e);
     }

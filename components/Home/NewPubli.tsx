@@ -1,21 +1,22 @@
 'use client';
 
 import React, { useState } from "react";
-import { Modal, Box, Button, IconButton, TextField, Avatar } from "@mui/material";
+import { Modal, Box, Button, IconButton, TextField, Avatar, MenuItem, FormControl, Select, InputAdornment } from "@mui/material";
 import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
 import { newPost } from "@/api/post-endpoint.service";
 import { CreatePostModel } from "../../schema/posts.model";
 import { useGroup } from "@/context/GroupContext";
 import Image from "next/image";
-
+import { GroupModel } from "@/schema/group.model";
 
 export default function NewPubli() {
   const [openModal, setOpenModal] = useState(false);
   const [postText, setPostText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const [media, setMedia] = useState<{ base64: string; type: 'image' | 'video' }[]>([]);
-  const { user, setAtualizarFeed } = useGroup(); 
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+  const { user, setAtualizarFeed, selectedGroupList, groupsContext } = useGroup();
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
@@ -42,15 +43,15 @@ export default function NewPubli() {
       user_id: user._id,
       content: postText,
       media: media.length ? media : undefined,
+      group_id: selectedGroup || undefined,
     };
 
-    console.log(post);
     try {
       const response = await newPost(post);
       setAtualizarFeed(true);
-      setPostText(''); 
-      setMedia([]);  
-      setOpenModal(false); 
+      setPostText('');
+      setMedia([]);
+      setOpenModal(false);
     } catch (e) {
       console.error(e);
     }
@@ -63,7 +64,7 @@ export default function NewPubli() {
           src={user?.avatar_url}
           alt="Profile"
           className="rounded-full w-20 h-20 mb-4"
-          width={40} 
+          width={40}
           height={40}
         />
       ) : (
@@ -104,16 +105,46 @@ export default function NewPubli() {
             </IconButton>
           </div>
 
-          <TextField
-            id="outlined-multiline-static"
-            label="Sobre o que você quer falar?"
-            multiline
-            rows={4}
-            fullWidth
-            variant="outlined"
-            value={postText}
-            onChange={(e) => setPostText(e.target.value)}
-          />
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="outlined-multiline-static"
+              label="Sobre o que você quer falar?"
+              multiline
+              rows={4}
+              fullWidth
+              variant="outlined"
+              value={postText}
+              onChange={(e) => setPostText(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <FormControl variant="outlined" fullWidth>
+                      <Select
+                        value={selectedGroup || ''}
+                        onChange={(e) => setSelectedGroup(e.target.value as string)}
+                        displayEmpty
+                        sx={{
+                          minWidth: '120px',
+                          height: '40px',
+                          background: '#f5f5f5',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>Nenhum</em>
+                        </MenuItem>
+                        {groupsContext?.map((group: GroupModel) => (
+                          <MenuItem key={group._id} value={group._id}>
+                            {group.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
 
           <div className="flex items-center justify-between mt-4">
             <div className="flex items-center space-x-2">
@@ -141,10 +172,7 @@ export default function NewPubli() {
             <Button
               variant="contained"
               disabled={!postText.trim() && media.length === 0}
-              onClick={() => {
-                createPost();
-                setOpenModal(false);
-              }}
+              onClick={createPost}
             >
               Publicar
             </Button>

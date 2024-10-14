@@ -4,13 +4,22 @@
 import { CreatePostModel } from "@/schema/posts.model";
 import api from "./api";
 
-export const fetchPosts = async (page: number, limit: number) => {
+export const fetchPosts = async (page: number, limit: number, group_id?: string) => {
   try {
-    const response = await api.get(`/posts?page=${page}&limit=${limit}`);
+    let url = `/posts?page=${page}&limit=${limit}`;
+
+    if (group_id) {
+      console.log('entrou0');
+      url += `&group_id=${group_id}`;
+    }
+
+    const response = await api.get(url);
+    
     if (!response) {
       throw new Error('Erro ao buscar posts');
     }
-    return await response.data.data;;
+    
+    return response.data.data;
   } catch (error) {
     console.error('Erro ao carregar os posts:', error);
     return [];
