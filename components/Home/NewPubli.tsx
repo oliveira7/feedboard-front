@@ -15,12 +15,11 @@ export default function NewPubli() {
   const [postText, setPostText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const [media, setMedia] = useState<{ base64: string; type: 'image' | 'video' }[]>([]);
-  const { user } = useGroup(); 
+  const { user, setAtualizarFeed } = useGroup(); 
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
-  // Corrigido: o emoji é acessado corretamente
   const handleEmojiClick = (emojiObject: any) => {
     setPostText(prevText => prevText + emojiObject.emoji);
     setShowEmojis(false);
@@ -48,7 +47,10 @@ export default function NewPubli() {
     console.log(post);
     try {
       const response = await newPost(post);
-      console.log(response);
+      setAtualizarFeed(true);
+      setPostText(''); 
+      setMedia([]);  
+      setOpenModal(false); 
     } catch (e) {
       console.error(e);
     }

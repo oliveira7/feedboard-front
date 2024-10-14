@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ThumbUp, Comment, Delete } from '@mui/icons-material';
+import { ThumbUp, Comment, Delete, MoreVert } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { deletePostById, newPost } from '@/api/post-endpoint.service';
 import { useGroup } from '@/context/GroupContext';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 
 interface Reply {
   _id: string;
@@ -40,6 +41,16 @@ export default function PostItem({ post, onDelete }: { post: Post; onDelete: () 
   const [replyText, setReplyText] = useState('');
   const [replyToCommentIndex, setReplyToCommentIndex] = useState<number | null>(null);
   const { user } = useGroup();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleAddComment = async () => {
     console.log(commentText);
@@ -110,8 +121,9 @@ export default function PostItem({ post, onDelete }: { post: Post; onDelete: () 
 
   const handleDeletePost = async () => {
     try {
-      await deletePostById(_id);
-      onDelete(); 
+     const response = await deletePostById(_id);
+     console.log(response);
+      onDelete();
     } catch (error) {
       console.error('Erro ao deletar post:', error);
     }
@@ -139,11 +151,33 @@ export default function PostItem({ post, onDelete }: { post: Post; onDelete: () 
           <h3 className="font-bold text-gray-600">{user_id.name}</h3>
           <p className="text-sm text-gray-400">{`${new Date(created_at).toLocaleDateString()} - ${new Date(created_at).toLocaleTimeString()}`}</p>
         </div>
-                {user && user._id === user_id._id && (
-          <button onClick={handleDeletePost} className="text-red-500 hover:text-red-700">
-            <Delete /> 
-          </button>
-        )}
+        <div>
+          {/* Botão de três pontinhos */}
+          <IconButton onClick={handleClick}>
+            <MoreVert />
+          </IconButton>
+
+          {/* Menu suspenso */}
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              style: {
+                maxHeight: 200, // Altura máxima, pode ajustar conforme necessário
+                width: '20ch',
+              },
+            }}
+          >
+            {user && user._id === user_id && (
+              <MenuItem onClick={() => { handleDeletePost(); handleClose(); }}>
+                <Delete fontSize="small" style={{ marginRight: 8 }} />
+                Excluir post
+              </MenuItem>
+            )}
+          </Menu>
+        </div>
+
       </div>
       <p className="mb-4">{content}</p>
 

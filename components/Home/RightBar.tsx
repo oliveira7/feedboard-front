@@ -24,7 +24,7 @@ export default function RightBar() {
 
   useEffect(() => {
     getGroupsAsync();
-  }, [setIsModalOpen]);
+  }, [isModalOpen]);
 
   return (
     <>

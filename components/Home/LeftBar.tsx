@@ -10,18 +10,16 @@ export default function LeftBar() {
 
   return (
     <div className="w-full bg-primary-50 rounded-lg shadow-lg p-4 h-fit relative">
-      {/* Div para a metade superior com gradiente */}
       <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-primary-light to-primary-dark rounded-t-lg"></div>
 
-      {/* Conteúdo do Avatar */}
       <div className="relative flex flex-col items-center mb-6 gap-2 pt-12">
         {user ? (
           <>
             {user?.avatar_url ? (
-              <Image
+              <img
                 src={user.avatar_url}
                 alt="Profile"
-                className="rounded-full w-20 h-20 mb-4 border-4 border-primary-50" // Borda para avatar ficar bem com o gradiente
+                className="rounded-full w-20 h-20 mb-4 border-4 border-primary-50"
                 width={80}
                 height={80}
               />
