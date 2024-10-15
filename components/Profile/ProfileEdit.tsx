@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TextField, Button, Avatar, CircularProgress, Snackbar, Alert, Modal, Box } from '@mui/material';
 import { UserModel } from '@/schema/user.model';
 import Cookies from 'js-cookie';
@@ -39,6 +39,8 @@ export default function ProfileEdit({
   const [description, setDescription] = useState('');
   const [avatarBase64, setAvatarBase64] = useState('');
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null); // Referência para o input de imagem
+
   useEffect(() => {
     const fetchUser = async () => {
       const token = Cookies.get('token');
@@ -51,7 +53,7 @@ export default function ProfileEdit({
           setName(userData.name);
           setCourse(userData.course);
           setDescription(userData.description);
-          setAvatarBase64(userData.avatar_url);
+          setAvatarBase64(userData.avatar_base64);
         } catch (error) {
           setErrorMessage('Erro ao carregar os dados do usuário.');
         }
@@ -76,18 +78,25 @@ export default function ProfileEdit({
   const handleSave = async () => {
     setSaving(true);
     try {
-      await updateUser(user!._id, { name, course, description, avatar_url: avatarBase64 });
-      setSnackbarOpen(true);
-      handleModalClose(); // Fechar o modal após salvar
+      const response = await updateUser(user!._id, { name, course, description, avatar_base64: avatarBase64 });
+      if (response) {
+        setSnackbarOpen(true);
+      }
+      handleModalClose();
     } catch (error) {
       setErrorMessage('Erro ao salvar as alterações.');
     } finally {
       setSaving(false);
+      window.location.reload();
     }
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -101,20 +110,36 @@ export default function ProfileEdit({
         <Box sx={style}>
           <div className="flex flex-col items-center">
             {avatarBase64 ? (
-              <Image src={avatarBase64} alt="Profile" width={80} height={80} className="rounded-full" />
+              <Image
+                src={avatarBase64}
+                alt="Profile"
+                width={80}
+                height={80}
+                className="rounded-full w-32 h-32 mb-2 border-4 border-primary-50 cursor-pointer hover:opacity-70"
+                onClick={handleAvatarClick}
+              />
             ) : (
-              <Avatar sx={{ width: 80, height: 80 }}>
+              <Avatar
+                sx={{ width: 80, height: 80 }}
+                onClick={handleAvatarClick}
+                className="cursor-pointer"
+              >
                 {user?.name ? user.name.charAt(0) : 'U'}
               </Avatar>
             )}
-            <h2 className="text-xl font-bold mt-4">Editar Perfil</h2>
 
-            {/* Input para upload de imagem */}
-            <input accept="image/*" type="file" onChange={handleImageUpload} className="mt-2" />
+            <input
+              accept="image/*"
+              type="file"
+              onChange={handleImageUpload}
+              ref={fileInputRef}
+              style={{ display: 'none' }} 
+            />
+
+            <h2 className="text-xl font-bold mt-4">Editar Perfil</h2>
           </div>
 
           <form>
-            {/* Nome */}
             <TextField
               label="Nome"
               fullWidth
@@ -124,7 +149,6 @@ export default function ProfileEdit({
               onChange={(e) => setName(e.target.value)}
             />
 
-            {/* Curso */}
             <TextField
               label="Curso"
               fullWidth
@@ -134,7 +158,6 @@ export default function ProfileEdit({
               onChange={(e) => setCourse(e.target.value)}
             />
 
-            {/* Descrição */}
             <TextField
               label="Descrição"
               fullWidth
@@ -146,7 +169,6 @@ export default function ProfileEdit({
               onChange={(e) => setDescription(e.target.value)}
             />
 
-            {/* Botão de salvar */}
             <Button
               variant="contained"
               color="primary"
@@ -160,7 +182,6 @@ export default function ProfileEdit({
         </Box>
       </Modal>
 
-      {/* Snackbar para mostrar feedback */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
@@ -172,7 +193,6 @@ export default function ProfileEdit({
         </Alert>
       </Snackbar>
 
-      {/* Snackbar para erros */}
       {errorMessage && (
         <Snackbar
           open={!!errorMessage}

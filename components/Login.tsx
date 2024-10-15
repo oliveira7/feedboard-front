@@ -66,7 +66,6 @@ const LoginPage = () => {
     setErrorMessage("");
     setLoading(true);
 
-    // Verifica se as senhas correspondem
     if (auth.password !== auth.confirmPassword) {
       setErrorMessage("As senhas não coincidem.");
       setOpenSnackbar(true);
@@ -78,10 +77,11 @@ const LoginPage = () => {
       const registerObj = {
         name: auth.name,
         email: auth.email,
-        course: auth.course,
+        // course: auth.course,
         password_hash: auth.password,
         role: role
       }
+      console.log(registerObj);
       const response = await register(registerObj);
       if (response) {
         await login(auth.email, auth.password);

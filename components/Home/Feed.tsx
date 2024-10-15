@@ -9,53 +9,55 @@ import { useGroup } from '@/context/GroupContext';
 const Feed = forwardRef((props, ref) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit] = useState(5);
   const [loading, setLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const { setAtualizarFeed, atualizarFeed, selectedGroup } = useGroup();
 
-  const loadPosts = async () => {
+  const loadPosts = async (reset = false) => {
     if (loading) return;
 
     setLoading(true);
-    const response = await fetchPosts(page, limit, selectedGroup);
+
+    if (reset) {
+      setPosts([]);
+      setPage(1); 
+    }
+
+    const response = await fetchPosts(reset ? 1 : page, limit, selectedGroup || null);
     if (response && response.length > 0) {
-      setPosts((prevPosts) => [...prevPosts, ...response]);
+      setPosts((prevPosts) => [...(reset ? [] : prevPosts), ...response]);
       setPage((prevPage) => prevPage + 1);
     } else {
       setHasMore(false);
     }
-    console.log(response);
+
     setLoading(false);
+    setInitialLoad(false);
   };
 
   const resetAndLoadPosts = async () => {
-    setPosts([]); 
-    setPage(1); 
-    setLimit(5);
-    setHasMore(true);
-    await loadPosts();
-    setAtualizarFeed(false);
+    setHasMore(true);  
+    setInitialLoad(true);  
+    await loadPosts(true);
   };
 
+  const handleDelete = async () => {
+    await loadPosts(true);   // Carrega novamente ao deletar um post
+  };
 
-const handleDelete = () => {
-  loadPosts();
-};
+  useEffect(() => {
+    if (selectedGroup !== undefined) {
+      resetAndLoadPosts();
+    }
+  }, [selectedGroup]);
 
-useEffect(() => {
-  console.log(selectedGroup);
-  if (atualizarFeed || selectedGroup) {
-    resetAndLoadPosts();
-  }  else {
-    loadPosts();
-  }
-}, [atualizarFeed, selectedGroup]);
-
-
-  useImperativeHandle(ref, () => ({
-    loadPosts,
-  }));
+  useEffect(() => {
+    if (atualizarFeed) {
+      resetAndLoadPosts();
+    }
+  }, [atualizarFeed]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,16 +70,18 @@ useEffect(() => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [hasMore, loading]);
 
-  
-
   return (
     <div className="flex flex-col items-center space-y-4">
-      {posts.map((post) => (
-        <PostItem key={post._id} post={post} onDelete={handleDelete}/>
-      ))}
+      {initialLoad ? ( 
+        <div>Carregando...</div>
+      ) : (
+        posts.map((post) => (
+          <PostItem key={post._id} post={post} onDelete={handleDelete} />
+        ))
+      )}
 
-      {loading && <div>Carregando...</div>}
-      {!hasMore && <div>Não há mais posts</div>}
+      {loading && !initialLoad && <div>Carregando mais...</div>}
+      {!hasMore && !initialLoad && <div>Não há mais posts</div>}
     </div>
   );
 });

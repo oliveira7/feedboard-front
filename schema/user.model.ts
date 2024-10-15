@@ -5,7 +5,7 @@ export interface UserModel {
     password_hash: string;
     description: string;
     course: string;
-    avatar_url?: string;
+    avatar_base64?: string;
     notifications: any[];
     created_at: Date;
     updated_at: Date;
@@ -24,7 +24,7 @@ export interface CreateUsersModel {
     description?: string;
     email: string;
     password_hash: string;
-    avatar_url?: string;
+    avatar_base64?: string;
     role: string;
   }
   

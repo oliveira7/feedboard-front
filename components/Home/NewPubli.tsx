@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { Modal, Box, Button, IconButton, TextField, Avatar, MenuItem, FormControl, Select, InputAdornment } from "@mui/material";
+import { Modal, Box, Button, IconButton, TextField, Avatar, MenuItem, FormControl, Select, InputAdornment, Skeleton } from "@mui/material";
 import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
 import { newPost } from "@/api/post-endpoint.service";
@@ -34,13 +34,14 @@ export default function NewPubli() {
         const base64String = reader.result as string;
         setMedia([{ base64: base64String, type: 'image' }]);
       };
+      console.log(file);
       reader.readAsDataURL(file);
     }
   };
 
   const createPost = async () => {
     const post: CreatePostModel = {
-      user_id: user._id,
+      author: user._id,
       content: postText,
       media: media.length ? media : undefined,
       group_id: selectedGroup || undefined,
@@ -59,19 +60,26 @@ export default function NewPubli() {
 
   return (
     <div className="flex items-center p-4 bg-primary-50 rounded-lg shadow-md">
-      {user && user?.avatar_url ? (
-        <Image
-          src={user?.avatar_url}
-          alt="Profile"
-          className="rounded-full w-20 h-20 mb-4"
-          width={40}
-          height={40}
-        />
-      ) : (
-        <Avatar sx={{ width: 40, height: 40 }}>
-          {user && user.name ? user.name.charAt(0) : 'U'}
-        </Avatar>
-      )}
+      {
+        user && user?.avatar_base64 ? (
+          user?.avatar_base64 ? (
+            <Image
+              src={user?.avatar_base64}
+              alt="Profile"
+              className="rounded-full w-10 h-10 border-2 border-primary-50 mr-4"
+              width={50}
+              height={50}
+            />
+          ) : (
+            <Avatar className="rounded-full w-10 h-10 border-2 border-primary-50 mr-4">
+              {user && user.name ? user.name.charAt(0) : 'U'}
+            </Avatar>
+          )
+        ) : (
+          <Skeleton variant="circular" width={44} height={40} animation="wave" className="rounded-full mr-4"/>
+        )
+      }
+
       <div
         className="bg-primary-100 text-gray-400 p-2 w-full rounded-lg cursor-pointer"
         onClick={handleOpenModal}

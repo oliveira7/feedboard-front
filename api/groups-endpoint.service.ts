@@ -8,7 +8,7 @@ export const getGroups = async (): Promise<GroupModel[]> => {
         const response = await api.get('/groups');
         return response.data.data;
     } catch (e: any) {
-        return e.response.data.data;;
+        return e.response.data.data;
     }
  }
 
@@ -21,3 +21,12 @@ export const createGroup = async (group: any) => {
         return e.response.data;
     }
 }
+
+export const getGroupsByUser = async (): Promise<GroupModel[]> => {
+    try {
+        const response = await api.get('/groups');
+        return response.data.data;
+    } catch (e: any) {
+        return e.response.data.data;
+    }
+ }

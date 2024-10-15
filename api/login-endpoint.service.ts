@@ -9,8 +9,8 @@ export const login = async (email: string, password: string) => {
         const response = await api.post('/auth/login', { email, password });
         console.log(response);
 
-        return response.data.data;;
+        return response.data.data;
     } catch (e: any) {
-        return e.response.data.data;;
+        return e.response.data.data;
     }
  }

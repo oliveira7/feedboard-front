@@ -9,14 +9,14 @@
 
   interface Reply {
     _id: string;
-    user_id: string;
+    author: { _id: string, name: string, avatar_base64: string };    
     content: string;
     created_at: string;
   }
 
   interface Comment {
     _id: string;
-    user_id: string;
+    author: { _id: string, name: string, avatar_base64: string };
     content: string;
     created_at: string;
     replies?: Reply[];
@@ -24,7 +24,7 @@
 
   interface Post {
     _id: string;
-    user_id: { _id: string, name: string, avatar_url: string };
+    author: { _id: string, name: string, avatar_base64: string };
     content: string;
     media: { base64?: string; url?: string; type: 'image' | 'video' }[];
     created_at: string;
@@ -33,7 +33,7 @@
   }
 
   export default function PostItem({ post, onDelete }: { post: Post; onDelete: () => void }) {
-    const { _id, user_id, content, media, created_at, likes, comments } = post;
+    const { _id, author, content, media, created_at, likes, comments } = post;
 
     const [liked, setLiked] = useState(false);
     const [commentText, setCommentText] = useState('');
@@ -55,13 +55,10 @@
     const handleAddComment = async () => {
       console.log(commentText);
       if (!commentText.trim()) return;
-      console.log('passou pelo trim');
-      console.log(user);
-
 
       try {
         const newComment = {
-          user_id: user._id,
+          author: user._id,
           parent_id: _id,
           content: commentText,
           pinned: false,
@@ -74,7 +71,7 @@
         if (response) {
           setCommentList([...commentList, {
             _id: response._id,
-            user_id: user._id,
+            author: user._id,
             content: commentText,
             created_at: new Date().toISOString(),
             replies: [],
@@ -92,7 +89,7 @@
       try {
         const parentCommentId = commentList[index]._id;
         const newReply = {
-          user_id: user._id,
+          author: user,
           parent_id: parentCommentId,
           content: replyText,
           pinned: false,
@@ -105,7 +102,7 @@
           updatedComments[index].replies = updatedComments[index].replies || [];
           updatedComments[index].replies!.push({
             _id: response._id,
-            user_id: user._id,
+            author: user._id,
             content: replyText,
             created_at: new Date().toISOString(),
           });
@@ -145,15 +142,16 @@
         <div className="flex items-center mb-4 justify-between">
           <div className="flex items-center">
             <img
-              src={user_id.avatar_url}
-              alt={user_id.name}
+              src={author.avatar_base64}
+              alt={author.name}
               className="w-10 h-10 rounded-full mr-2"
             />
             <div>
-              <h3 className="font-bold text-gray-600">{user_id.name}</h3>
+              <h3 className="font-bold">{author.name}</h3>
               <p className="text-sm text-gray-400">{`${new Date(created_at).toLocaleDateString()} - ${new Date(created_at).toLocaleTimeString()}`}</p>
             </div>
           </div>
+          {user && user._id === author._id && (
           <div>
             <IconButton onClick={handleClick}>
               <MoreVert />
@@ -170,15 +168,13 @@
                 },
               }}
             >
-              {user && user._id === user_id && (
                 <MenuItem onClick={() => { handleDeletePost(); handleClose(); }}>
                   <Delete fontSize="small" style={{ marginRight: 8 }} />
                   Excluir post
                 </MenuItem>
-              )}
             </Menu>
           </div>
-
+              )}
         </div>
         <p className="mb-4">{content}</p>
 
@@ -210,7 +206,7 @@
 
           <div className="flex items-center space-x-1">
             <Comment className="text-highlight" />
-            <span className="text-highlight">{commentList.length}</span>
+            <span className="text-highlight">{commentList?.length}</span>
           </div>
         </div>
 
@@ -218,14 +214,14 @@
           <div className="mb-4">
             {commentList.map((comment, index) => (
               <div key={comment._id} className="bg-primary-100 p-2 rounded-lg mb-2">
-                <p className="text-sm font-bold text-highlight">{comment.user_id}</p>
+                <p className="text-sm font-bold text-highlight">{comment.author.name}</p>
                 <p className="text-sm">{comment.content}</p>
 
                 {comment.replies && comment.replies.length > 0 && (
                   <div className="ml-4 mt-2 space-y-2">
                     {comment.replies.map((reply) => (
                       <div key={reply._id} className="bg-primary-100 p-2 rounded-lg">
-                        <p className="text-sm font-bold text-highlight">{reply.user_id}</p>
+                        <p className="text-sm font-bold text-highlight">{reply.author.name}</p>
                         <p className="text-sm">{reply.content}</p>
                       </div>
                     ))}
@@ -261,7 +257,6 @@
           </div>
         )}
 
-        {/* Campo para adicionar novo comentário */}
         <div className="flex items-center space-x-2">
           <input
             type="text"

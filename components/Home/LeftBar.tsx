@@ -15,16 +15,16 @@ export default function LeftBar() {
       <div className="relative flex flex-col items-center mb-6 gap-2 pt-12">
         {user ? (
           <>
-            {user?.avatar_url ? (
-              <img
-                src={user.avatar_url}
+            {user?.avatar_base64 ? (
+              <Image
+                src={user.avatar_base64}
                 alt="Profile"
-                className="rounded-full w-20 h-20 mb-4 border-4 border-primary-50"
-                width={80}
-                height={80}
+                className="rounded-full w-32 h-32 mb-2 border-4 border-primary-50"
+                width={30}
+                height={30}
               />
             ) : (
-              <Avatar sx={{ width: 80, height: 80 }} className="border-4 border-primary-50">
+              <Avatar className="border-4 border-primary-50 w-32 h-32">
                 {user.name ? user.name.charAt(0) : 'U'}
               </Avatar>
             )}
@@ -35,7 +35,7 @@ export default function LeftBar() {
             </div>
           </>
         ) : (
-          <Skeleton variant="circular" width={80} height={80} animation="wave" />
+          <Skeleton variant="circular" width={128} height={128} animation="wave" />
         )}
       </div>
     </div>

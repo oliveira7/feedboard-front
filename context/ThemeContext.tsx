@@ -4,7 +4,7 @@ import React, { createContext, useState, ReactNode, useContext } from "react";
 import { ThemeProvider as MuiThemeProvider, createTheme } from "@mui/material/styles";
 
 interface ThemeContextType {
-  themeMode: "light"; // Somente light mode por enquanto
+  themeMode: "light";
   toggleTheme: () => void;
   theme: ReturnType<typeof createTheme>;
 }
@@ -76,17 +76,17 @@ const lightTheme = createTheme({
     MuiSelect: {
       styleOverrides: {
         root: {
-          borderRadius: "20px", // Arredondamento igual ao TextField
+          borderRadius: "20px", 
           "& .MuiOutlinedInput-root": {
             borderRadius: "20px",
             "& fieldset": {
-              borderColor: "#388E3C", // Verde médio nas bordas
+              borderColor: "#388E3C",
             },
             "&:hover fieldset": {
-              borderColor: "#4CAF50", // Verde claro no hover
+              borderColor: "#4CAF50",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "#4CAF50", // Verde claro ao focar
+              borderColor: "#4CAF50",
             },
           },
         },
@@ -107,5 +107,4 @@ export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Hook para acessar o tema
 export const useTheme = () => useContext(ThemeContext);
