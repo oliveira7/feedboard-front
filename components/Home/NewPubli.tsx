@@ -15,8 +15,7 @@ export default function NewPubli() {
   const [postText, setPostText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const [media, setMedia] = useState<{ base64: string; type: 'image' | 'video' }[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-  const { user, setAtualizarFeed, selectedGroupList, groupsContext } = useGroup();
+  const { user, setAtualizarFeed, selectedGroup, groupsContext } = useGroup();
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
@@ -34,7 +33,6 @@ export default function NewPubli() {
         const base64String = reader.result as string;
         setMedia([{ base64: base64String, type: 'image' }]);
       };
-      console.log(file);
       reader.readAsDataURL(file);
     }
   };
@@ -49,6 +47,7 @@ export default function NewPubli() {
 
     try {
       const response = await newPost(post);
+      console.log(response);
       setAtualizarFeed(true);
       setPostText('');
       setMedia([]);
@@ -123,33 +122,6 @@ export default function NewPubli() {
               variant="outlined"
               value={postText}
               onChange={(e) => setPostText(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <FormControl variant="outlined" fullWidth>
-                      <Select
-                        value={selectedGroup || ''}
-                        onChange={(e) => setSelectedGroup(e.target.value as string)}
-                        displayEmpty
-                        sx={{
-                          minWidth: '120px',
-                          height: '40px',
-                          borderRadius: '4px',
-                        }}
-                      >
-                        <MenuItem value="">
-                          <em>Nenhum</em>
-                        </MenuItem>
-                        {groupsContext?.map((group: GroupModel) => (
-                          <MenuItem key={group._id} value={group._id}>
-                            {group.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </InputAdornment>
-                ),
-              }}
             />
           </FormControl>
 

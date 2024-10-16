@@ -7,7 +7,6 @@ import { CreateUsersModel, UserModel } from "@/schema/user.model";
 export const getUserById = async (id: string) => {
     try {
         const response = await api.get('/users/' + id);
-        console.log(response.data);
         return response.data.data;
     } catch (e) {
         console.error(e);
@@ -29,5 +28,20 @@ export const register = async (crateUser: CreateUsersModel) => {
         return response.data.data;
     } catch (e) {
         console.error(e)
+    }
+}
+
+export const getAll = async (page: number, limit: number, queries: any) => { 
+    try {
+        let url = `/users?page=${page}&limit=${limit}`;
+
+        if (queries) {
+            url += `&${queries}`;
+        }
+
+        const response = await api.get(url);
+        return response.data.data;
+    } catch (e) {
+        console.error(e);
     }
 }

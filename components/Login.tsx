@@ -10,8 +10,11 @@ import Cookies from 'js-cookie';
 import { login } from "@/api/login-endpoint.service";
 import { register } from "@/api/user-endpoint.service";
 import { Role } from "@/schema/user.model";
+interface LoginProps { 
+  refParam?: string;
+}
 
-const LoginPage = () => {
+const LoginPage = ({refParam}: LoginProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [auth, setAuth] = useState({
@@ -81,7 +84,6 @@ const LoginPage = () => {
         password_hash: auth.password,
         role: role
       }
-      console.log(registerObj);
       const response = await register(registerObj);
       if (response) {
         await login(auth.email, auth.password);

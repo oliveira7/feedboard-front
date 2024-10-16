@@ -10,6 +10,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useGroup } from '@/context/GroupContext';
 import { b } from 'framer-motion/client';
+import Link from 'next/link';
 
 
 export default function Header() {
@@ -21,7 +22,6 @@ export default function Header() {
   const { user } = useGroup();
 
   useEffect(() => {
-    console.log(user);
     setCurrentPath(pathname);
   }, [pathname]);
 
@@ -46,7 +46,9 @@ export default function Header() {
     <header className="bg-primary-50 text-white flex justify-between items-center px-6 py-2 shadow-md">
       <div className="flex items-center space-x-4">
         <div className="flex items-center">
+          <Link href="/home">
           <Image src={logo} alt="Logo" width={100} height={100} />
+          </Link>
         </div>
 
         <div className="flex items-center bg-primary-100 rounded-lg px-2 py-1">

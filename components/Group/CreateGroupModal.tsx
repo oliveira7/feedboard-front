@@ -33,7 +33,6 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ isModalOpen, handle
     };
 
     const response = await createGroup(groupData);
-    console.log(response);
 
     if (!response) {
       setError(response);

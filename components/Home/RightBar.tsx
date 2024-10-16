@@ -20,7 +20,6 @@ export default function RightBar() {
       const response = await getGroupsByUser();
       setGroups(response);
       setGroupsContext(response);
-      console.log(response);
     } catch (e) {
       console.error(e);
     }
