@@ -1,16 +1,19 @@
 // CommentList.tsx
 import React, { useState, useEffect } from 'react';
-import { fetchPosts, newPost } from '@/api/post-endpoint.service';
+import { fetchPosts, deletePostById, newPost } from '@/api/post-endpoint.service';
 import CommentItem from './CommentItem';
 import { UserModel } from '@/schema/user.model';
+import { PostModel } from '@/schema/posts.model';
+import { ExpandCircleDown, ExpandMore, OpenInFull } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 
 interface CommentListProps {
   postId: string;
-  user: UserModel; 
+  user: UserModel;
 }
 
 export default function CommentList({ postId, user }: CommentListProps) {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<PostModel[]>([]);
   const [commentText, setCommentText] = useState('');
   const [page, setPage] = useState(1);
   const [hasMoreComments, setHasMoreComments] = useState(true);
@@ -27,16 +30,14 @@ export default function CommentList({ postId, user }: CommentListProps) {
     setLoadingComments(true);
 
     try {
-      // Se for resetar, voltamos à página 1 e limpamos os comentários
       const currentPage = reset ? 1 : page;
 
-      const response = await fetchPosts(currentPage, 5, undefined, postId);
+      const response = await fetchPosts(currentPage, 3, undefined, postId);
       if (response && response.posts) {
         setComments((prev) =>
           reset ? response.posts : [...prev, ...response.posts]
         );
 
-        // Verifica se ainda há mais páginas para carregar
         if (currentPage >= response.totalPages) {
           setHasMoreComments(false);
         } else {
@@ -49,6 +50,15 @@ export default function CommentList({ postId, user }: CommentListProps) {
       console.error('Erro ao carregar comentários:', error);
     } finally {
       setLoadingComments(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      await deletePostById(commentId);
+      setComments(comments.filter((comment) => comment._id !== commentId));
+    } catch (error) {
+      console.error('Erro ao deletar comentário:', error);
     }
   };
 
@@ -66,6 +76,7 @@ export default function CommentList({ postId, user }: CommentListProps) {
       const response = await newPost(newCommentData);
       if (response) {
         setComments((prevComments) => [
+          ...prevComments,
           {
             _id: response._id,
             author: {
@@ -78,7 +89,6 @@ export default function CommentList({ postId, user }: CommentListProps) {
             replies: [],
             totalChildren: 0,
           },
-          ...prevComments,
         ]);
         setCommentText('');
       }
@@ -89,20 +99,30 @@ export default function CommentList({ postId, user }: CommentListProps) {
 
   return (
     <div>
-      {/* Lista de Comentários */}
       {comments.map((comment) => (
-        <CommentItem key={comment._id} comment={comment} user={user} />
+        <div key={comment._id} className="flex items-start space-x-2 mb-4">
+          <div className='w-full'>
+            <CommentItem comment={comment} user={user} onDelete={() => handleDeleteComment(comment._id)} />
+          </div>
+        </div>
       ))}
 
-      {/* Botão para Carregar Mais Comentários */}
       {hasMoreComments && (
-        <button onClick={() => loadComments()} className="text-sm text-highlight mt-2">
-          {loadingComments ? 'Carregando...' : 'Ver mais'}
+        <div className='w-full flex justify-center ml-2'>
+        <button onClick={() => loadComments()} className="text-sm  text-gray-200 hover:text-highlight active:text-highligh">
+          {loadingComments ? <CircularProgress /> : <ExpandMore width={40} height={40} />}
         </button>
+        </div>
       )}
 
-      {/* Campo para Adicionar Novo Comentário */}
       <div className="flex items-center space-x-2 mt-4">
+        {user?.avatar_base64 && (
+          <img
+            src={user?.avatar_base64}
+            alt={user?.name}
+            className="w-8 h-8 rounded-full"
+          />
+        )}
         <input
           type="text"
           placeholder="Escreva um comentário..."

@@ -1,21 +1,27 @@
-// CommentItem.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import { fetchPosts, newPost } from '@/api/post-endpoint.service';
 import ReplyList from './ReplyList';
 import { UserModel } from '@/schema/user.model';
+import { PostModel } from '@/schema/posts.model';
+import { getTimeSincePost } from '@/utils/getTimeSincePost';
 
 interface CommentItemProps {
-  comment: Comment;
+  comment: PostModel;
   user: UserModel;
+  onDelete: () => void; // Função para deletar comentário
 }
 
-export default function CommentItem({ comment, user }: CommentItemProps) {
+export default function CommentItem({ comment, user, onDelete }: CommentItemProps) {
   const [replyText, setReplyText] = useState('');
   const [showReplyInput, setShowReplyInput] = useState(false);
-  const [replies, setReplies] = useState<Reply[]>(comment.replies || []);
+  const [replies, setReplies] = useState<PostModel[]>([]);
   const [hasMoreReplies, setHasMoreReplies] = useState(true);
   const [loadingReplies, setLoadingReplies] = useState(false);
   const [replyPage, setReplyPage] = useState(1);
+  const [showReplies, setShowReplies] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const loadReplies = async (reset = false) => {
     if (loadingReplies || !hasMoreReplies) return;
@@ -40,7 +46,7 @@ export default function CommentItem({ comment, user }: CommentItemProps) {
         setHasMoreReplies(false);
       }
     } catch (error) {
-      console.error('Erro ao carregar replies:', error);
+      console.error('Erro ao carregar respostas:', error);
     } finally {
       setLoadingReplies(false);
     }
@@ -70,6 +76,9 @@ export default function CommentItem({ comment, user }: CommentItemProps) {
             },
             content: replyText,
             created_at: new Date().toISOString(),
+            media: [],
+            totalChildren: 0,
+            parent_id: comment._id,
           },
         ]);
         setReplyText('');
@@ -81,21 +90,51 @@ export default function CommentItem({ comment, user }: CommentItemProps) {
   };
 
   return (
-    <div className="bg-primary-100 p-2 rounded-lg mb-2">
-      <p className="text-sm font-bold text-highlight">{comment.author.name}</p>
-      <p className="text-sm">{comment.content}</p>
+    <div className="bg-primary-100 p-4 rounded-lg mb-4 shadow-md">
+      <div className="flex items-start space-x-4 justify-between">
+        <div className="flex items-start space-x-3">
+          {comment.author.avatar_base64 && (
+            <img
+              src={comment.author.avatar_base64}
+              alt={comment.author.name}
+              className="w-10 h-10 rounded-full"
+            />
+          )}
 
-      {/* Lista de Respostas */}
-      {replies.length > 0 && <ReplyList replies={replies} />}
+          <div>
+            <p className="text-sm font-bold text-highlight">{comment.author.name}</p>
+            <p className="text-sm mt-2">{comment.content}</p>
+          </div>
+        </div>
+        <div className='flex items-center'>
 
-      {/* Botão para Carregar Mais Respostas */}
-      {hasMoreReplies && (
-        <button onClick={() => loadReplies()} className="text-sm text-highlight mt-1">
-          {loadingReplies ? 'Carregando...' : 'Ver mais respostas'}
-        </button>
-      )}
+          <span className="text-xs text-gray-500">{getTimeSincePost(comment.created_at)}</span>
+          {user && user._id === comment.author._id && (
+            <div>
+              <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+                <MoreVert />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+              >
+                <MenuItem
+                  onClick={() => {
+                    onDelete();
+                    setAnchorEl(null);
+                  }}
+                >
+                  Excluir comentário
+                </MenuItem>
+              </Menu>
+            </div>
+          )}
+        </div>
+      </div>
 
-      {/* Campo para Adicionar Nova Resposta */}
+      {showReplies && comment.totalChildren > 0 && <ReplyList replies={replies} />}
+
       {showReplyInput ? (
         <div className="flex items-center space-x-2 mt-2">
           <input
@@ -110,12 +149,33 @@ export default function CommentItem({ comment, user }: CommentItemProps) {
           </button>
         </div>
       ) : (
-        <button
-          onClick={() => setShowReplyInput(true)}
-          className="text-sm text-highlight mt-1"
-        >
-          Responder
-        </button>
+        <div className='flex items-center mt-4 ml-[50px]'>
+          <a className="text-sm text-gray-400 mt-1 cursor-pointer hover:text-highlight active:text-highlight" >
+            Gostei
+          </a>
+          <span className='ml-2 mr-2 text-gray-500'>|</span>
+          <a
+            onClick={() => setShowReplyInput(true)}
+            className="text-sm text-gray-400 mt-1 cursor-pointer hover:text-highlight active:text-highlight"
+          >
+             Responder
+          </a>
+
+          {comment.totalChildren > 0 && (
+            <>
+              <div className="w-1 h-1 bg-gray-300 rounded-full inline-block mx-2 mt-1"></div>
+              <span
+                className="text-xs  mt-1 cursor-pointer text-gray-500 hover:text-highlight active:text-highlight"
+                onClick={() => {
+                  setShowReplies(!showReplies);
+                  if (!showReplies) loadReplies();
+                }}
+              >
+                {`${comment.totalChildren} respostas`}
+              </span>
+            </>
+          )}
+        </div>
       )}
     </div>
   );

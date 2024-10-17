@@ -7,14 +7,16 @@ import { deletePostById } from '@/api/post-endpoint.service';
 import { useGroup } from '@/context/GroupContext';
 import CommentList from './CommentList';
 import PostActions from './PostActions';
+import { PostModel } from '@/schema/posts.model';
+import { getTimeSincePost } from '@/utils/getTimeSincePost';
 
 interface PostItemProps {
-  post: Post;
+  post: PostModel;
   onDelete: () => void;
 }
 
 export default function PostItem({ post, onDelete }: PostItemProps) {
-  const { _id, author, content, media, created_at, likes, totalChildren } = post;
+  const { _id, author, content, media, created_at, totalChildren } = post;
   const [liked, setLiked] = useState(false);
   const { user } = useGroup();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -50,11 +52,12 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
           />
           <div>
             <h3 className="font-bold">{author.name}</h3>
-            <p className="text-sm text-gray-400">
-              {new Date(created_at).toLocaleString()}
-            </p>
           </div>
         </div>
+        <div className='flex items-center'>
+        <span className="text-sm text-gray-400">
+              {getTimeSincePost(created_at)}
+            </span>
         {user && user._id === author._id && (
           <div>
             <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
@@ -76,6 +79,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
             </Menu>
           </div>
         )}
+        </div>
       </div>
 
       {/* Conteúdo do Post */}
@@ -88,13 +92,13 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
             <div key={idx} className="w-full">
               {item.type === 'image' ? (
                 <img
-                  src={item.url || item.base64}
+                  src={item.base64}
                   alt="Post media"
                   className="rounded-lg"
                 />
               ) : (
                 <video controls className="rounded-lg w-full">
-                  <source src={item.url || item.base64} type="video/mp4" />
+                  <source src={item.base64} type="video/mp4" />
                 </video>
               )}
             </div>
@@ -104,7 +108,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
 
       {/* Ações do Post */}
       <PostActions
-        likes={likes}
+        likes={0}
         liked={liked}
         onLike={handleLike}
         totalComments={totalChildren}

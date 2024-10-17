@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState, forwardRef } from 'react';
 import { fetchPosts } from '@/api/post-endpoint.service';
-import PostItem from './PostItem';
 import { PostModel } from '@/schema/posts.model';
 import { useGroup } from '@/context/GroupContext';
+import PostItem from '../PostItem/PosItem';
 
 const Feed = forwardRef((props, ref) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
