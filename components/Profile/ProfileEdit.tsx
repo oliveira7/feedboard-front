@@ -15,14 +15,13 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
   p: 4,
   borderRadius: '8px',
 };
 
 export default function ProfileEdit({
-  modalOpen, 
+  modalOpen,
   handleModalClose
 }: {
   modalOpen: boolean,
@@ -39,7 +38,7 @@ export default function ProfileEdit({
   const [description, setDescription] = useState('');
   const [avatarBase64, setAvatarBase64] = useState('');
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // Referência para o input de imagem
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -78,7 +77,13 @@ export default function ProfileEdit({
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await updateUser(user!._id, { name, course, description, avatar_base64: avatarBase64 });
+      let response;
+      if (user?.avatar_base64 !== avatarBase64) {
+        response = await updateUser(user!._id, { name, course, description, avatar_base64: avatarBase64 });
+      } else {
+        response = await updateUser(user!._id, { name, course, description });
+      }
+      console.log(response);
       if (response) {
         setSnackbarOpen(true);
       }
@@ -133,7 +138,7 @@ export default function ProfileEdit({
               type="file"
               onChange={handleImageUpload}
               ref={fileInputRef}
-              style={{ display: 'none' }} 
+              style={{ display: 'none' }}
             />
 
             <h2 className="text-xl font-bold mt-4">Editar Perfil</h2>

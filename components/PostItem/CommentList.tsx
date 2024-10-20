@@ -1,11 +1,13 @@
-// CommentList.tsx
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { fetchPosts, deletePostById, newPost } from '@/api/post-endpoint.service';
 import CommentItem from './CommentItem';
 import { UserModel } from '@/schema/user.model';
 import { PostModel } from '@/schema/posts.model';
-import { ExpandCircleDown, ExpandMore, OpenInFull } from '@mui/icons-material';
+import { ExpandCircleDown, ExpandMore } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
+import { useGroup } from '@/context/GroupContext'; // Usando o contexto para o estado global
 
 interface CommentListProps {
   postId: string;
@@ -19,10 +21,7 @@ export default function CommentList({ postId, user }: CommentListProps) {
   const [hasMoreComments, setHasMoreComments] = useState(true);
   const [loadingComments, setLoadingComments] = useState(false);
 
-  useEffect(() => {
-    // Carregar os comentários iniciais
-    loadComments(true);
-  }, []);
+  const { expandedCommentsByPost, toggleExpandComment } = useGroup(); 
 
   const loadComments = async (reset = false) => {
     if (loadingComments || !hasMoreComments) return;
@@ -31,8 +30,7 @@ export default function CommentList({ postId, user }: CommentListProps) {
 
     try {
       const currentPage = reset ? 1 : page;
-
-      const response = await fetchPosts(currentPage, 3, undefined, postId);
+      const response = await fetchPosts(currentPage, 2, undefined, postId);
       if (response && response.posts) {
         setComments((prev) =>
           reset ? response.posts : [...prev, ...response.posts]
@@ -97,43 +95,59 @@ export default function CommentList({ postId, user }: CommentListProps) {
     }
   };
 
+  useEffect(() => { 
+    if (expandedCommentsByPost[postId]) {
+      loadComments(true);
+    } 
+  }, [expandedCommentsByPost]);
+
   return (
     <div>
-      {comments.map((comment) => (
-        <div key={comment._id} className="flex items-start space-x-2 mb-4">
-          <div className='w-full'>
-            <CommentItem comment={comment} user={user} onDelete={() => handleDeleteComment(comment._id)} />
+      {expandedCommentsByPost[postId] && ( 
+        <>
+          {comments.map((comment) => (
+            <div key={comment._id} className="flex items-start space-x-2 mb-2">
+              <div className='w-full'>
+                <CommentItem
+                  comment={comment}
+                  user={user}
+                  onDelete={() => handleDeleteComment(comment._id)}
+                />
+              </div>
+            </div>
+          ))}
+
+          {hasMoreComments && (
+            <div className='w-full flex justify-center ml-2'>
+              <button onClick={() => loadComments()} className="text-sm text-gray-200 hover:text-highlight active:text-highlight">
+                {loadingComments ? <CircularProgress size={24} /> : <ExpandMore width={100} height={100} />}
+              </button>
+            </div>
+          )}
+
+          <div className="flex items-center space-x-2 mt-4">
+            {user?.avatar_base64 && (
+              <img
+                src={user?.avatar_base64}
+                alt={user?.name}
+                className="w-8 h-8 rounded-full"
+              />
+            )}
+            <>
+              <input
+                type="text"
+                placeholder="Escreva um comentário..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                className="flex-1 bg-primary-100 p-2 rounded-lg text-sm outline-none"
+              />
+              <button onClick={handleAddComment} className="text-highlight">
+                Comentar
+              </button>
+            </>
           </div>
-        </div>
-      ))}
-
-      {hasMoreComments && (
-        <div className='w-full flex justify-center ml-2'>
-        <button onClick={() => loadComments()} className="text-sm  text-gray-200 hover:text-highlight active:text-highligh">
-          {loadingComments ? <CircularProgress /> : <ExpandMore width={40} height={40} />}
-        </button>
-        </div>
+        </>
       )}
-
-      <div className="flex items-center space-x-2 mt-4">
-        {user?.avatar_base64 && (
-          <img
-            src={user?.avatar_base64}
-            alt={user?.name}
-            className="w-8 h-8 rounded-full"
-          />
-        )}
-        <input
-          type="text"
-          placeholder="Escreva um comentário..."
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-          className="flex-1 bg-primary-100 p-2 rounded-lg text-sm outline-none"
-        />
-        <button onClick={handleAddComment} className="text-highlight">
-          Comentar
-        </button>
-      </div>
     </div>
   );
 }

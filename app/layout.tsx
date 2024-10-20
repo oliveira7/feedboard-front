@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import RouteLoader from "./loading";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { CustomThemeProvider } from "@/context/ThemeContext";
+import { SnackbarProvider } from "@/context/SnackBarContext";
 
 
 const montserrat = Montserrat({
@@ -26,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt">
-      <body className={`h-full w-full ${montserrat.className}`}>
+      <body className="h-full w-full">
         <AppRouterCacheProvider>
           <CustomThemeProvider>
             <Suspense fallback={<RouteLoader />}>

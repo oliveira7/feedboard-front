@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useState } from "react";
-import { Button, TextField, IconButton, InputAdornment, Snackbar, Alert, CircularProgress, InputLabel, MenuItem, Select, FormHelperText, FormControl, SelectChangeEvent } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Snackbar, Alert, SelectChangeEvent } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
-import logo from '../public/assets/logo.svg';
-import Image from "next/image";
 import Cookies from 'js-cookie';
 import { login } from "@/api/login-endpoint.service";
 import { register } from "@/api/user-endpoint.service";
 import { Role } from "@/schema/user.model";
-interface LoginProps { 
-  refParam?: string;
+import LoginForm from "./Login/LoginForm";
+import RegisterForm from "./Login/RegisterForm";
+import ForgotPassword from "./Login/ForgotPassword";
+interface LoginProps {
+  token?: string;
 }
 
-const LoginPage = ({refParam}: LoginProps) => {
+const LoginPage = ({ token }: LoginProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [auth, setAuth] = useState({
@@ -30,6 +30,13 @@ const LoginPage = ({refParam}: LoginProps) => {
   const router = useRouter();
   const path = usePathname();
   const [role, setRole] = useState<Role | ''>('');
+  const [forgotPassword, setForgotPassword] = useState<boolean>(false);
+  const [authPassword, setAuthPassword] = useState({ 
+    token:'',
+    email: '', 
+    newPassword: '', 
+    confirmPassword: ''
+  });
 
   const handleChange = (event: SelectChangeEvent<Role>) => {
     setRole(event.target.value as Role);
@@ -42,7 +49,7 @@ const LoginPage = ({refParam}: LoginProps) => {
     event.preventDefault();
   };
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setErrorMessage("");
     setLoading(true);
@@ -64,7 +71,7 @@ const LoginPage = ({refParam}: LoginProps) => {
     }
   };
 
-  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setErrorMessage("");
     setLoading(true);
@@ -80,9 +87,10 @@ const LoginPage = ({refParam}: LoginProps) => {
       const registerObj = {
         name: auth.name,
         email: auth.email,
-        // course: auth.course,
+        course: auth.course,
         password_hash: auth.password,
-        role: role
+        role: role,
+        token: token
       }
       const response = await register(registerObj);
       if (response) {
@@ -104,204 +112,39 @@ const LoginPage = ({refParam}: LoginProps) => {
 
   return (
     <div className="flex h-screen">
-      <div className="w-1/2 bg-gradient-to-br from-primary-light to-primary-dark flex justify-center items-center">
-        <div className="w-full flex flex-col justify-center items-center">
-          <Image src={logo} alt="logo" width={500} height={500} />
-        </div>
-      </div>
+      {!path.includes('cadastro') && !forgotPassword && (
+        <LoginForm 
+        handleLogin={handleLogin} 
+        setAuth={setAuth} auth={auth} 
+        loading={loading} 
+        showPassword={showPassword} 
+        handleClickShowPassword={handleClickShowPassword}
+        handleMouseDownPassword={handleMouseDownPassword} 
+        setForgotPassword={setForgotPassword}/>
+      )}
 
-      {!path.includes('cadastro') && (
-        <div className="w-1/2 bg-primary flex justify-center items-center relative">
-          <div className="bg-primary-50 p-10 rounded-lg shadow-2xl w-full max-w-md absolute">
-            <h2 className="text-3xl font-bold mb-6 text-center">Entrar</h2>
-            <div className="text-xs text-center pb-4">
-              Acompanhe as novidades do seu mundo acadêmico.
-            </div>
-
-            <form onSubmit={handleLogin}>
-              <div className="mb-4 mt-4">
-                <InputLabel className="block mb-2" htmlFor="email">Email</InputLabel>
-                <TextField
-                  id="email"
-                  type="email"
-                  variant="outlined"
-                  placeholder="Digite seu email"
-                  fullWidth
-                  className="mb-4"
-                  onChange={(e) => setAuth({ ...auth, email: e.target.value })}
-                />
-              </div>
-              <div className="mb-6">
-                <InputLabel className="block mb-2" htmlFor="password">Senha</InputLabel>
-                <TextField
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  variant="outlined"
-                  placeholder="Digite sua senha"
-                  fullWidth
-                  className="mb-4"
-                  onChange={(e) => setAuth({ ...auth, password: e.target.value })}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                className="bg-primary text-white p-2 rounded-lg hover:bg-primary-dark transition"
-              >
-                {loading ? <CircularProgress size={25} color="secondary" /> : "Entrar"}
-              </Button>
-              <p className="font-medium pt-2">
-                <a href="#" className="text-highlight mt-4">Esqueceu sua senha?</a>
-              </p>
-            </form>
-          </div>
-        </div>
+      {!path.includes('cadastro') && forgotPassword && ( 
+        <ForgotPassword 
+        loading={loading} 
+        showPassword={showPassword} 
+        handleClickShowPassword={handleClickShowPassword} 
+        handleMouseDownPassword={handleMouseDownPassword} authPassword={authPassword} setAuthPassword={setAuthPassword}/>
       )}
 
       {path.includes('cadastro') && (
-        <div className="w-full bg-primary flex justify-center items-center">
-          <div className="bg-primary-50 p-10 rounded-lg shadow-2xl w-full max-w-fit absolute">
-            <h2 className="text-3xl font-bold mb-6 text-center">Cadastro</h2>
-            <div className="text-xs text-center pb-4">
-              Inscreva-se e participe do mundo acadêmico.
-            </div>
-
-            <form onSubmit={handleRegister}>
-              <div className="flex w-full justify-around">
-                <div className="mb-4 mt-4">
-                  <InputLabel className="block mb-2" htmlFor="name">Nome</InputLabel>
-                  <TextField
-                    id="name"
-                    type="text"
-                    variant="outlined"
-                    placeholder="Digite seu nome"
-                    fullWidth
-                    className="mb-4"
-                    onChange={(e) => setAuth({ ...auth, name: e.target.value })}
-                  />
-                </div>
-                <div className="mb-4 mt-4">
-                  <InputLabel className="block mb-2" htmlFor="email">Email</InputLabel>
-                  <TextField
-                    id="email"
-                    type="email"
-                    variant="outlined"
-                    placeholder="Digite seu email"
-                    fullWidth
-                    className="mb-4"
-                    onChange={(e) => setAuth({ ...auth, email: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="flex w-full justify-around items-center">
-                <div className="w-2/5 mb-4 mt-4">
-                  <InputLabel className="block mb-2" htmlFor="course">Curso</InputLabel>
-                  <TextField
-                    id="course"
-                    type="text"
-                    variant="outlined"
-                    placeholder="Digite seu curso"
-                    fullWidth
-                    className="mb-4"
-                    onChange={(e) => setAuth({ ...auth, course: e.target.value })}
-                  />
-                </div>
-
-                <div className="w-2/5 mt-6">
-                  <FormControl fullWidth variant="outlined" margin="normal">
-                    <InputLabel id="role-label">Selecione o cargo</InputLabel>
-                    <Select
-                      labelId="role-label"
-                      id="role-select"
-                      label="Selecione o cargo"
-                      value={role}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={Role.STUDENT}>Estudante</MenuItem>
-                      <MenuItem value={Role.TEACHER}>Professor</MenuItem>
-                      <MenuItem value={Role.COORDINATOR}>Coordenador</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
-              </div>
-              <div className="flex w-full justify-around items-center">
-                <div className="mb-4 mt-4 w-2/5">
-                  <InputLabel className="block mb-2" htmlFor="password">Senha</InputLabel>
-                  <TextField
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    variant="outlined"
-                    placeholder="Digite sua senha"
-                    className="mb-4"
-                    onChange={(e) => setAuth({ ...auth, password: e.target.value })}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </div>
-
-                <div className="mb-4 mt-4 w-2/5">
-                  <InputLabel className="block mb-2" htmlFor="confirmPassword">Confirmar Senha</InputLabel>
-                  <TextField
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    variant="outlined"
-                    placeholder="Confirme sua senha"
-                    fullWidth
-                    className="mb-4"
-                    onChange={(e) => setAuth({ ...auth, confirmPassword: e.target.value })}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={handleClickShowConfirmPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </div>
-              </div>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                className="bg-primary text-white p-2 rounded-lg hover:bg-primary-dark transition"
-              >
-                {loading ? <CircularProgress size={25} color="secondary" /> : "Cadastrar"}
-              </Button>
-            </form>
-          </div>
-        </div>
+        <RegisterForm
+        handleRegister={handleRegister}
+        setAuth={setAuth}
+        auth={auth}
+        role={role}
+        handleChange={handleChange}
+        loading={loading}
+        showPassword={showPassword}
+        showConfirmPassword={showConfirmPassword}
+        handleClickShowPassword={handleClickShowPassword}
+        handleClickShowConfirmPassword={handleClickShowConfirmPassword}
+        handleMouseDownPassword={handleMouseDownPassword}
+      />      
       )}
 
       <Snackbar

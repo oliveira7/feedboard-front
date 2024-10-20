@@ -10,16 +10,22 @@ import RightBar from './RightBar';
 import { UserModel } from '@/schema/user.model';
 import { useGroup } from '@/context/GroupContext';
 import Feed from './Feed';
+import { useRouter } from 'next/navigation';
+import { useSnackbar } from '@/context/SnackBarContext';
 
 export default function HomeContent() {
   const [user, setUser] = useState<UserModel>();
   const feedRef = useRef<any>(null);
   const { setUserLog } = useGroup();
+  const router = useRouter();
+  const { showError } = useSnackbar();
+
 
   const getUser = async () => {
     const token = Cookies.get('token');
     if (!token) {
-      throw new Error('Token is undefined');
+      handleLogout();
+      return;
     }
     const decoded = jwtDecode(token);
     const id = decoded.sub;
@@ -27,11 +33,15 @@ export default function HomeContent() {
       const response = await getUserById(id!)
       setUser(response);
       setUserLog(response);
-    } catch (e) {
-
-
+    } catch (e: any) {
+      showError(e.message)
     }
   }
+
+  const handleLogout = () => {
+    Cookies.remove('token');
+    router.push('/');
+  };
 
   useEffect(() => {
     getUser();

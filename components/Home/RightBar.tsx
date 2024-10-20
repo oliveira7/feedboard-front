@@ -6,14 +6,17 @@ import { GroupModel } from '@/schema/group.model';
 import React, { useEffect, useState } from 'react';
 import CreateGroupModal from '../Group/CreateGroupModal';
 import ManageMembersModal from '../Group/MembersGroupModal';
+import { AddCircleOutline, AddIcCallOutlined, ArrowBack } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 
 export default function RightBar() {
   const [groups, setGroups] = useState<GroupModel[]>([]);
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<GroupModel | null>(null);
+  const { user } = useGroup();
 
-  const { setSelectedGroup: setContextGroup, selectedGroup: selectedGroupFromContext, setGroupsContext } = useGroup();
+  const { setSelectedGroup: setContextGroup, selectedGroup: selectedGroupFromContext, setGroupsContext, setAtualizarFeed } = useGroup();
 
   const getGroupsAsync = async () => {
     try {
@@ -34,37 +37,54 @@ export default function RightBar() {
     setIsMembersModalOpen(true);
   };
 
+  const backToFeed = () => {
+    setContextGroup(null);
+    setAtualizarFeed(true);
+  }
+
   return (
     <>
-      <div className="w-full bg-primary-50 text-white rounded-lg shadow-lg p-4 h-fit">
+      <div className="w-full bg-primary-50  rounded-lg shadow-lg p-4 h-fit">
         <div className="mb-6">
-          <h3 className="text-lg font-bold mb-2 text-highlight">Feedboard Grupos</h3>
+          <div className="flex items-center w-full justify-between">
+            <h3 className="text-lg font-bold  text-highlight">Feedboard Grupos</h3>
+
+            <Tooltip title="Novo grupo" arrow>
+              <IconButton onClick={() => setIsCreateGroupModalOpen(true)}
+              >
+                <AddCircleOutline className="text-highlight" />
+              </IconButton>
+            </Tooltip>
+          </div>
+          <hr className="border-primary-100 pt-4 border-gray-300" />
           <ul className="space-y-3">
-            {groups.map((item, index) => (
-              <li key={index} className="text-sm" onClick={() => setContextGroup(item._id)}>
+            {groups?.map((item, index) => (
+              <li key={index} className="text-sm " onClick={() => setContextGroup(item._id)}>
                 <a
-                  className={`hover:underline font-bold cursor-pointer ${
-                    selectedGroupFromContext === item._id ? 'text-highlight' : 'text-white'
-                  }`}
+                  className={`hover:underline font-bold cursor-pointer ${selectedGroupFromContext === item._id ? 'text-highlight' : 'text-default'
+                    }`}
                 >
                   {item.name}
                 </a>
-                <p className="text-gray-400">{item.members?.length ?? '0'} • membros</p>
+                <p className="text-gray-300 text-sx">{item.members?.length ?? '0'} • membros</p>
+                { user?._id === item.created_by && (
                 <button
                   onClick={() => openMembersModal(item)}
                   className="text-highlight-dark text-xs hover:underline"
                 >
                   Gerenciar membros
                 </button>
+                 )}
               </li>
             ))}
           </ul>
-          <a
-            onClick={() => setIsCreateGroupModalOpen(true)}
-            className="text-highlight-dark hover:underline text-sm mt-3 block cursor-pointer"
-          >
-            + Novo grupo
-          </a>
+        </div>
+        <div onClick={backToFeed} className="flex cursor-pointer items-center text-sm hover:text-highlight">
+          <ArrowBack sx={{
+            fontSize: 16,
+            marginRight: 1,
+          }} />
+          Voltar para o feedboard
         </div>
       </div>
 

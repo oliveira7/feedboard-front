@@ -5,6 +5,7 @@ import { fetchPosts } from '@/api/post-endpoint.service';
 import { PostModel } from '@/schema/posts.model';
 import { useGroup } from '@/context/GroupContext';
 import PostItem from '../PostItem/PosItem';
+import { useSnackbar } from '@/context/SnackBarContext';
 
 const Feed = forwardRef((props, ref) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
@@ -13,45 +14,53 @@ const Feed = forwardRef((props, ref) => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const { setAtualizarFeed, atualizarFeed, selectedGroup } = useGroup();
+  const { showError } = useSnackbar();
+
 
   const loadPosts = async (reset = false) => {
-    if (loading) return;
+    try {
 
-    setLoading(true);
-
-    const currentLimit = reset ? 5 : limit;
-
-    const { posts: fetchedPosts, totalPages } = await fetchPosts(1, currentLimit, selectedGroup || null);
-    console.log(fetchedPosts);
-
-    if (fetchedPosts && fetchedPosts.length > 0) {
-      setPosts(fetchedPosts);
-
-      setHasMore(currentLimit < totalPages * 5); 
-    } else {
-      setHasMore(false);
+      if (loading) return;
+  
+      setLoading(true);
+  
+      const currentLimit = reset ? 5 : limit;
+  
+      const { posts: fetchedPosts, totalPages } = await fetchPosts(1, currentLimit, selectedGroup || null);
+      console.log(fetchedPosts);
+  
+      if (fetchedPosts && fetchedPosts.length > 0) {
+        setPosts(fetchedPosts);
+  
+        setHasMore(currentLimit < totalPages * 5);
+      } else if (fetchedPosts && selectedGroup && fetchedPosts.length == 0) {
+        setPosts([]);
+        setHasMore(false);
+      } else {
+        setHasMore(false);
+      }
+  
+      setLoading(false);
+      setInitialLoad(false);
+    } catch (e: any) {
+      showError(e.message)
     }
-
-    setLoading(false);
-    setInitialLoad(false);
   };
 
   const resetAndLoadPosts = async () => {
-    setHasMore(true);  
-    setInitialLoad(true);  
+    setHasMore(true);
+    setInitialLoad(true);
     setLimit(5);
     setAtualizarFeed(false);
     await loadPosts(true);
   };
 
   const handleDelete = async () => {
-    await loadPosts(true); 
+    await loadPosts(true);
   };
 
   useEffect(() => {
-    if (selectedGroup !== undefined) {
       resetAndLoadPosts();
-    }
   }, [selectedGroup]);
 
   useEffect(() => {
@@ -63,8 +72,8 @@ const Feed = forwardRef((props, ref) => {
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2 && hasMore && !loading) {
-        setLimit((prevLimit) => prevLimit + 5); 
-        loadPosts(); 
+        setLimit((prevLimit) => prevLimit + 5);
+        loadPosts();
       }
     };
 
@@ -74,7 +83,7 @@ const Feed = forwardRef((props, ref) => {
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      {initialLoad ? ( 
+      {initialLoad ? (
         <div>Carregando...</div>
       ) : (
         posts.map((post) => (

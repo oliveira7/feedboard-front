@@ -1,8 +1,8 @@
 // PostItem.tsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ThumbUp, Comment, MoreVert } from '@mui/icons-material';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { ThumbUp, Comment, MoreVert, MenuOutlined } from '@mui/icons-material';
+import { Divider, IconButton, Menu, MenuItem } from '@mui/material';
 import { deletePostById } from '@/api/post-endpoint.service';
 import { useGroup } from '@/context/GroupContext';
 import CommentList from './CommentList';
@@ -40,9 +40,8 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-primary-50 p-4 rounded-lg w-full max-w-xl shadow-md"
+      className="bg-primary-50 p-6 rounded-lg w-full max-w-xl shadow-md"
     >
-      {/* Cabeçalho do Post */}
       <div className="flex items-center mb-4 justify-between">
         <div className="flex items-center">
           <img
@@ -55,13 +54,13 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
           </div>
         </div>
         <div className='flex items-center'>
-        <span className="text-sm text-gray-400">
+        <span className="text-sm">
               {getTimeSincePost(created_at)}
             </span>
         {user && user._id === author._id && (
           <div>
             <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-              <MoreVert />
+              <MenuOutlined  />
             </IconButton>
             <Menu
               anchorEl={anchorEl}
@@ -82,10 +81,8 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
         </div>
       </div>
 
-      {/* Conteúdo do Post */}
-      <p className="mb-4">{content}</p>
+      <p className="mb-4 ml-4 mr-4">{content}</p>
 
-      {/* Mídia do Post */}
       {media && media.length > 0 && (
         <div className="flex space-x-2 mb-4">
           {media.map((item, idx) => (
@@ -106,15 +103,14 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
         </div>
       )}
 
-      {/* Ações do Post */}
       <PostActions
         likes={0}
         liked={liked}
         onLike={handleLike}
         totalComments={totalChildren}
+        postId={_id}
       />
 
-      {/* Lista de Comentários */}
       <CommentList postId={_id} user={user} />
     </motion.div>
   );

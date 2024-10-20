@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
-import { MoreVert } from '@mui/icons-material';
+import { MenuOutlined, MoreVert } from '@mui/icons-material';
 import { fetchPosts, newPost } from '@/api/post-endpoint.service';
 import ReplyList from './ReplyList';
 import { UserModel } from '@/schema/user.model';
@@ -10,7 +10,7 @@ import { getTimeSincePost } from '@/utils/getTimeSincePost';
 interface CommentItemProps {
   comment: PostModel;
   user: UserModel;
-  onDelete: () => void; // Função para deletar comentário
+  onDelete: () => void;
 }
 
 export default function CommentItem({ comment, user, onDelete }: CommentItemProps) {
@@ -90,50 +90,54 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
   };
 
   return (
-    <div className="bg-primary-100 p-4 rounded-lg mb-4 shadow-md">
-      <div className="flex items-start space-x-4 justify-between">
-        <div className="flex items-start space-x-3">
-          {comment.author.avatar_base64 && (
+    <div className="bg-primary-50 p-4 rounded-lg mb-4 shadow-md">
+      <div className="flex w-full space-x-4">
+        <div className="flex items-start space-x-3 w-full justify-between">
+          <div className='flex items-center'>
+            {comment.author.avatar_base64 && (
             <img
               src={comment.author.avatar_base64}
               alt={comment.author.name}
               className="w-10 h-10 rounded-full"
             />
           )}
+            <div className="text-sm font-bold text-highlight ml-2">{comment.author.name}</div>
+          </div>
 
-          <div>
-            <p className="text-sm font-bold text-highlight">{comment.author.name}</p>
-            <p className="text-sm mt-2">{comment.content}</p>
+          <div className="flex">
+            <div>
+              <div className='flex items-center'>
+                <span className="text-xs ">{getTimeSincePost(comment.created_at)}</span>
+                {user && user._id === comment.author._id && (
+                  <div>
+                    <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+                      <MenuOutlined style={{
+                        width: '15px'
+                      }} />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={() => setAnchorEl(null)}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          onDelete();
+                          setAnchorEl(null);
+                        }}
+                      >
+                        Excluir comentário
+                      </MenuItem>
+                    </Menu>
+                  </div>
+                )}
+              </div></div>
           </div>
         </div>
-        <div className='flex items-center'>
-
-          <span className="text-xs text-gray-500">{getTimeSincePost(comment.created_at)}</span>
-          {user && user._id === comment.author._id && (
-            <div>
-              <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-                <MoreVert />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
-              >
-                <MenuItem
-                  onClick={() => {
-                    onDelete();
-                    setAnchorEl(null);
-                  }}
-                >
-                  Excluir comentário
-                </MenuItem>
-              </Menu>
-            </div>
-          )}
-        </div>
       </div>
+      <div className="text-sm mt-2">{comment.content}</div>
 
-      {showReplies && comment.totalChildren > 0 && <ReplyList replies={replies} />}
+      {showReplies && comment.totalChildren > 0 && <ReplyList replies={replies} user={user} onDeleteReply={onDelete} />}
 
       {showReplyInput ? (
         <div className="flex items-center space-x-2 mt-2">
@@ -142,7 +146,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
             placeholder="Escreva uma resposta..."
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            className="flex-1 bg-primary-200 p-2 rounded-lg text-sm outline-none"
+            className="flex-1 bg-primary-100 p-2 rounded-lg text-sm outline-none"
           />
           <button onClick={handleAddReply} className="text-highlight">
             Responder
@@ -150,22 +154,22 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         </div>
       ) : (
         <div className='flex items-center mt-4 ml-[50px]'>
-          <a className="text-sm text-gray-400 mt-1 cursor-pointer hover:text-highlight active:text-highlight" >
+          <a className="text-sm  mt-1 cursor-pointer hover:text-highlight active:text-highlight" >
             Gostei
           </a>
-          <span className='ml-2 mr-2 text-gray-500'>|</span>
+          <span className='ml-2 mr-2 '>|</span>
           <a
             onClick={() => setShowReplyInput(true)}
-            className="text-sm text-gray-400 mt-1 cursor-pointer hover:text-highlight active:text-highlight"
+            className="text-sm  mt-1 cursor-pointer hover:text-highlight active:text-highlight"
           >
-             Responder
+            Responder
           </a>
 
           {comment.totalChildren > 0 && (
             <>
               <div className="w-1 h-1 bg-gray-300 rounded-full inline-block mx-2 mt-1"></div>
               <span
-                className="text-xs  mt-1 cursor-pointer text-gray-500 hover:text-highlight active:text-highlight"
+                className="text-xs  mt-1 cursor-pointer  hover:text-highlight active:text-highlight"
                 onClick={() => {
                   setShowReplies(!showReplies);
                   if (!showReplies) loadReplies();

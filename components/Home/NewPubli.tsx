@@ -8,7 +8,6 @@ import { newPost } from "@/api/post-endpoint.service";
 import { CreatePostModel } from "../../schema/posts.model";
 import { useGroup } from "@/context/GroupContext";
 import Image from "next/image";
-import { GroupModel } from "@/schema/group.model";
 
 export default function NewPubli() {
   const [openModal, setOpenModal] = useState(false);
@@ -80,10 +79,10 @@ export default function NewPubli() {
       }
 
       <div
-        className="bg-primary-100 text-gray-400 p-2 w-full rounded-lg cursor-pointer"
+        className="bg-primary-100 p-2 w-full rounded-lg cursor-pointer text-gray-400"
         onClick={handleOpenModal}
       >
-        Comece uma publicação
+        O que você está pensando? 🤔
       </div>
 
       <Modal

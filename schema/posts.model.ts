@@ -1,7 +1,7 @@
 export interface CreatePostModel {
     author: string, 
-    name: string, 
-    avatar_base64: string;
+    name?: string, 
+    avatar_base64?: string;
     group_id?: string;
     content: string;
     media?: { base64: string; type: 'image' | 'video' }[];

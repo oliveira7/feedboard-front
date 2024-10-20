@@ -31,7 +31,6 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
   const [loadingMembers, setLoadingMembers] = useState(true);
   const { user } = useGroup();
 
-  // Função para buscar usuários com debounce
   const fetchUsers = async (query: string) => {
     try {
       setLoadingUsers(true);
@@ -51,7 +50,6 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
     []
   );
 
-  // Atualiza os membros do grupo
   const updateGroupMembers = async (updatedMembers: UserModel[]) => {
     try {
       const updatedData = { members: updatedMembers };
@@ -62,7 +60,6 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
     }
   };
 
-  // Adiciona um novo membro ao grupo
   const handleAddMember = async (member: any) => {
     if (!members.find((m) => m._id === member.id)) {
       const updatedMembers = [...members, { _id: member.id, name: member.name }];
@@ -70,17 +67,14 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
     }
   };
 
-  // Remove um membro do grupo
   const handleRemoveMember = async (memberId: string) => {
     const updatedMembers = members.filter((member) => member._id !== memberId);
     await updateGroupMembers(updatedMembers);
   };
 
-  // Função para buscar os membros do grupo
   const fetchGroupById = async () => {
     try {
       const response = await getGroupById(group._id);
-      console.log('Response data:', response);
 
       const groupData = Array.isArray(response) ? response[0] : response;
 
@@ -97,7 +91,6 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
     }
   };
 
-  // Carrega os membros do grupo ao abrir o modal
   useEffect(() => {
     if (isModalOpen) {
       setLoadingMembers(true);
@@ -105,7 +98,6 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
     }
   }, [isModalOpen]);
 
-  // Função para traduzir os roles para português
   const translateRole = (role: Role) => {
     switch (role) {
       case Role.STUDENT:
@@ -132,72 +124,75 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
 
         <h2 className="text-lg font-bold mb-4">Gerenciar Membros: {group.name}</h2>
 
-        <div className="mb-4">
+        <div className="mb-4 ">
           <h3 className="font-semibold mb-2">Membros Atuais</h3>
           {loadingMembers ? (
             <div className="flex justify-center">
               <CircularProgress />
             </div>
           ) : (
-            <ul className="space-y-4">
+            <ul className="space-y-4 ">
               {members.length > 0 ? (
                 members.map((member) => (
-                  <li key={member._id} className="flex justify-between items-center p-4 shadow rounded-lg">
+                  <li key={member._id} className="flex justify-between items-center p-4 shadow rounded-lg bg-primary-50 overflow-auto">
                     <div className="flex items-center space-x-4 p-4">
                       <div>
-                        <span className="font-bold">{member.name || 'Nome não disponível'}                      {member._id === group.created_by && (
-                          <Star fontSize="small" className="text-yellow-500" />
-                        )}</span>
-                        <p className="text-sm text-gray-300">{translateRole(member.role as Role)}</p>
-                        <p className="text-sm text-gray-300">{member.course || 'Curso não disponível'}</p>
+                        <span className="font-bold">{member.name || 'Nome não disponível'}
+                          {member._id === group.created_by && (
+                            <Star fontSize="small" className="text-yellow-500" />
+                          )}</span>
+                        <p className="text-sm text-scondary">{translateRole(member.role as Role)}</p>
+                        <p className="text-sm text-scondary">{member.course || 'Curso não disponível'}</p>
                       </div>
                     </div>
                     {user._id === group.created_by && (
-                    <button
-                      onClick={() => handleRemoveMember(member._id)}
-                      className="text-red-500 text-sm hover:underline"
-                    >
-                      Remover
-                    </button>
-                       )}
+                      <button
+                        onClick={() => handleRemoveMember(member._id)}
+                        className="text-red-500 text-sm hover:underline"
+                      >
+                        Remover
+                      </button>
+                    )}
 
                   </li>
                 ))
               ) : (
-                <p className="text-gray-500">Nenhum membro encontrado.</p>
+                <p className="">Nenhum membro encontrado.</p>
               )}
             </ul>
           )}
         </div>
-
-        <div className="mb-4">
-          <Autocomplete
-            options={userOptions}
-            getOptionLabel={(option) => option.name}
-            loading={loadingUsers}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Adicionar membro"
-                variant="outlined"
-                size="small"
-                fullWidth={false} // Reduz o tamanho do input
-                style={{ width: '300px' }} // Define a largura
-                onChange={(e) => debouncedFetchUsers(e.target.value)}
-              />
-            )}
-            onChange={(event, newValue) => {
-              setNewMember(newValue ? { id: newValue._id, name: newValue.name } : null);
-            }}
-          />
-          <button
-            onClick={() => newMember && handleAddMember(newMember)}
-            className="bg-primary-500 text-highlight px-4 py-1 rounded-lg mt-2"
-          >
-            Adicionar Membro
-          </button>
-        </div>
+        {user._id === group.created_by && (
+          <div className="mb-4 flex justify-center flex-col items-center">
+            <Autocomplete
+              options={userOptions}
+              getOptionLabel={(option) => option.name}
+              loading={loadingUsers}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Adicionar membro"
+                  variant="outlined"
+                  size="small"
+                  fullWidth={false}
+                  style={{ width: '300px' }}
+                  onChange={(e) => debouncedFetchUsers(e.target.value)}
+                />
+              )}
+              onChange={(event, newValue) => {
+                setNewMember(newValue ? { id: newValue._id, name: newValue.name } : null);
+              }}
+            />
+            <button
+              onClick={() => newMember && handleAddMember(newMember)}
+              className="bg-primary-500 text-highlight px-4 py-1 rounded-lg mt-2"
+            >
+              Adicionar Membro
+            </button>
+          </div>
+        )}
       </div>
+
     </div>
   );
 }

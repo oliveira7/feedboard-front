@@ -1,19 +1,19 @@
 'use client';
 
-import { useParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Login from "@/components/Login";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 
 export default function Cadastro() {
-  const router = useRouter();
-  const query = useRef();
-  const query2 = useParams()
-  const params = useParams<{ tag: string; item: string }>()
+  const searchParams = useSearchParams();
+  const [token, setToken] = useState("");
 
+  useEffect(() => {
+    const tokenFromURL = searchParams.get("token");
+    if (tokenFromURL) {
+      setToken(tokenFromURL);
+    }
+  }, [searchParams]);
 
-  console.log(query.current);
-  console.log(query2);
-  console.log(params);
-
-  return <Login refParam={query.current} />;
+  return <Login token={token} />;
 }

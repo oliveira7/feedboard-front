@@ -4,14 +4,14 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #4C0070;
+  --foreground: #c0c0c0;
   --scrollbar-bg: #e0e0e0;
   --scrollbar-thumb: #c0c0c0;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #c0c0c0;
     --foreground: #ededed;
     --scrollbar-bg: #2a2a2a;
     --scrollbar-thumb: #505050; 
@@ -49,3 +49,16 @@ body {
     text-wrap: balance;
   }
 }
+
+input:-webkit-autofill {
+  background-color: transparent !important;
+  box-shadow: 0 0 0 1000px #F5F5F5 inset !important;
+  -webkit-text-fill-color: text-secondary !important;
+  border: none !important;
+  outline: none !important;
+}
+
+body {
+  @apply text-secondary;
+}
+

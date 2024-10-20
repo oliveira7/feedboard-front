@@ -17,22 +17,22 @@ const ThemeContext = createContext<ThemeContextType>({
 
 const lightTheme = createTheme({
   palette: {
-    mode: "dark",
+    mode: "light",
     primary: {
-      light: "#4CAF50",
-      main: "#388E3C",
-      dark: "#1B5E20",
+      light: "#4CAF50", // Verde claro
+      main: "#388E3C",  // Verde principal
+      dark: "#1B5E20",  // Verde mais escuro
     },
     secondary: {
-      main: "#F1F1F1",
+      main: "#F1F1F1", // Cor de fundo secundária clara
     },
     background: {
-      default: "#212121",
-      paper: "#333333",
+      default: "#FFFFFF", // Fundo branco
+      paper: "#F5F5F5",   // Papel mais claro para áreas elevadas
     },
     text: {
-      primary: "#FFFFFF",
-      secondary: "#E0E0E0",
+      primary: "#333333",  // Cor de texto principal em fundo claro
+      secondary: "#666666", // Cor de texto secundário
     },
   },
   components: {
@@ -41,13 +41,13 @@ const lightTheme = createTheme({
         root: {
           borderRadius: 12,
           padding: "8px 16px",
-          backgroundColor: "#388E3C",
+          backgroundColor: "#388E3C", // Verde principal
           "&:hover": {
-            backgroundColor: "#4CAF50",
+            backgroundColor: "#4CAF50", // Verde claro no hover
           },
         },
         contained: {
-          color: "#FFFFFF",
+          color: "#FFFFFF", // Cor do texto no botão
         },
       },
       defaultProps: {
@@ -61,14 +61,23 @@ const lightTheme = createTheme({
           "& .MuiOutlinedInput-root": {
             borderRadius: "20px",
             "& fieldset": {
-              borderColor: "#388E3C",
+              borderColor: "#388E3C", // Borda inicial
             },
             "&:hover fieldset": {
-              borderColor: "#4CAF50",
+              borderColor: "#4CAF50", // Borda no hover
             },
             "&.Mui-focused fieldset": {
-              borderColor: "#4CAF50",
+              borderColor: "#4CAF50", // Borda quando o campo está focado
             },
+            "& input": {
+              color: "#333333", // Texto digitado no input
+            },
+          },
+          "& .MuiInputLabel-root": {
+            color: "#666666", // Cor da label
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#388E3C", // Cor da label quando focada
           },
         },
       },
@@ -76,22 +85,45 @@ const lightTheme = createTheme({
     MuiSelect: {
       styleOverrides: {
         root: {
-          borderRadius: "20px", 
+          borderRadius: "20px",
           "& .MuiOutlinedInput-root": {
             borderRadius: "20px",
             "& fieldset": {
-              borderColor: "#388E3C",
+              borderColor: "#388E3C", // Borda inicial
             },
             "&:hover fieldset": {
-              borderColor: "#4CAF50",
+              borderColor: "#4CAF50", // Borda no hover
             },
             "&.Mui-focused fieldset": {
-              borderColor: "#4CAF50",
+              borderColor: "#4CAF50", // Borda focada
             },
+            "& input": {
+              color: "#333333", // Texto no input do select
+            },
+          },
+          "& .MuiInputLabel-root": {
+            color: "#666666", // Cor da label
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#388E3C", // Cor da label quando focada
           },
         },
       },
     },
+    MuiSvgIcon: {
+      styleOverrides: {
+        root: {
+          fontSize: "1rem",
+        },
+      },
+    },
+    MuiModal: {
+      styleOverrides: {
+        root: {
+          border: "1px solid #388E3C"
+        },
+      },
+    }
   },
 });
 
