@@ -3,12 +3,20 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token');
+  const { pathname } = request.nextUrl;
 
-  if (token && request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/home', request.url));
+  if (token && pathname === '/') {
+    return NextResponse.redirect(new URL('/privado/home', request.url));
   }
 
-  if (!token && request.nextUrl.pathname === '/home') {
+  if (!token && pathname.startsWith('/privado')) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  const validRoutes = ['/', '/cadsatro', '/privado/home', '/privado/usuario/[id]'];
+  if (!validRoutes.includes(pathname) && pathname.startsWith('/privado')) {
+    return NextResponse.redirect(new URL('/privado/home', request.url));
+  } else if (!validRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -16,5 +24,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/home'],
+  matcher: ['/', '/privado/:path*'],
 };

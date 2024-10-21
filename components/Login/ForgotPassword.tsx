@@ -5,7 +5,6 @@ import Image from "next/image";
 import logo from '../../public/assets/logo.svg';
 
 interface ForgotPasswordProps {
-  handleSubmit: (e: React.FormEvent) => void;
   handleSendToken: () => void;
   setAuthPassword: React.Dispatch<React.SetStateAction<{ email: string; token: string; newPassword: string; confirmPassword: string }>>;
   authPassword: { email: string; token: string; newPassword: string; confirmPassword: string };
@@ -16,7 +15,6 @@ interface ForgotPasswordProps {
 }
 
 export default function ForgotPassword({
-  handleSubmit,
   handleSendToken,
   setAuthPassword,
   authPassword,
@@ -81,7 +79,7 @@ export default function ForgotPassword({
           )}
 
           {currentStep === 2 && (
-            <form onSubmit={handleSubmit}>
+            <form>
               <div className="text-xs text-center pb-4">
                 Digite o token que você recebeu no email e crie uma nova senha.
               </div>

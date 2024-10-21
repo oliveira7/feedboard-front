@@ -10,6 +10,7 @@ import { Role } from "@/schema/user.model";
 import LoginForm from "./Login/LoginForm";
 import RegisterForm from "./Login/RegisterForm";
 import ForgotPassword from "./Login/ForgotPassword";
+import { useSnackbar } from "@/context/SnackBarContext";
 interface LoginProps {
   token?: string;
 }
@@ -25,11 +26,10 @@ const LoginPage = ({ token }: LoginProps) => {
     confirmPassword: ''
   });
   const [errorMessage, setErrorMessage] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const path = usePathname();
-  const [role, setRole] = useState<Role | ''>('');
+  const [role, setRole] = useState<Role | null>(null);
   const [forgotPassword, setForgotPassword] = useState<boolean>(false);
   const [authPassword, setAuthPassword] = useState({ 
     token:'',
@@ -37,8 +37,9 @@ const LoginPage = ({ token }: LoginProps) => {
     newPassword: '', 
     confirmPassword: ''
   });
+  const { showError } = useSnackbar();
 
-  const handleChange = (event: SelectChangeEvent<Role>) => {
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setRole(event.target.value as Role);
   };
 
@@ -58,27 +59,24 @@ const LoginPage = ({ token }: LoginProps) => {
       const response = await login(auth.email, auth.password);
       if (response && response.access_token) {
         Cookies.set('token', response.access_token, { expires: 7, secure: true });
-        router.push("/home");
+        router.push("/privado/home");
       } else {
-        setErrorMessage("Usuário ou senha incorretos.");
-        setOpenSnackbar(true);
+        showError("Usuário ou senha incorretos.");
       }
     } catch (e) {
-      setErrorMessage("Usuário ou senha incorretos.");
-      setOpenSnackbar(true);
+      showError("Usuário ou senha incorretos.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRegister = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleRegister = async (e: React.FormEvent<Element>): Promise<void> => {
     e.preventDefault();
     setErrorMessage("");
     setLoading(true);
 
     if (auth.password !== auth.confirmPassword) {
-      setErrorMessage("As senhas não coincidem.");
-      setOpenSnackbar(true);
+      showError("As senhas não coincidem.");
       setLoading(false);
       return;
     }
@@ -89,33 +87,45 @@ const LoginPage = ({ token }: LoginProps) => {
         email: auth.email,
         course: auth.course,
         password_hash: auth.password,
-        role: role,
+        role: role ?? '',
         token: token
       }
       const response = await register(registerObj);
       if (response) {
         await login(auth.email, auth.password);
-        router.push("/home");
+        router.push("/privado/home");
       } else {
-        setErrorMessage("Erro ao realizar o cadastro.");
-        setOpenSnackbar(true);
+        showError("Erro ao realizar o cadastro.");
       }
     } catch (e) {
-      setErrorMessage("Erro ao realizar o cadastro.");
-      setOpenSnackbar(true);
+      showError("Erro ao realizar o cadastro.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCloseSnackbar = () => setOpenSnackbar(false);
+  const handleSendToken = async () => { 
+    setErrorMessage("");
+    setLoading(true);
+    try {
+      // implementar método de enviar token
+        setForgotPassword(false);
+        showError("Token enviado com sucesso.");
+      } catch (e) {
+      showError("Erro ao enviar o token.");
+    } finally {
+      setLoading(false)
+  }
+}
+
 
   return (
     <div className="flex h-screen">
       {!path.includes('cadastro') && !forgotPassword && (
         <LoginForm 
         handleLogin={handleLogin} 
-        setAuth={setAuth} auth={auth} 
+        setAuth={setAuth} 
+        auth={auth} 
         loading={loading} 
         showPassword={showPassword} 
         handleClickShowPassword={handleClickShowPassword}
@@ -128,15 +138,18 @@ const LoginPage = ({ token }: LoginProps) => {
         loading={loading} 
         showPassword={showPassword} 
         handleClickShowPassword={handleClickShowPassword} 
-        handleMouseDownPassword={handleMouseDownPassword} authPassword={authPassword} setAuthPassword={setAuthPassword}/>
+        handleMouseDownPassword={handleMouseDownPassword} 
+        authPassword={authPassword} 
+        handleSendToken={handleSendToken}
+        setAuthPassword={setAuthPassword}/>
       )}
 
       {path.includes('cadastro') && (
         <RegisterForm
         handleRegister={handleRegister}
-        setAuth={setAuth}
+        setAuth={(auth) => setAuth((prevAuth) => ({ ...prevAuth, ...auth }))}
         auth={auth}
-        role={role}
+        role={role as Role}
         handleChange={handleChange}
         loading={loading}
         showPassword={showPassword}
@@ -146,17 +159,6 @@ const LoginPage = ({ token }: LoginProps) => {
         handleMouseDownPassword={handleMouseDownPassword}
       />      
       )}
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-          {errorMessage}
-        </Alert>
-      </Snackbar>
     </div>
   );
 };

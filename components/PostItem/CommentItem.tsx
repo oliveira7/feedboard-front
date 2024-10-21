@@ -78,6 +78,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
             created_at: new Date().toISOString(),
             media: [],
             totalChildren: 0,
+            group_id: '',
             parent_id: comment._id,
           },
         ]);

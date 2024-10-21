@@ -9,12 +9,7 @@ import { SnackbarProvider } from '@/context/SnackBarContext';
 export default function HomeProviderContent() {
   return (
     <>
-      <SnackbarProvider>
-        <GroupProvider>
-          <Header />
-          <HomeContent />
-        </GroupProvider>
-      </SnackbarProvider>
+      <HomeContent />
     </>
-    )
+  )
 }

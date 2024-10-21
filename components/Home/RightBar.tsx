@@ -8,6 +8,7 @@ import CreateGroupModal from '../Group/CreateGroupModal';
 import ManageMembersModal from '../Group/MembersGroupModal';
 import { AddCircleOutline, AddIcCallOutlined, ArrowBack } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
+import { UserModel } from '@/schema/user.model';
 
 export default function RightBar() {
   const [groups, setGroups] = useState<GroupModel[]>([]);
@@ -41,6 +42,14 @@ export default function RightBar() {
     setContextGroup(null);
     setAtualizarFeed(true);
   }
+  
+  const formatMembers = (members: UserModel[]) => { 
+    if (members.length > 1) {
+      return `${members.length} • membros`
+    } else {
+      return `Apenas 1 membro`
+    }
+  }
 
   return (
     <>
@@ -66,7 +75,7 @@ export default function RightBar() {
                 >
                   {item.name}
                 </a>
-                <p className="text-gray-300 text-sx">{item.members?.length ?? '0'} • membros</p>
+                <p className="text-gray-300 text-sx">{formatMembers(item.members || [])}</p>
                 { user?._id === item.created_by && (
                 <button
                   onClick={() => openMembersModal(item)}

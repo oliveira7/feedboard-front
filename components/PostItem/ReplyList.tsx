@@ -1,4 +1,5 @@
-// ReplyList.tsx
+'use client';
+
 import React from 'react';
 import ReplyItem from './ReplyItem';
 import { PostModel } from '@/schema/posts.model';
