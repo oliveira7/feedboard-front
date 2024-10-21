@@ -13,14 +13,10 @@ export default function PrivateLayout({
     return (
         <AppRouterCacheProvider>
             <CustomThemeProvider>
-                <SnackbarProvider>
                     <GroupProvider>
-
                         <Header />
                         {children}
                     </GroupProvider>
-
-                </SnackbarProvider>
             </CustomThemeProvider>
         </AppRouterCacheProvider>
     );

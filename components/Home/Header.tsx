@@ -14,18 +14,18 @@ import { getAll } from '@/api/user-endpoint.service';
 import { debounce } from 'lodash';
 import { UserModel } from '@/schema/user.model';
 import { useSnackbar } from '@/context/SnackBarContext';
+import ProfileEdit from '../Profile/ProfileEdit';
 
 export default function Header() {
   const [currentPath, setCurrentPath] = useState('');
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useGroup();
-  const { themeMode, toggleTheme } = useTheme();
+  const [modalOpen, setModalOpen] = useState(false);
   const [userOptions, setUserOptions] = useState<UserModel[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(''); // Para armazenar o valor digitado
+  const [searchQuery, setSearchQuery] = useState('');
   const { showError } = useSnackbar();
 
   useEffect(() => {
@@ -51,10 +51,23 @@ export default function Header() {
     []
   );
 
-  const handleUserSelect = (event: any, selectedUser: UserModel | null) => {
-    if (selectedUser) {
-      router.push(`/privado/usuario/${selectedUser._id}`);
+  const handleUserSelect = (
+    event: React.SyntheticEvent<Element, Event>,
+    value: string | UserModel | null,
+    reason: any,
+    details?: any
+  ) => {
+    if (value && typeof value !== 'string') {
+      router.push(`usuario/${value._id}`);
     }
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
   };
 
   return (
@@ -66,8 +79,7 @@ export default function Header() {
           </Link>
         </div>
 
-        <div className="flex items-center bg-white rounded-lg px-2 py-1 max-w-xs">
-          <Search className="text-highlight mr-2" />
+        <div className="flex items-centerrounded-lg px-2 py-1 max-w-xs">
           <Autocomplete
             freeSolo
             options={userOptions}
@@ -82,19 +94,33 @@ export default function Header() {
               <TextField
                 {...params}
                 placeholder="Pesquisar"
-                className="text-sm text-highlight outline-none w-full"
+                sx={{
+                  border: 'none',
+                  height: '30px', 
+                  minHeight: '30px', // Garante que a altura mínima seja aplicada
+                  outline: 'none',
+                  '& .MuiInputBase-root': { // Ajuste a altura interna
+                    height: '30px',
+                    minHeight: '30px',
+                    padding: '10px', // Remove padding extra
+                    fontSize: '12px', // Tamanho do texto
+                    border: 'none',
+                    outline: 'none',
+                  }
+                }}
                 InputProps={{
                   ...params.InputProps,
-                  className: "text-sm", // Adiciona estilização para deixar o texto menor
+                  className: "text-sm bg-white",
                   endAdornment: (
                     <>
-                      {loadingUsers ? <CircularProgress size={20} /> : null}
+                      {loadingUsers}
                       {params.InputProps.endAdornment}
                     </>
                   ),
+                  startAdornment: <Search />,
                 }}
                 InputLabelProps={{
-                  className: "text-sm", // Reduz o tamanho do texto do label
+                  className: "text-sm",
                 }}
               />
             )}
@@ -105,7 +131,8 @@ export default function Header() {
       <div className="flex space-x-8 items-center">
         <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
 
-        <div className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 hover:bg-primary-light" onClick={() => setProfileMenuOpen((prev) => !prev)}>
+        <div className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 hover:bg-primary-light" 
+        onClick={() => setProfileMenuOpen((prev) => !prev)}>
           {user?.avatar_base64 ? (
             <Image
               src={user.avatar_base64}
@@ -125,7 +152,7 @@ export default function Header() {
           {profileMenuOpen && (
             <div className="absolute right-0 mt-32 w-40 bg-primary rounded-lg shadow-lg py-2 z-50">
               <button
-                onClick={() => router.push(`/profile/${user?._id}`)}
+                onClick={handleModalOpen}
                 className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight"
               >
                 <Person />
@@ -145,6 +172,7 @@ export default function Header() {
           )}
         </div>
       </div>
+      <ProfileEdit modalOpen={modalOpen} handleModalClose={handleModalClose} />
     </header>
   );
 }

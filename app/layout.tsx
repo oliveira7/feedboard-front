@@ -31,7 +31,9 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <CustomThemeProvider>
             <Suspense fallback={<RouteLoader />}>
+            <SnackbarProvider>
             {children}
+            </SnackbarProvider>
             </Suspense>
           </CustomThemeProvider>
         </AppRouterCacheProvider>
