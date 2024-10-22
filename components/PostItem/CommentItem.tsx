@@ -21,26 +21,29 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
   const [replies, setReplies] = useState<PostModel[]>([]);
   const [hasMoreReplies, setHasMoreReplies] = useState(true);
   const [loadingReplies, setLoadingReplies] = useState(false);
-  const [replyPage, setReplyPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [showReplies, setShowReplies] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const loadReplies = async (reset = false) => {
-    if (loadingReplies || (!hasMoreReplies && !reset)) return;
+  const loadReplies = async (reset = false, customLimit: number | null = null) => {
+    if (loadingReplies) return;
 
     setLoadingReplies(true);
 
     try {
-      const currentPage = reset ? 1 : replyPage;
+      const currentLimit = reset ? 5 : customLimit || limit;
 
-      const response = await fetchPosts(currentPage, 5, undefined, comment._id);
+      const response = await fetchPosts(1, currentLimit, undefined, comment._id);
       if (response && response.posts) {
-        setReplies(reset ? response.posts : [...replies, ...response.posts]);
+        const newReplies = response.posts;
 
-        if (currentPage >= response.totalPages) {
+        setReplies(newReplies);
+
+        // Atualizar hasMoreReplies com base no total de respostas disponíveis
+        if (newReplies.length >= response.totalReplies) {
           setHasMoreReplies(false);
         } else {
-          setReplyPage(currentPage + 1);
+          setHasMoreReplies(true);
         }
       } else {
         setHasMoreReplies(false);
@@ -65,23 +68,22 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
 
       const response = await newPost(newReplyData);
       if (response) {
-        setReplies((prevReplies) => [
-          ...prevReplies,
-          {
-            _id: response._id,
-            author: {
-              _id: user._id,
-              name: user.name,
-              avatar_base64: user.avatar_base64,
-            },
-            content: replyText,
-            created_at: new Date().toISOString(),
-            media: [],
-            totalChildren: 0,
-            group_id: '',
-            parent_id: comment._id,
+        const newReply = {
+          _id: response._id,
+          author: {
+            _id: user._id,
+            name: user.name,
+            avatar_base64: user.avatar_base64,
           },
-        ]);
+          content: replyText,
+          created_at: new Date().toISOString(),
+          media: [],
+          totalChildren: 0,
+          group_id: '',
+          parent_id: comment._id,
+        };
+
+        setReplies((prevReplies) => [newReply, ...prevReplies]);
 
         // Incrementar o total de respostas localmente
         comment.totalChildren += 1;
@@ -89,6 +91,9 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         setReplyText('');
         setShowReplyInput(false);
         setShowReplies(true);
+
+        // Ajustar o limite se necessário
+        setLimit((prevLimit) => prevLimit + 1);
       }
     } catch (error) {
       console.error('Erro ao adicionar resposta:', error);
@@ -146,8 +151,27 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
       </div>
       <div className="text-sm mt-2">{comment.content}</div>
 
-      {showReplies && replies.length > 0 && (
-        <ReplyList replies={replies} user={user} onDeleteReply={onDelete} />
+      {showReplies && (
+        <>
+          {replies.length > 0 && (
+            <ReplyList replies={replies} user={user} onDeleteReply={onDelete} />
+          )}
+          {hasMoreReplies && !loadingReplies && (
+            <button
+              onClick={() => {
+                const newLimit = limit + 5;
+                setLimit(newLimit);
+                loadReplies(false, newLimit);
+              }}
+              className="text-highlight text-sm mt-2"
+            >
+              Carregar mais respostas
+            </button>
+          )}
+          {loadingReplies && (
+            <div className="text-sm text-gray-500 mt-2">Carregando respostas...</div>
+          )}
+        </>
       )}
 
       {showReplyInput ? (
@@ -184,9 +208,9 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
                 onClick={() => {
                   setShowReplies(!showReplies);
                   if (!showReplies) {
-                    setReplyPage(1);
+                    setLimit(5);
                     setHasMoreReplies(true);
-                    loadReplies(true);
+                    loadReplies(true, 5);
                   }
                 }}
               >

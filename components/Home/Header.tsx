@@ -132,12 +132,13 @@ export default function Header() {
         <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
 
         <div className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 hover:z-50" style={{ zIndex: 99999 }}
+
           onClick={() => setProfileMenuOpen((prev) => !prev)}>
           {user?.avatar_base64 ? (
             <Image
               src={user.avatar_base64}
               alt="Profile"
-              className="rounded-full w-10 h-10 border-2 border-primary-50 transition-transform duration-300 ease-in-out hover:scale-110"
+              className="rounded-full w-10 h-10 border-4 border-primary-50 transition-transform duration-300 ease-in-out hover:scale-110"
               width={100}
               height={100}
             />
