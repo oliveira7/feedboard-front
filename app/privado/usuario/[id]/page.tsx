@@ -2,12 +2,12 @@ import React from 'react';
 import UserProfileView from '@/components/User/UserProfileView';
 import Header from '@/components/Home/Header';
 
-export default function Usuario({ params }: { params: { id: string } }) {
+export default async function Usuario(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params;
 
   return (
     <>
-      <Header />
       <UserProfileView userId={id} />
     </>
   );

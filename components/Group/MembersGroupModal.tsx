@@ -4,18 +4,12 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { GroupModel } from '@/schema/group.model';
 import { TextField, Autocomplete, CircularProgress, IconButton, MenuItem, Select, useRadioGroup } from '@mui/material';
 import { getGroupById, updateGroup } from '@/api/groups-endpoint.service';
-import { UserModel } from '@/schema/user.model';
+import { Role, UserModel } from '@/schema/user.model';
 import { Star, Close } from '@mui/icons-material';
 import debounce from 'lodash/debounce';
 import { getAll } from '@/api/user-endpoint.service';
 import { useGroup } from '@/context/GroupContext';
-
-// Definição do enum Role
-export enum Role {
-  STUDENT = 'student',
-  TEACHER = 'teacher',
-  COORDINATOR = 'coordinator',
-}
+import { translateRole } from '@/utils/translateRoles';
 
 interface ManageMembersModalProps {
   isModalOpen: boolean;
@@ -98,18 +92,6 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
     }
   }, [isModalOpen]);
 
-  const translateRole = (role: Role) => {
-    switch (role) {
-      case Role.STUDENT:
-        return 'Estudante';
-      case Role.TEACHER:
-        return 'Professor';
-      case Role.COORDINATOR:
-        return 'Coordenador';
-      default:
-        return 'Desconhecido';
-    }
-  };
 
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center ${isModalOpen ? '' : 'hidden'}`}>

@@ -1,3 +1,5 @@
+'use client';
+
 import { PostModel } from '@/schema/posts.model';
 import React, { useState } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';

@@ -9,7 +9,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useGroup } from '@/context/GroupContext';
 import Link from 'next/link';
-import { useTheme } from '@/context/ThemeContext';
 import { getAll } from '@/api/user-endpoint.service';
 import { debounce } from 'lodash';
 import { UserModel } from '@/schema/user.model';
@@ -57,8 +56,9 @@ export default function Header() {
     reason: any,
     details?: any
   ) => {
+    console.log(value);
     if (value && typeof value !== 'string') {
-      router.push(`usuario/${value._id}`);
+      router.push(`/privado/usuario/${value._id}`);
     }
   };
 
@@ -71,7 +71,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-gradient-to-br from-primary-dark to-primary-light text-white flex justify-between items-center px-6 py-2 shadow-md">
+    <header className="bg-gradient-to-br from-green-400 to-green-600  text-white flex justify-between items-center px-6 py-2 shadow-md">
       <div className="flex items-center space-x-4">
         <div className="flex items-center max-w-52 max-h-52">
           <Link href="/privado/home">
@@ -95,17 +95,17 @@ export default function Header() {
                 {...params}
                 placeholder="Pesquisar"
                 sx={{
-                  border: 'none',
-                  height: '30px', 
-                  minHeight: '30px', // Garante que a altura mínima seja aplicada
-                  outline: 'none',
-                  '& .MuiInputBase-root': { // Ajuste a altura interna
+                  border: 'none !important',
+                  height: '30px',
+                  minHeight: '30px',
+                  outline: 'none !important',
+                  '& .MuiInputBase-root': {
                     height: '30px',
                     minHeight: '30px',
-                    padding: '10px', // Remove padding extra
-                    fontSize: '12px', // Tamanho do texto
-                    border: 'none',
-                    outline: 'none',
+                    padding: '10px',
+                    fontSize: '12px',
+                    border: 'none !important',
+                    outline: 'none !important',
                   }
                 }}
                 InputProps={{
@@ -131,26 +131,27 @@ export default function Header() {
       <div className="flex space-x-8 items-center">
         <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
 
-        <div className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 hover:bg-primary-light" 
-        onClick={() => setProfileMenuOpen((prev) => !prev)}>
+        <div className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 hover:z-50" style={{ zIndex: 99999 }}
+          onClick={() => setProfileMenuOpen((prev) => !prev)}>
           {user?.avatar_base64 ? (
             <Image
               src={user.avatar_base64}
               alt="Profile"
-              className="rounded-full w-10 h-10 border-2 border-primary-50"
+              className="rounded-full w-10 h-10 border-2 border-primary-50 transition-transform duration-300 ease-in-out hover:scale-110"
               width={100}
               height={100}
             />
           ) : (
-            <Avatar alt="User Avatar" className="w-8 h-8" />
+            <Avatar alt="User Avatar" className="w-8 h-8 transition-transform duration-300 ease-in-out hover:scale-110" />
           )}
           <div>
-            <span className="text-xs text-white">{user ? user.name : ''} </span>
-            <ArrowDropDown className="text-white" />
+            <span className="text-xs text-white transition-all duration-300 ease-in-out hover:text-primary-50">
+              {user ? user.name : ''} </span>
+            <ArrowDropDown className="text-white transition-transform duration-300 ease-in-out hover:rotate-180" />
           </div>
 
           {profileMenuOpen && (
-            <div className="absolute right-0 mt-32 w-40 bg-primary rounded-lg shadow-lg py-2 z-50">
+            <div className="absolute right-0 mt-32 w-40 bg-primary rounded-lg shadow-lg py-2" style={{ zIndex: 99999 }}>
               <button
                 onClick={handleModalOpen}
                 className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight"

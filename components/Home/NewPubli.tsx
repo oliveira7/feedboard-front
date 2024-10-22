@@ -131,7 +131,7 @@ export default function NewPubli() {
               </IconButton>
 
               {showEmojis && (
-                <div className="absolute mt-10">
+                <div className="absolute mt-10" style={{ zIndex: 9999 }}>
                   <Picker onEmojiClick={handleEmojiClick} />
                 </div>
               )}

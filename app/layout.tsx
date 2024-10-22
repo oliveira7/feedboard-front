@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt">
-      <body className="h-full w-full">
+      <body className="h-full w-full" cz-shortcut-listen="false">
         <AppRouterCacheProvider>
           <CustomThemeProvider>
             <Suspense fallback={<RouteLoader />}>

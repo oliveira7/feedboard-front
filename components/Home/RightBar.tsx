@@ -61,7 +61,7 @@ export default function RightBar() {
             <Tooltip title="Novo grupo" arrow>
               <IconButton onClick={() => setIsCreateGroupModalOpen(true)}
               >
-                <AddCircleOutline className="text-highlight" />
+                <AddCircleOutline className="text-highlight"  />
               </IconButton>
             </Tooltip>
           </div>

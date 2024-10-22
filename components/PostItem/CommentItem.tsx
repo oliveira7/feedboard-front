@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
-import { MenuOutlined, MoreVert } from '@mui/icons-material';
+import { MenuOutlined } from '@mui/icons-material';
 import { fetchPosts, newPost } from '@/api/post-endpoint.service';
 import ReplyList from './ReplyList';
 import { UserModel } from '@/schema/user.model';
@@ -24,7 +26,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const loadReplies = async (reset = false) => {
-    if (loadingReplies || !hasMoreReplies) return;
+    if (loadingReplies || (!hasMoreReplies && !reset)) return;
 
     setLoadingReplies(true);
 
@@ -33,9 +35,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
 
       const response = await fetchPosts(currentPage, 5, undefined, comment._id);
       if (response && response.posts) {
-        setReplies((prevReplies) =>
-          reset ? response.posts : [...prevReplies, ...response.posts]
-        );
+        setReplies(reset ? response.posts : [...replies, ...response.posts]);
 
         if (currentPage >= response.totalPages) {
           setHasMoreReplies(false);
@@ -82,8 +82,13 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
             parent_id: comment._id,
           },
         ]);
+
+        // Incrementar o total de respostas localmente
+        comment.totalChildren += 1;
+
         setReplyText('');
         setShowReplyInput(false);
+        setShowReplies(true);
       }
     } catch (error) {
       console.error('Erro ao adicionar resposta:', error);
@@ -94,27 +99,29 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
     <div className="bg-primary-50 p-4 rounded-lg mb-4 shadow-md">
       <div className="flex w-full space-x-4">
         <div className="flex items-start space-x-3 w-full justify-between">
-          <div className='flex items-center'>
+          <div className="flex items-center">
             {comment.author.avatar_base64 && (
-            <img
-              src={comment.author.avatar_base64}
-              alt={comment.author.name}
-              className="w-10 h-10 rounded-full"
-            />
-          )}
-            <div className="text-sm font-bold text-highlight ml-2">{comment.author.name}</div>
+              <img
+                src={comment.author.avatar_base64}
+                alt={comment.author.name}
+                className="w-10 h-10 rounded-full"
+              />
+            )}
+            <div className="text-sm font-bold text-highlight ml-2">
+              {comment.author.name}
+            </div>
           </div>
 
           <div className="flex">
             <div>
-              <div className='flex items-center'>
-                <span className="text-xs ">{getTimeSincePost(comment.created_at)}</span>
+              <div className="flex items-center">
+                <span className="text-xs ">
+                  {getTimeSincePost(comment.created_at)}
+                </span>
                 {user && user._id === comment.author._id && (
                   <div>
                     <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-                      <MenuOutlined style={{
-                        width: '15px'
-                      }} />
+                      <MenuOutlined style={{ width: '15px' }} />
                     </IconButton>
                     <Menu
                       anchorEl={anchorEl}
@@ -132,13 +139,16 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
                     </Menu>
                   </div>
                 )}
-              </div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div className="text-sm mt-2">{comment.content}</div>
 
-      {showReplies && comment.totalChildren > 0 && <ReplyList replies={replies} user={user} onDeleteReply={onDelete} />}
+      {showReplies && replies.length > 0 && (
+        <ReplyList replies={replies} user={user} onDeleteReply={onDelete} />
+      )}
 
       {showReplyInput ? (
         <div className="flex items-center space-x-2 mt-2">
@@ -154,29 +164,33 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
           </button>
         </div>
       ) : (
-        <div className='flex items-center mt-4 ml-[50px]'>
-          <a className="text-sm  mt-1 cursor-pointer hover:text-highlight active:text-highlight" >
+        <div className="flex items-center mt-4 ml-[50px]">
+          <a className="text-sm mt-1 cursor-pointer hover:text-highlight active:text-highlight">
             Gostei
           </a>
-          <span className='ml-2 mr-2 '>|</span>
+          <span className="ml-2 mr-2 ">|</span>
           <a
             onClick={() => setShowReplyInput(true)}
-            className="text-sm  mt-1 cursor-pointer hover:text-highlight active:text-highlight"
+            className="text-sm mt-1 cursor-pointer hover:text-highlight active:text-highlight"
           >
             Responder
           </a>
 
-          {comment.totalChildren > 0 && (
+          {(comment.totalChildren > 0 || replies.length > 0) && (
             <>
               <div className="w-1 h-1 bg-gray-300 rounded-full inline-block mx-2 mt-1"></div>
               <span
-                className="text-xs  mt-1 cursor-pointer  hover:text-highlight active:text-highlight"
+                className="text-xs mt-1 cursor-pointer hover:text-highlight active:text-highlight"
                 onClick={() => {
                   setShowReplies(!showReplies);
-                  if (!showReplies) loadReplies();
+                  if (!showReplies) {
+                    setReplyPage(1);
+                    setHasMoreReplies(true);
+                    loadReplies(true);
+                  }
                 }}
               >
-                {`${comment.totalChildren} respostas`}
+                {`${comment.totalChildren} resposta(s)`}
               </span>
             </>
           )}

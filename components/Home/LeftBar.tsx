@@ -10,13 +10,11 @@ export default function LeftBar() {
 
   return (
     <div className="w-full bg-white rounded-lg shadow-lg p-6 h-fit relative">
-      {/* Gradiente de fundo na parte superior */}
       <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-br from-green-400 to-green-600 rounded-t-lg"></div>
 
       <div className="relative flex flex-col items-center mb-6 gap-4 pt-16">
         {user ? (
           <>
-            {/* Imagem de perfil com borda e sombra */}
             {user?.avatar_base64 ? (
               <Image
                 src={user.avatar_base64}

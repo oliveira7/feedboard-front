@@ -4,8 +4,8 @@ import React, { useEffect, useState, forwardRef } from 'react';
 import { fetchPosts } from '@/api/post-endpoint.service';
 import { PostModel } from '@/schema/posts.model';
 import { useGroup } from '@/context/GroupContext';
-import PostItem from '../PostItem/PosItem';
 import { useSnackbar } from '@/context/SnackBarContext';
+import PostItem from '../PostItem/PosItem';
 
 const Feed = forwardRef((props, ref) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
@@ -16,34 +16,31 @@ const Feed = forwardRef((props, ref) => {
   const { setAtualizarFeed, atualizarFeed, selectedGroup } = useGroup();
   const { showError } = useSnackbar();
 
-
-  const loadPosts = async (reset = false) => {
+  const loadPosts = async (reset = false, customLimit: number | null = null) => {
     try {
-
       if (loading) return;
-  
       setLoading(true);
-  
-      const currentLimit = reset ? 5 : limit;
-  
+      const currentLimit = reset ? 5 : customLimit || limit;
+
       const { posts: fetchedPosts, totalPages } = await fetchPosts(1, currentLimit, selectedGroup || null);
       console.log(fetchedPosts);
-  
+
       if (fetchedPosts && fetchedPosts.length > 0) {
         setPosts(fetchedPosts);
-  
         setHasMore(currentLimit < totalPages * 5);
-      } else if (fetchedPosts && selectedGroup && fetchedPosts.length == 0) {
+      } else if (fetchedPosts && selectedGroup && fetchedPosts.length === 0) {
         setPosts([]);
         setHasMore(false);
       } else {
         setHasMore(false);
       }
-  
+
       setLoading(false);
       setInitialLoad(false);
     } catch (e: any) {
-      showError(e.message)
+      showError(e.message);
+      setLoading(false);
+      setInitialLoad(false);
     }
   };
 
@@ -60,7 +57,7 @@ const Feed = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
-      resetAndLoadPosts();
+    resetAndLoadPosts();
   }, [selectedGroup]);
 
   useEffect(() => {
@@ -70,16 +67,17 @@ const Feed = forwardRef((props, ref) => {
   }, [atualizarFeed]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2 && hasMore && !loading) {
-        setLimit((prevLimit) => prevLimit + 5);
-        loadPosts();
+    const handleScroll = async () => {
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2 && hasMore) {
+        const newLimit = limit + 5;
+        setLimit(newLimit);
+        await loadPosts(false, newLimit);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasMore, loading]);
+  }, [hasMore, loading, limit]);
 
   return (
     <div className="flex flex-col items-center space-y-4">

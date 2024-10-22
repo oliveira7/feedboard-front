@@ -13,10 +13,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  const validRoutes = ['/', '/cadsatro', '/privado/home', '/privado/usuario/[id]'];
-  if (!validRoutes.includes(pathname) && pathname.startsWith('/privado')) {
+  const validRoutes = ['/', '/cadastro', '/privado/home'];
+  const isUsuarioRoute = pathname.startsWith('/privado/usuario');
+
+  if (!validRoutes.includes(pathname) && !isUsuarioRoute && pathname.startsWith('/privado')) {
     return NextResponse.redirect(new URL('/privado/home', request.url));
-  } else if (!validRoutes.includes(pathname)) {
+  } else if (!validRoutes.includes(pathname) && !isUsuarioRoute) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 

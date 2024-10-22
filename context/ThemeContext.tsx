@@ -89,23 +89,23 @@ const lightTheme = createTheme({
           "& .MuiOutlinedInput-root": {
             borderRadius: "20px",
             "& fieldset": {
-              borderColor: "#388E3C", // Borda inicial
+              borderColor: "#388E3C",
             },
             "&:hover fieldset": {
-              borderColor: "#4CAF50", // Borda no hover
+              borderColor: "#4CAF50",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "#4CAF50", // Borda focada
+              borderColor: "#4CAF50",
             },
             "& input": {
-              color: "#333333", // Texto no input do select
+              color: "#333333",
             },
           },
           "& .MuiInputLabel-root": {
-            color: "#666666", // Cor da label
+            color: "#666666",
           },
           "& .MuiInputLabel-root.Mui-focused": {
-            color: "#388E3C", // Cor da label quando focada
+            color: "#388E3C", 
           },
         },
       },

@@ -18,6 +18,7 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: '8px',
+  zIndex: '15'
 };
 
 export default function ProfileEdit({
@@ -109,8 +110,6 @@ export default function ProfileEdit({
       <Modal
         open={modalOpen}
         onClose={handleModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
           <div className="flex flex-col items-center">
