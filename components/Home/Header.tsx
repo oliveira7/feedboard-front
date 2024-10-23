@@ -24,7 +24,7 @@ export default function Header() {
   const [modalOpen, setModalOpen] = useState(false);
   const [userOptions, setUserOptions] = useState<UserModel[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
-  const [setSearchQuery] = useState('');
+  const [, setSearchQuery] = useState('');
   const { showError } = useSnackbar();
 
   useEffect(() => {
@@ -37,9 +37,11 @@ export default function Header() {
       const users = await getAll(1, 5, `search=${query}`);
       setUserOptions(users);
       setLoadingUsers(false);
-    } catch (e: any) {
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        showError(e.message);
+      }
       setLoadingUsers(false);
-      showError(e.message);
     }
   };
 

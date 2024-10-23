@@ -10,6 +10,7 @@ import LoginForm from "./Login/LoginForm";
 import RegisterForm from "./Login/RegisterForm";
 import ForgotPassword from "./Login/ForgotPassword";
 import { useSnackbar } from "@/context/SnackBarContext";
+import { SelectChangeEvent } from "@mui/material";
 interface LoginProps {
   token?: string;
 }
@@ -20,11 +21,15 @@ const LoginPage = ({ token }: LoginProps) => {
   const [auth, setAuth] = useState({
     email: '',
     password: '',
+  });
+  const [registerAuth,] = useState({ 
+    email: '',
+    password: '',
     name: '',
     course: '',
     confirmPassword: ''
   });
-  const [errorMessage, setErrorMessage] = useState("");
+  const [, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const path = usePathname();
@@ -38,7 +43,7 @@ const LoginPage = ({ token }: LoginProps) => {
   });
   const { showError } = useSnackbar();
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange = (event: SelectChangeEvent<Role>) => {
     setRole(event.target.value as Role);
   };
 
@@ -62,8 +67,10 @@ const LoginPage = ({ token }: LoginProps) => {
       } else {
         showError("Usuário ou senha incorretos.");
       }
-    } catch (e) {
-      showError("Usuário ou senha incorretos.");
+    } catch (e: unknown) {
+      if (e instanceof Error) { 
+        showError(e.message || "Erro ao realizar o login.");
+      }
     } finally {
       setLoading(false);
     }
@@ -74,7 +81,7 @@ const LoginPage = ({ token }: LoginProps) => {
     setErrorMessage("");
     setLoading(true);
 
-    if (auth.password !== auth.confirmPassword) {
+    if (registerAuth.password !== registerAuth.confirmPassword) {
       showError("As senhas não coincidem.");
       setLoading(false);
       return;
@@ -82,10 +89,10 @@ const LoginPage = ({ token }: LoginProps) => {
 
     try {
       const registerObj = {
-        name: auth.name,
-        email: auth.email,
-        course: auth.course,
-        password_hash: auth.password,
+        name: registerAuth.name,
+        email: registerAuth.email,
+        course: registerAuth.course,
+        password_hash: registerAuth.password,
         role: role ?? '',
         token: token
       }
@@ -96,8 +103,10 @@ const LoginPage = ({ token }: LoginProps) => {
       } else {
         showError("Erro ao realizar o cadastro.");
       }
-    } catch (e) {
-      showError("Erro ao realizar o cadastro.");
+    } catch (e: unknown) {
+      if (e instanceof Error) { 
+        showError(e.message || "Erro ao realizar o cadastro.");
+      }
     } finally {
       setLoading(false);
     }
@@ -107,11 +116,12 @@ const LoginPage = ({ token }: LoginProps) => {
     setErrorMessage("");
     setLoading(true);
     try {
-      // implementar método de enviar token
         setForgotPassword(false);
         showError("Token enviado com sucesso.");
-      } catch (e) {
-      showError("Erro ao enviar o token.");
+      } catch (e: unknown) {
+        if (e instanceof Error) { 
+          showError(e.message || "Erro ao enviar o token.");
+        }
     } finally {
       setLoading(false)
   }
@@ -147,7 +157,7 @@ const LoginPage = ({ token }: LoginProps) => {
         <RegisterForm
         handleRegister={handleRegister}
         setAuth={(auth) => setAuth((prevAuth) => ({ ...prevAuth, ...auth }))}
-        auth={auth}
+        auth={registerAuth}
         role={role as Role}
         handleChange={handleChange}
         loading={loading}

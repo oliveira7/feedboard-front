@@ -2,7 +2,7 @@ import React from 'react'
 import logo from '../../public/assets/logo.svg';
 import { Role } from '@/schema/user.model';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { InputLabel, TextField, FormControl, Select, MenuItem, InputAdornment, IconButton, Button, CircularProgress } from '@mui/material';
+import { InputLabel, TextField, FormControl, Select, MenuItem, InputAdornment, IconButton, Button, CircularProgress, SelectChangeEvent } from '@mui/material';
 import Image from 'next/image';
 
 interface RegisterFormProps {
@@ -22,7 +22,7 @@ interface RegisterFormProps {
         confirmPassword: string;
     };
     role: Role;
-    handleChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
+    handleChange: (event: SelectChangeEvent<Role>, child: React.ReactNode) => void;
     loading: boolean;
     showPassword: boolean;
     showConfirmPassword: boolean;
@@ -106,7 +106,7 @@ export default function RegisterForm({
                                     id="role-select"
                                     label="Selecione o cargo"
                                     value={role}
-                                    onChange={handleChange}
+                                    onChange={(event, child) => handleChange(event, child)}
                                 >
                                     <MenuItem value={Role.STUDENT}>Estudante</MenuItem>
                                     <MenuItem value={Role.TEACHER}>Professor</MenuItem>

@@ -2,7 +2,7 @@
 
 import { GroupModel } from '@/schema/group.model';
 import { UserModel } from '@/schema/user.model';
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 const GroupContext = createContext<any>(null);
 
@@ -11,9 +11,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const [user, setUserLog] = useState<UserModel>();
   const [atualizarFeed, setAtualizarFeed] = useState(false);
   const [groupsContext, setGroupsContext] = useState<GroupModel[]>();
-  
   const [expandedCommentsByPost, setExpandedCommentsByPost] = useState<{ [key: string]: boolean }>({});
-
 
   const toggleExpandComment = (postId: string) => {
     setExpandedCommentsByPost((prev) => ({

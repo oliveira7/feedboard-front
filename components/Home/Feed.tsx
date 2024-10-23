@@ -7,7 +7,7 @@ import { useGroup } from '@/context/GroupContext';
 import { useSnackbar } from '@/context/SnackBarContext';
 import PostItem from '../PostItem/PosItem';
 
-const Feed = forwardRef((props, ref) => {
+const Feed = forwardRef(() => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [limit, setLimit] = useState(5);
   const [loading, setLoading] = useState(false);
@@ -37,8 +37,10 @@ const Feed = forwardRef((props, ref) => {
 
       setLoading(false);
       setInitialLoad(false);
-    } catch (e: any) {
-      showError(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        showError(e.message);
+      }      
       setLoading(false);
       setInitialLoad(false);
     }
@@ -94,5 +96,7 @@ const Feed = forwardRef((props, ref) => {
     </div>
   );
 });
+
+Feed.displayName = 'Feed';
 
 export default Feed;

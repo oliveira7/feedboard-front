@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./globals.css";
 import { Suspense } from "react";
 import RouteLoader from "./loading";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';

@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { jwtDecode } from 'jwt-decode';
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute' as const,
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
@@ -53,8 +53,10 @@ export default function ProfileEdit({
           setCourse(userData.course);
           setDescription(userData.description);
           setAvatarBase64(userData.avatar_base64);
-        } catch (error: any) {
-          setErrorMessage(error || 'Erro ao carregar os dados do usuário.');
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            setErrorMessage(e.message || 'Erro ao carregar os dados do usuário.');
+          }
         }
       }
     };
@@ -87,8 +89,10 @@ export default function ProfileEdit({
         setSnackbarOpen(true);
       }
       handleModalClose();
-    } catch (error: any) {
-      setErrorMessage(error || 'Erro ao salvar as alterações.');
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setErrorMessage(e.message || 'Erro ao salvar as alterações.');
+      }
     } finally {
       setSaving(false);
       window.location.reload();

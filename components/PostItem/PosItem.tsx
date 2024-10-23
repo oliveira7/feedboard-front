@@ -42,7 +42,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-primary-50 p-6 rounded-lg w-full max-w-xl shadow-md"
+      style={{ backgroundColor: '#f0f4f8', padding: '1.5rem', borderRadius: '0.5rem', width: '100%', maxWidth: '36rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
     >
       <div className="flex items-center mb-4 justify-between">
         <div className="flex items-center">

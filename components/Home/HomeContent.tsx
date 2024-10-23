@@ -3,7 +3,7 @@
 import { getUserById } from '@/api/user-endpoint.service';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import LeftBar from './LeftBar';
 import NewPubli from './NewPubli';
 import RightBar from './RightBar';
@@ -20,7 +20,6 @@ export default function HomeContent() {
   const router = useRouter();
   const { showError } = useSnackbar();
 
-
   const getUser = async () => {
     const token = Cookies.get('token');
     if (!token) {
@@ -28,15 +27,18 @@ export default function HomeContent() {
       return;
     }
     const decoded = jwtDecode(token);
-    const id = decoded.sub;
+    const id = decoded.sub as string;
     try {
-      const response = await getUserById(id!)
+      const response = await getUserById(id);
       setUser(response);
       setUserLog(response);
-    } catch (e: any) {
-      showError(e.message)
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        showError(e.message || 'Erro ao carregar os dados do usuário.');
+        handleLogout();
+      }
     }
-  }
+  };
 
   const handleLogout = () => {
     Cookies.remove('token');
@@ -45,7 +47,7 @@ export default function HomeContent() {
 
   useEffect(() => {
     getUser();
-  }, [])
+  }, []);
 
   return (
     <div className="flex justify-center p-8 bg-primary min-h-screen">
@@ -69,5 +71,5 @@ export default function HomeContent() {
         </div>
       </div>
     </div>
-  )
+  );
 }

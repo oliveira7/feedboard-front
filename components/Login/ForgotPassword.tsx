@@ -26,6 +26,7 @@ export default function ForgotPassword({
   const [currentStep, setCurrentStep] = useState(1);
 
   const handleNextStep = () => {
+    console.log(handleSendToken());
     // if (currentStep === 1) {
     //   handleSendToken(); 
     // }

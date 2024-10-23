@@ -20,8 +20,10 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
       try {
         const userData = await getUserById(userId);
         setUser(userData);
-      } catch (e) {
-        setErrorMessage('Erro ao carregar os dados do usuário.');
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+        setErrorMessage(e.message || 'Erro ao carregar os dados do usuário.');
+        }
       } finally {
         setLoading(false);
       }
@@ -75,16 +77,13 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
                 </Avatar>
               )}
 
-              {/* Informações do usuário */}
               <div className="text-center">
                 <h3 className="text-lg font-bold text-gray-800">{user.name}</h3>
                 <p className="text-sm text-gray-500">{user.course}</p>
               </div>
 
-              {/* Divisor */}
               <Divider className="bg-gray-300 w-full my-4" />
 
-              {/* Descrição */}
               <div className="px-4 py-2 bg-gray-100 rounded-md shadow-inner">
                 <p className="text-sm text-gray-600 italic text-center">
                   💬 {user.description || "Sem descrição disponível"}

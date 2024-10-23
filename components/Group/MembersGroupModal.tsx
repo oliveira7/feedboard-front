@@ -10,6 +10,7 @@ import debounce from 'lodash/debounce';
 import { getAll } from '@/api/user-endpoint.service';
 import { useGroup } from '@/context/GroupContext';
 import { translateRole } from '@/utils/translateRoles';
+import { useSnackbar } from '@/context/SnackBarContext';
 
 interface ManageMembersModalProps {
   isModalOpen: boolean;
@@ -24,6 +25,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [loadingMembers, setLoadingMembers] = useState(true);
   const { user } = useGroup();
+  const { showError } = useSnackbar();
 
   const fetchUsers = async (query: string) => {
     try {
@@ -31,9 +33,11 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
       const users = await getAll(1, 5, `search=${query}`);
       setUserOptions(users);
       setLoadingUsers(false);
-    } catch (e) {
-      setLoadingUsers(false);
-      console.error('Erro ao buscar usuários:', e);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setLoadingUsers(false);
+        showError(e.message || 'Erro ao buscar usuários:');
+       }
     }
   };
 
@@ -49,8 +53,10 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
       const updatedData = { members: updatedMembers };
       await updateGroup(group._id, updatedData);
       setMembers(updatedMembers);
-    } catch (e) {
-      console.error('Erro ao atualizar o grupo:', e);
+    } catch (e: unknown) {
+      if (e instanceof Error) { 
+        showError(e.message || 'Erro ao atualizar o grupo:');
+      }
     }
   };
 
@@ -76,12 +82,14 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
         setMembers(groupData.members);
         console.log('Members state after setting:', groupData.members);
       } else {
-        console.error('Membros não encontrados na resposta.');
+        showError('Membros não encontrados na resposta.');
       }
       setLoadingMembers(false);
     } catch (e) {
-      setLoadingMembers(false);
-      console.error('Erro ao buscar os membros do grupo:', e);
+      if (e instanceof Error) {
+        showError(e.message || 'Erro ao buscar os membros do grupo:');
+        setLoadingMembers(false);
+      } 
     }
   };
 

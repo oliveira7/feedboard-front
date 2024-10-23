@@ -8,6 +8,7 @@ import { PostModel } from '@/schema/posts.model';
 import { ExpandMore } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
 import { useGroup } from '@/context/GroupContext'; 
+import Image from 'next/image';
 
 interface CommentListProps {
   postId: string;
@@ -127,7 +128,7 @@ export default function CommentList({ postId, user }: CommentListProps) {
 
           <div className="flex items-center space-x-2 mt-4">
             {user?.avatar_base64 && (
-              <img
+              <Image
                 src={user?.avatar_base64}
                 alt={user?.name}
                 className="w-8 h-8 rounded-full"

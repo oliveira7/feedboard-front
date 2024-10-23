@@ -2,11 +2,14 @@
 
 import React from 'react'
 import HomeContent from './HomeContent'
+import { GroupProvider } from '@/context/GroupContext';
 
 export default function HomeProviderContent() {
   return (
     <>
-      <HomeContent />
+      <GroupProvider>
+        <HomeContent />
+      </GroupProvider>
     </>
   )
 }

@@ -9,6 +9,7 @@ import ManageMembersModal from '../Group/MembersGroupModal';
 import { AddCircleOutline, ArrowBack } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 import { UserModel } from '@/schema/user.model';
+import { useSnackbar } from '@/context/SnackBarContext';
 
 export default function RightBar() {
   const [groups, setGroups] = useState<GroupModel[]>([]);
@@ -16,6 +17,7 @@ export default function RightBar() {
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<GroupModel | null>(null);
   const { user } = useGroup();
+  const { showError } = useSnackbar();
 
   const { setSelectedGroup: setContextGroup, selectedGroup: selectedGroupFromContext, setGroupsContext, setAtualizarFeed } = useGroup();
 
@@ -24,8 +26,10 @@ export default function RightBar() {
       const response = await getGroupsByUser();
       setGroups(response);
       setGroupsContext(response);
-    } catch (e) {
-      console.error(e);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        showError(e.message || 'Erro ao buscar grupos');
+      }
     }
   };
 
