@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from "react";
-import { Snackbar, Alert, SelectChangeEvent } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from 'js-cookie';
 import { login } from "@/api/login-endpoint.service";

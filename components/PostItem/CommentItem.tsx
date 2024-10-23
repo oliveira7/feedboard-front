@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { MenuOutlined } from '@mui/icons-material';
 import { fetchPosts, newPost } from '@/api/post-endpoint.service';
@@ -8,6 +8,7 @@ import ReplyList from './ReplyList';
 import { UserModel } from '@/schema/user.model';
 import { PostModel } from '@/schema/posts.model';
 import { getTimeSincePost } from '@/utils/getTimeSincePost';
+import Image from 'next/image';
 
 interface CommentItemProps {
   comment: PostModel;
@@ -106,7 +107,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         <div className="flex items-start space-x-3 w-full justify-between">
           <div className="flex items-center">
             {comment.author.avatar_base64 && (
-              <img
+              <Image
                 src={comment.author.avatar_base64}
                 alt={comment.author.name}
                 className="w-10 h-10 rounded-full"

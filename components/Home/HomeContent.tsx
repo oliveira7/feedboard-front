@@ -14,8 +14,8 @@ import { useRouter } from 'next/navigation';
 import { useSnackbar } from '@/context/SnackBarContext';
 
 export default function HomeContent() {
-  const [user, setUser] = useState<UserModel>();
-  const feedRef = useRef<any>(null);
+  const [, setUser] = useState<UserModel>();
+  const feedRef = useRef(null);
   const { setUserLog } = useGroup();
   const router = useRouter();
   const { showError } = useSnackbar();

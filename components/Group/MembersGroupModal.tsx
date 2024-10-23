@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { GroupModel } from '@/schema/group.model';
-import { TextField, Autocomplete, CircularProgress, IconButton, MenuItem, Select, useRadioGroup } from '@mui/material';
+import { TextField, Autocomplete, CircularProgress, IconButton } from '@mui/material';
 import { getGroupById, updateGroup } from '@/api/groups-endpoint.service';
 import { Role, UserModel } from '@/schema/user.model';
 import { Star, Close } from '@mui/icons-material';
@@ -54,7 +54,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
     }
   };
 
-  const handleAddMember = async (member: any) => {
+  const handleAddMember = async (member: { id: string; name: string; }) => {
     if (!members.find((m) => m._id === member.id)) {
       const updatedMembers = [...members, { _id: member.id, name: member.name }];
       await updateGroupMembers(updatedMembers);

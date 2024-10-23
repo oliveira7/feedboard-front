@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { Modal, Box, Button, IconButton, TextField, Avatar, MenuItem, FormControl, Select, InputAdornment, Skeleton } from "@mui/material";
+import { Modal, Box, Button, IconButton, TextField, Avatar, FormControl, Skeleton } from "@mui/material";
 import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
 import { newPost } from "@/api/post-endpoint.service";
@@ -14,12 +14,12 @@ export default function NewPubli() {
   const [postText, setPostText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const [media, setMedia] = useState<{ base64: string; type: 'image' | 'video' }[]>([]);
-  const { user, setAtualizarFeed, selectedGroup, groupsContext } = useGroup();
+  const { user, setAtualizarFeed, selectedGroup } = useGroup();
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
-  const handleEmojiClick = (emojiObject: any) => {
+  const handleEmojiClick = (emojiObject: { emoji: string; }) => {
     setPostText(prevText => prevText + emojiObject.emoji);
     setShowEmojis(false);
   };
@@ -158,7 +158,7 @@ export default function NewPubli() {
 
           {media.length > 0 && (
             <div className="mt-4">
-              <img
+              <Image
                 src={media[0].base64}
                 alt="Preview"
                 className="max-h-40 rounded-lg"

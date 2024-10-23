@@ -19,7 +19,7 @@ export default function PostActions({
   totalComments,
   postId,
 }: PostActionsProps) {
-  const { expandedCommentsByPost, toggleExpandComment } = useGroup();
+  const { toggleExpandComment } = useGroup();
 
   const formatLikes = () => {
     if (liked) {

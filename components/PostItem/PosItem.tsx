@@ -2,14 +2,15 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ThumbUp, Comment, MoreVert, MenuOutlined } from '@mui/icons-material';
-import { Divider, IconButton, Menu, MenuItem } from '@mui/material';
+import { MenuOutlined } from '@mui/icons-material';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 import { deletePostById } from '@/api/post-endpoint.service';
 import { useGroup } from '@/context/GroupContext';
 import CommentList from './CommentList';
 import PostActions from './PostActions';
 import { PostModel } from '@/schema/posts.model';
 import { getTimeSincePost } from '@/utils/getTimeSincePost';
+import Image from 'next/image';
 
 interface PostItemProps {
   post: PostModel;
@@ -45,8 +46,8 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
     >
       <div className="flex items-center mb-4 justify-between">
         <div className="flex items-center">
-          <img
-            src={author.avatar_base64}
+          <Image
+            src={author.avatar_base64 || '/default-avatar.png'}
             alt={author.name}
             className="w-10 h-10 rounded-full mr-2"
           />
@@ -89,7 +90,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
           {media.map((item, idx) => (
             <div key={idx} className="w-full">
               {item.type === 'image' ? (
-                <img
+                <Image
                   src={item.base64}
                   alt="Post media"
                   className="rounded-lg"

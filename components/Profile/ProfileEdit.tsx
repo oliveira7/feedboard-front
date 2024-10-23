@@ -29,7 +29,6 @@ export default function ProfileEdit({
   handleModalClose: () => void,
 }) {
   const [user, setUser] = useState<UserModel | null>(null);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -54,11 +53,10 @@ export default function ProfileEdit({
           setCourse(userData.course);
           setDescription(userData.description);
           setAvatarBase64(userData.avatar_base64);
-        } catch (error) {
-          setErrorMessage('Erro ao carregar os dados do usuário.');
+        } catch (error: any) {
+          setErrorMessage(error || 'Erro ao carregar os dados do usuário.');
         }
       }
-      setLoading(false);
     };
 
     fetchUser();
@@ -89,8 +87,8 @@ export default function ProfileEdit({
         setSnackbarOpen(true);
       }
       handleModalClose();
-    } catch (error) {
-      setErrorMessage('Erro ao salvar as alterações.');
+    } catch (error: any) {
+      setErrorMessage(error || 'Erro ao salvar as alterações.');
     } finally {
       setSaving(false);
       window.location.reload();

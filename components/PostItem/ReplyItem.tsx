@@ -3,9 +3,10 @@
 import { PostModel } from '@/schema/posts.model';
 import React, { useState } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
-import { MenuOutlined, MoreVert } from '@mui/icons-material';
+import { MenuOutlined } from '@mui/icons-material';
 import { UserModel } from '@/schema/user.model';
 import { getTimeSincePost } from '@/utils/getTimeSincePost';
+import Image from 'next/image';
 
 interface ReplyItemProps {
   reply: PostModel;
@@ -20,7 +21,7 @@ export default function ReplyItem({ reply, user, onDeleteReply }: ReplyItemProps
     <div className="bg-primary-50 p-2 rounded-lg flex items-start space-x-2 justify-between">
       <div className="flex items-start space-x-2">
         {reply.author.avatar_base64 && (
-          <img
+          <Image
             src={reply.author.avatar_base64}
             alt={reply.author.name}
             className="w-8 h-8 rounded-full"

@@ -5,9 +5,9 @@ import { fetchPosts, deletePostById, newPost } from '@/api/post-endpoint.service
 import CommentItem from './CommentItem';
 import { UserModel } from '@/schema/user.model';
 import { PostModel } from '@/schema/posts.model';
-import { ExpandCircleDown, ExpandMore } from '@mui/icons-material';
+import { ExpandMore } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
-import { useGroup } from '@/context/GroupContext'; // Usando o contexto para o estado global
+import { useGroup } from '@/context/GroupContext'; 
 
 interface CommentListProps {
   postId: string;
@@ -21,7 +21,7 @@ export default function CommentList({ postId, user }: CommentListProps) {
   const [hasMoreComments, setHasMoreComments] = useState(true);
   const [loadingComments, setLoadingComments] = useState(false);
 
-  const { expandedCommentsByPost, toggleExpandComment } = useGroup(); 
+  const { expandedCommentsByPost } = useGroup(); 
 
   const loadComments = async (reset = false) => {
     if (loadingComments || !hasMoreComments) return;

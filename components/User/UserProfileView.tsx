@@ -20,7 +20,7 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
       try {
         const userData = await getUserById(userId);
         setUser(userData);
-      } catch (error) {
+      } catch (e) {
         setErrorMessage('Erro ao carregar os dados do usuário.');
       } finally {
         setLoading(false);

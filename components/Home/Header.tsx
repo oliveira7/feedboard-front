@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Home, Logout, Person, ArrowDropDown } from '@mui/icons-material';
-import { Autocomplete, Avatar, CircularProgress, TextField } from '@mui/material';
+import { Autocomplete, Avatar, TextField } from '@mui/material';
 import Image from 'next/image';
 import logo from '../../public/assets/logo.svg';
 import { usePathname, useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ export default function Header() {
   const [modalOpen, setModalOpen] = useState(false);
   const [userOptions, setUserOptions] = useState<UserModel[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [setSearchQuery] = useState('');
   const { showError } = useSnackbar();
 
   useEffect(() => {
@@ -53,10 +53,7 @@ export default function Header() {
   const handleUserSelect = (
     event: React.SyntheticEvent<Element, Event>,
     value: string | UserModel | null,
-    reason: any,
-    details?: any
   ) => {
-    console.log(value);
     if (value && typeof value !== 'string') {
       router.push(`/privado/usuario/${value._id}`);
     }
