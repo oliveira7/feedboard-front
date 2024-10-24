@@ -32,8 +32,6 @@ export default function RegisterForm({
     handleRegister,
     setAuth,
     auth,
-    role,
-    handleChange,
     loading,
     showPassword,
     showConfirmPassword,

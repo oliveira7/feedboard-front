@@ -19,14 +19,8 @@ interface PostItemProps {
 
 export default function PostItem({ post, onDelete }: PostItemProps) {
   const { _id, author, content, media, created_at, totalChildren, peoplesReacted } = post;
-  const [liked, setLiked] = useState(false);
   const { user } = useGroup();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleLike = () => {
-    setLiked(!liked);
-    // TODO: Chamar API de curtida
-  };
 
   const handleDeletePost = async () => {
     try {

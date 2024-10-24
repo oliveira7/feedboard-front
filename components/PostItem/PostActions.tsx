@@ -51,10 +51,12 @@ export default function PostActions({
   const handleLike = async () => {
     try {
       if (liked) {
-        await deleteReaction(postId);
+       const response = await deleteReaction(postId);
+       console.log(response);
         setLikes((prevLikes) => Math.max(0, prevLikes - 1));
       } else {
-        await createReaction(postId);
+        const response =  await createReaction(postId);
+        console.log(response);
         setLikes((prevLikes) => prevLikes + 1);
       }
       setLiked(!liked);

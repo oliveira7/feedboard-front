@@ -75,20 +75,22 @@ export default function CommentList({ postId, user }: CommentListProps) {
       const response = await newPost(newCommentData);
       if (response) {
         setComments((prevComments) => [
-          ...prevComments,
-          {
-            _id: response._id,
-            author: {
-              _id: user._id,
-              name: user.name,
-              avatar_base64: user?.avatar_base64,
-            },
-            content: commentText,
-            created_at: new Date().toISOString(),
-            replies: [],
-            totalChildren: 0,
-          },
-        ]);
+                  ...prevComments,
+                  {
+                    _id: response._id,
+                    author: {
+                      _id: user._id,
+                      name: user.name,
+                      avatar_base64: user?.avatar_base64,
+                    },
+                    content: commentText,
+                    created_at: new Date().toISOString(),
+                    replies: [],
+                    totalChildren: 0,
+                    totalReaction: 0,
+                    peoplesReacted: [],
+                  },
+                ]);
         setCommentText('');
       }
     } catch (error) {

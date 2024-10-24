@@ -11,9 +11,9 @@ export const createReaction = async (postId: string): Promise<any> => {
     }
 }
 
-export const deleteReaction = async (reactionId: string): Promise<any> => { 
+export const deleteReaction = async (postId: string): Promise<any> => { 
     try {
-        const response = await api.delete(`/reactions/${reactionId}`);
+        const response = await api.delete(`/reactions/posts/${postId}`);
         return response.data.data;
     } catch (e: any) {
         return e.response?.data || 'Error deleting reaction';
