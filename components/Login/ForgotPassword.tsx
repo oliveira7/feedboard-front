@@ -53,7 +53,6 @@ export default function ForgotPassword({
                 Insira seu e-mail para receber o token de recuperação de senha.
               </div>
 
-              {/* Step 1: Campo de Email */}
               <div className="mb-4">
                 <InputLabel className="block mb-2" htmlFor="email">Email</InputLabel>
                 <TextField
@@ -72,7 +71,7 @@ export default function ForgotPassword({
                 variant="contained"
                 fullWidth
                 className="bg-primary text-white p-2 rounded-lg hover:bg-primary-dark transition mb-6"
-                disabled={!authPassword.email} // Desabilita o botão se o email estiver vazio
+                disabled={!authPassword.email} 
               >
                 {loading ? <CircularProgress size={25} color="secondary" /> : "Enviar Token por Email"}
               </Button>
@@ -85,7 +84,6 @@ export default function ForgotPassword({
                 Digite o token que você recebeu no email e crie uma nova senha.
               </div>
 
-              {/* Step 2: Campo de Token */}
               <div className="mb-4">
                 <InputLabel className="block mb-2" htmlFor="token">Token</InputLabel>
                 <TextField
@@ -99,7 +97,6 @@ export default function ForgotPassword({
                 />
               </div>
 
-              {/* Step 2: Campo de Nova Senha */}
               <div className="mb-4">
                 <InputLabel className="block mb-2" htmlFor="newPassword">Nova Senha</InputLabel>
                 <TextField
@@ -126,7 +123,6 @@ export default function ForgotPassword({
                 />
               </div>
 
-              {/* Step 2: Campo Confirmar Nova Senha */}
               <div className="mb-6">
                 <InputLabel className="block mb-2" htmlFor="confirmPassword">Confirmar Nova Senha</InputLabel>
                 <TextField

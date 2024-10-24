@@ -17,7 +17,7 @@ export default function LeftBar() {
           <>
             {user?.avatar_base64 ? (
               <Image
-                src={user.avatar_base64}
+                src={user?.avatar_base64}
                 alt="Profile"
                 className="rounded-full w-32 h-32 mb-4 border-4 border-white shadow-lg"
                 width={128}
@@ -29,16 +29,13 @@ export default function LeftBar() {
               </Avatar>
             )}
             
-            {/* Informações do usuário */}
             <div className="text-center">
               <h3 className="text-lg font-bold text-gray-800">{user.name}</h3>
               <p className="text-sm text-gray-500">{user.course}</p>
             </div>
 
-            {/* Divisor */}
             <Divider className="bg-gray-300 w-full my-4" />
 
-            {/* Descrição */}
             <div className="px-4 py-2 bg-gray-100 rounded-md shadow-inner">
               <p className="text-sm text-gray-600 italic text-center">
                 💬 {user.description || "Sem descrição disponível"}
@@ -46,7 +43,17 @@ export default function LeftBar() {
             </div>
           </>
         ) : (
-          <Skeleton variant="circular" width={128} height={128} animation="wave" />
+          <>
+            <Skeleton variant="circular" width={128} height={128} animation="wave" />
+
+            <Skeleton variant="text" width={100} height={28} animation="wave" />
+
+            <Skeleton variant="text" width={80} height={20} animation="wave" />
+
+            <Divider className="bg-gray-300 w-full my-4" />
+
+            <Skeleton variant="rectangular" width="100%" height={60} animation="wave" />
+          </>
         )}
       </div>
     </div>

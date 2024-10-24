@@ -5,7 +5,7 @@ import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { redirect } from 'next/navigation'; 
 
 const api = axios.create({
-  baseURL: 'https://feedboard-api-oliveira7-yuris-projects-4bbc1c15.vercel.app', 
+  baseURL: 'https://feedboard-back-oliveira7-yuris-projects-4bbc1c15.vercel.app', 
 });
 
 api.interceptors.request.use(async config => {

@@ -63,9 +63,9 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
         <div className="relative flex flex-col items-center mb-6 gap-4 pt-16">
           {user ? (
             <>
-              {user.avatar_base64 ? (
+              {user?.avatar_base64 ? (
                 <Image
-                  src={user.avatar_base64}
+                  src={user?.avatar_base64}
                   alt="Profile"
                   className="rounded-full w-48 h-48 mb-4 border-4 border-white shadow-lg"
                   width={192}

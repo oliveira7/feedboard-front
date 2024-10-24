@@ -22,6 +22,8 @@ export interface PostModel {
     parent_id?: string | null;
     pinned?: boolean;
     totalChildren: number;
+    totalReaction: number;
+    peoplesReacted: { user_id: string; name: string }[];
   }
 
 export interface UpdatePostModel {

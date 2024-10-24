@@ -18,7 +18,7 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post, onDelete }: PostItemProps) {
-  const { _id, author, content, media, created_at, totalChildren } = post;
+  const { _id, author, content, media, created_at, totalChildren, peoplesReacted } = post;
   const [liked, setLiked] = useState(false);
   const { user } = useGroup();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -47,9 +47,11 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
       <div className="flex items-center mb-4 justify-between">
         <div className="flex items-center">
           <Image
-            src={author.avatar_base64 || '/default-avatar.png'}
-            alt={author.name}
+            src={author?.avatar_base64 || '/default-avatar.png'}
+            alt={author?.name}
             className="w-10 h-10 rounded-full mr-2"
+            width={40}
+            height={40}
           />
           <div>
             <h3 className="font-bold">{author.name}</h3>
@@ -91,9 +93,11 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
             <div key={idx} className="w-full">
               {item.type === 'image' ? (
                 <Image
-                  src={item.base64}
+                  src={item?.base64}
                   alt="Post media"
                   className="rounded-lg"
+                  width={500}
+                  height={500}
                 />
               ) : (
                 <video controls className="rounded-lg w-full">
@@ -106,9 +110,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
       )}
 
       <PostActions
-        likes={0}
-        liked={liked}
-        onLike={handleLike}
+        peoplesReacted={peoplesReacted}
         totalComments={totalChildren}
         postId={_id}
       />

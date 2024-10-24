@@ -23,7 +23,6 @@ const LoginPage = ({ token }: LoginProps) => {
     password: '',
   });
   const [registerAuth,] = useState({ 
-    email: '',
     password: '',
     name: '',
     course: '',
@@ -87,13 +86,13 @@ const LoginPage = ({ token }: LoginProps) => {
       return;
     }
 
+    console.log(token);
+
     try {
       const registerObj = {
         name: registerAuth.name,
-        email: registerAuth.email,
         course: registerAuth.course,
-        password_hash: registerAuth.password,
-        role: role ?? '',
+        password: registerAuth.password,
         token: token
       }
       const response = await register(registerObj);

@@ -1,22 +1,18 @@
 import React from 'react'
-import logo from '../../public/assets/logo.svg';
 import { Role } from '@/schema/user.model';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { InputLabel, TextField, FormControl, Select, MenuItem, InputAdornment, IconButton, Button, CircularProgress, SelectChangeEvent } from '@mui/material';
-import Image from 'next/image';
+import { InputLabel, TextField, InputAdornment, IconButton, Button, CircularProgress, SelectChangeEvent } from '@mui/material';
 
 interface RegisterFormProps {
     handleRegister: (e: React.FormEvent) => void;
     setAuth: React.Dispatch<React.SetStateAction<{
         name: string;
-        email: string;
         course: string;
         password: string;
         confirmPassword: string;
     }>>;
     auth: {
         name: string;
-        email: string;
         course: string;
         password: string;
         confirmPassword: string;
@@ -48,12 +44,9 @@ export default function RegisterForm({
     return (
         <div className="w-full flex justify-center items-center bg-gradient-to-br from-primary-light to-primary-dark ">
             <div className="bg-primary-50 p-10 rounded-lg shadow-2xl w-full max-w-screen-lg absolute">
-                <div className="w-full flex justify-end items-center">
-                    <Image src={logo} alt="logo" width={100} height={100} className='bg-gradient-to-br from-primary-light to-primary-dark rounded-full p-2'/>
-                </div>
                 <h2 className="text-3xl font-bold mb-2 text-center">Cadastro</h2>
                 <div className="text-xs text-center pb-2">
-                    Inscreva-se e participe do mundo acadêmico.
+                    Inscreva-se e participe do nosso mundo acadêmico.
                 </div>
 
                 <form onSubmit={handleRegister}>
@@ -70,21 +63,7 @@ export default function RegisterForm({
                                 onChange={(e) => setAuth({ ...auth, name: e.target.value })}
                             />
                         </div>
-                        <div className="mb-4 mt-4 w-2/5 ">
-                            <InputLabel className="block mb-2" htmlFor="email">Email</InputLabel>
-                            <TextField
-                                id="email"
-                                type="email"
-                                variant="outlined"
-                                placeholder="Digite seu email"
-                                fullWidth
-                                className="mb-4"
-                                onChange={(e) => setAuth({ ...auth, email: e.target.value })}
-                            />
-                        </div>
-                    </div>
 
-                    <div className="flex w-full justify-around items-center">
                         <div className="w-2/5 mb-4 mt-4">
                             <InputLabel className="block mb-2" htmlFor="course">Curso</InputLabel>
                             <TextField
@@ -97,24 +76,8 @@ export default function RegisterForm({
                                 onChange={(e) => setAuth({ ...auth, course: e.target.value })}
                             />
                         </div>
-
-                        <div className="w-2/5 mt-6">
-                            <FormControl fullWidth variant="outlined" margin="normal">
-                                <InputLabel id="role-label">Selecione o cargo</InputLabel>
-                                <Select
-                                    labelId="role-label"
-                                    id="role-select"
-                                    label="Selecione o cargo"
-                                    value={role}
-                                    onChange={(event, child) => handleChange(event, child)}
-                                >
-                                    <MenuItem value={Role.STUDENT}>Estudante</MenuItem>
-                                    <MenuItem value={Role.TEACHER}>Professor</MenuItem>
-                                    <MenuItem value={Role.COORDINATOR}>Coordenador</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </div>
                     </div>
+
                     <div className="flex w-full justify-around items-center">
                         <div className="mb-4 mt-4  w-2/5">
                             <InputLabel className="block mb-2" htmlFor="password">Senha</InputLabel>
@@ -168,7 +131,7 @@ export default function RegisterForm({
                             />
                         </div>
                     </div>
-                    <div className="flex justify-center mt-2">
+                    <div className="flex justify-center mt-6">
                         <Button
                             type="submit"
                             variant="contained"

@@ -1,4 +1,3 @@
-// services/postService.ts
 'use server';
 
 import { CreatePostModel } from "@/schema/posts.model";

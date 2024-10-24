@@ -81,7 +81,7 @@ export default function CommentList({ postId, user }: CommentListProps) {
             author: {
               _id: user._id,
               name: user.name,
-              avatar_base64: user.avatar_base64,
+              avatar_base64: user?.avatar_base64,
             },
             content: commentText,
             created_at: new Date().toISOString(),
@@ -132,6 +132,8 @@ export default function CommentList({ postId, user }: CommentListProps) {
                 src={user?.avatar_base64}
                 alt={user?.name}
                 className="w-8 h-8 rounded-full"
+                width={32}
+                height={40}
               />
             )}
             <>

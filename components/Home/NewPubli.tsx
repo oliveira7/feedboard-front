@@ -162,6 +162,7 @@ export default function NewPubli() {
                 src={media[0].base64}
                 alt="Preview"
                 className="max-h-40 rounded-lg"
+                width={40}
               />
             </div>
           )}

@@ -9,6 +9,7 @@ import { UserModel } from '@/schema/user.model';
 import { PostModel } from '@/schema/posts.model';
 import { getTimeSincePost } from '@/utils/getTimeSincePost';
 import Image from 'next/image';
+import LikeComment from './LikeComment';
 
 interface CommentItemProps {
   comment: PostModel;
@@ -40,7 +41,6 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
 
         setReplies(newReplies);
 
-        // Atualizar hasMoreReplies com base no total de respostas disponíveis
         if (newReplies.length >= response.totalReplies) {
           setHasMoreReplies(false);
         } else {
@@ -74,7 +74,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
           author: {
             _id: user._id,
             name: user.name,
-            avatar_base64: user.avatar_base64,
+            avatar_base64: user?.avatar_base64,
           },
           content: replyText,
           created_at: new Date().toISOString(),
@@ -86,14 +86,12 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
 
         setReplies((prevReplies) => [newReply, ...prevReplies]);
 
-        // Incrementar o total de respostas localmente
         comment.totalChildren += 1;
 
         setReplyText('');
         setShowReplyInput(false);
         setShowReplies(true);
 
-        // Ajustar o limite se necessário
         setLimit((prevLimit) => prevLimit + 1);
       }
     } catch (error) {
@@ -108,9 +106,11 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
           <div className="flex items-center">
             {comment.author.avatar_base64 && (
               <Image
-                src={comment.author.avatar_base64}
-                alt={comment.author.name}
+                src={comment?.author?.avatar_base64}
+                alt={comment?.author?.name}
                 className="w-10 h-10 rounded-full"
+                width={40}
+                height={40}
               />
             )}
             <div className="text-sm font-bold text-highlight ml-2">
@@ -190,10 +190,12 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         </div>
       ) : (
         <div className="flex items-center mt-4 ml-[50px]">
-          <a className="text-sm mt-1 cursor-pointer hover:text-highlight active:text-highlight">
-            Gostei
-          </a>
-          <span className="ml-2 mr-2 ">|</span>
+          <LikeComment
+            postId={comment._id}
+            initialLikes={comment.totalReaction || 0}
+            initialLiked={0 || false}
+          />
+          <span className="ml-2 mr-2">|</span>
           <a
             onClick={() => setShowReplyInput(true)}
             className="text-sm mt-1 cursor-pointer hover:text-highlight active:text-highlight"
