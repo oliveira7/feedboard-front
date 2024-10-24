@@ -69,7 +69,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
 
       const response = await newPost(newReplyData);
       if (response) {
-        const newReply = {
+        const newReply: PostModel = {
           _id: response._id,
           author: {
             _id: user._id,
@@ -82,6 +82,8 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
           totalChildren: 0,
           group_id: '',
           parent_id: comment._id,
+          totalReaction: 0,
+          peoplesReacted: []
         };
 
         setReplies((prevReplies) => [newReply, ...prevReplies]);
