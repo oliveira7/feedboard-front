@@ -15,7 +15,7 @@ export function middleware(request: NextRequest) {
 
   const validRoutes = ['/', '/cadastro', '/privado/home'];
   const isUsuarioRoute = pathname.startsWith('/privado/usuario');
-  const isPainelAdm = pathname.startsWith('/privado/painel-adm');
+  const isPainelAdm = pathname.startsWith('/privado/admin');
 
   if (pathname.startsWith('/privado')) {
     if (!validRoutes.includes(pathname) && !isUsuarioRoute && !isPainelAdm) {

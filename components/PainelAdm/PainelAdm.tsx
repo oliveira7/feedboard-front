@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { TextField, Chip, IconButton, Box } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
