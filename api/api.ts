@@ -26,7 +26,7 @@ api.interceptors.response.use(response => {
   if (error.response?.status === 401) {
     console.error('Erro 401: Não autorizado, redirecionando para login.');
 
-    (cookies() as unknown as UnsafeUnwrappedCookies).set('token', '', { expires: new Date(0) });
+    (cookies() as unknown as UnsafeUnwrappedCookies).delete('token');
 
     redirect('/'); 
   }

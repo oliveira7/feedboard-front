@@ -155,14 +155,47 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
           </div>
         </div>
       </div>
+
       <div className="text-sm mt-2">{comment.content}</div>
 
+      <div className="flex items-center mt-4 ml-[50px]">
+        <LikeComment
+          postId={comment._id}
+          peoplesReacted={comment.peoplesReacted}
+          initialLikes={comment.peoplesReacted.length || 0}
+          initialLiked={0 || false}
+          userId={user._id}
+        />
+        <span className="ml-2 mr-2">|</span>
+        <a
+          onClick={() => setShowReplyInput(true)}
+          className="text-sm mt-1 cursor-pointer hover:text-highlight active:text-highlight"
+        >
+          Responder
+        </a>
+      </div>
+
+      {showReplyInput && (
+        <div className="flex items-center space-x-2 mt-2">
+          <input
+            type="text"
+            placeholder="Escreva uma resposta..."
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            className="flex-1 bg-primary-100 p-2 rounded-lg text-sm outline-none"
+          />
+          <button onClick={handleAddReply} className="text-highlight">
+            Responder
+          </button>
+        </div>
+      )}
+
       {showReplies && (
-        <>
+        <div className="mt-4">
           {replies.length > 0 && (
             <ReplyList replies={replies} user={user} onDeleteReply={onDelete} />
           )}
-          {hasMoreReplies && !loadingReplies && (
+          {hasMoreReplies && replies.length < comment.totalChildren && !loadingReplies && (
             <button
               onClick={() => {
                 const newLimit = limit + 5;
@@ -176,55 +209,6 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
           )}
           {loadingReplies && (
             <div className="text-sm text-gray-500 mt-2">Carregando respostas...</div>
-          )}
-        </>
-      )}
-
-      {showReplyInput ? (
-        <div className="flex items-center space-x-2 mt-2">
-          <input
-            type="text"
-            placeholder="Escreva uma resposta..."
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-            className="flex-1 bg-primary-100 p-2 rounded-lg text-sm outline-none"
-          />
-          <button onClick={handleAddReply} className="text-highlight">
-            Responder
-          </button>
-        </div>
-      ) : (
-        <div className="flex items-center mt-4 ml-[50px]">
-          <LikeComment
-            postId={comment._id}
-            initialLikes={comment.totalReaction || 0}
-            initialLiked={0 || false}
-          />
-          <span className="ml-2 mr-2">|</span>
-          <a
-            onClick={() => setShowReplyInput(true)}
-            className="text-sm mt-1 cursor-pointer hover:text-highlight active:text-highlight"
-          >
-            Responder
-          </a>
-
-          {(comment.totalChildren > 0 || replies.length > 0) && (
-            <>
-              <div className="w-1 h-1 bg-gray-300 rounded-full inline-block mx-2 mt-1"></div>
-              <span
-                className="text-xs mt-1 cursor-pointer hover:text-highlight active:text-highlight"
-                onClick={() => {
-                  setShowReplies(!showReplies);
-                  if (!showReplies) {
-                    setLimit(5);
-                    setHasMoreReplies(true);
-                    loadReplies(true, 5);
-                  }
-                }}
-              >
-                {`${comment.totalChildren} resposta(s)`}
-              </span>
-            </>
           )}
         </div>
       )}

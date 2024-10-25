@@ -29,6 +29,7 @@ export default function Header() {
 
   useEffect(() => {
     setCurrentPath(pathname);
+    console.log(user);
   }, [pathname]);
 
   const fetchUsers = async (query: string) => {
