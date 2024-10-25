@@ -12,7 +12,7 @@ export default function NewPubli() {
   const [openModal, setOpenModal] = useState(false);
   const [postText, setPostText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState<File[]>([]); // Guardar múltiplos arquivos
+  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const { user, setAtualizarFeed, selectedGroup } = useGroup();
 
   const handleOpenModal = () => setOpenModal(true);
@@ -34,7 +34,10 @@ export default function NewPubli() {
     const formData = new FormData();
     formData.append('author', user._id);
     formData.append('content', postText);
-    formData.append('group_id', selectedGroup || '');
+
+    if (selectedGroup) { 
+      formData.append('group_id', selectedGroup);
+    }
 
     if (mediaFiles.length > 0) {
       mediaFiles.forEach((file) => {

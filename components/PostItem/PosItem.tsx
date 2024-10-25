@@ -18,7 +18,7 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post, onDelete }: PostItemProps) {
-  const { _id, author, content, media, created_at, totalChildren, peoplesReacted } = post;
+  const { _id, author, content, files, created_at, totalChildren, peoplesReacted } = post;
   const { user } = useGroup();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -81,9 +81,9 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
 
       <p className="mb-4 ml-4 mr-4">{content}</p>
 
-      {media && media.length > 0 && (
+      {files && files.length > 0 && (
         <div className="flex space-x-2 mb-4">
-          {media.map((item, idx) => (
+          {files.map((item, idx) => (
             <div key={idx} className="w-full">
               {item.type === 'image' ? (
                 <Image
