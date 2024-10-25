@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Search, Home, Logout, Person, ArrowDropDown, PersonOutline, AdminPanelSettingsOutlined } from '@mui/icons-material';
+import { Search, Home, Logout, ArrowDropDown, PersonOutline, AdminPanelSettingsOutlined } from '@mui/icons-material';
 import { Autocomplete, Avatar, TextField } from '@mui/material';
 import Image from 'next/image';
 import logo from '../../public/assets/logo.svg';

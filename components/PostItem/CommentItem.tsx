@@ -55,13 +55,6 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
     if (!replyText.trim()) return;
 
     try {
-      const newReplyData = {
-        author: user._id,
-        parent_id: comment._id,
-        content: replyText,
-        pinned: false,
-      };
-
       const formData = new FormData();
       formData.append('author', user._id);
       formData.append('parent_id', comment._id);
