@@ -38,7 +38,7 @@ export default function NewPubli() {
 
     if (mediaFiles.length > 0) {
       mediaFiles.forEach((file) => {
-        formData.append('media', file);
+        formData.append('files', file);
       });
     }
 
