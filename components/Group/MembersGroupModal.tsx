@@ -114,7 +114,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
 
         <h2 className="text-lg font-bold mb-4">Gerenciar Membros: {group.name}</h2>
 
-        <div className="mb-4 ">
+        <div className="mb-4 overflow-auto">
           <h3 className="font-semibold mb-2">Membros Atuais</h3>
           {loadingMembers ? (
             <div className="flex justify-center">
@@ -135,7 +135,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
                         <p className="text-sm text-scondary">{member.course || 'Curso não disponível'}</p>
                       </div>
                     </div>
-                    {user._id === group.created_by && (
+                    {user._id === group.created_by && !member._id && (
                       <button
                         onClick={() => handleRemoveMember(member._id)}
                         className="text-red-500 text-sm hover:underline"

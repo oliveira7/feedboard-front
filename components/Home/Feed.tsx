@@ -7,7 +7,11 @@ import { useGroup } from '@/context/GroupContext';
 import { useSnackbar } from '@/context/SnackBarContext';
 import PostItem from '../PostItem/PosItem';
 
-const Feed = forwardRef(() => {
+interface FeedProps {
+  idUserPage?: string;
+}
+
+const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }, ref) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [limit, setLimit] = useState(5);
   const [loading, setLoading] = useState(false);
@@ -21,8 +25,8 @@ const Feed = forwardRef(() => {
       if (loading) return;
       setLoading(true);
       const currentLimit = reset ? 5 : customLimit || limit;
-
-      const { posts: fetchedPosts, totalPages } = await fetchPosts(1, currentLimit, selectedGroup || null);
+      console.log(idUserPage)
+      const { posts: fetchedPosts, totalPages } = await fetchPosts(1, currentLimit, selectedGroup || undefined, idUserPage || undefined);
       console.log(fetchedPosts);
 
       if (fetchedPosts && fetchedPosts.length > 0) {

@@ -5,6 +5,7 @@ import { CircularProgress, Avatar, Snackbar, Alert, Divider, Skeleton } from '@m
 import { UserModel } from '@/schema/user.model';
 import { getUserById } from '@/api/user-endpoint.service';
 import Image from 'next/image';
+import Feed from '../Home/Feed';
 
 interface UserProfileViewProps {
   userId: string;
@@ -22,7 +23,7 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
         setUser(userData);
       } catch (e: unknown) {
         if (e instanceof Error) {
-        setErrorMessage(e.message || 'Erro ao carregar os dados do usuário.');
+          setErrorMessage(e.message || 'Erro ao carregar os dados do usuário.');
         }
       } finally {
         setLoading(false);
@@ -56,9 +57,9 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="w-1/3 bg-white rounded-lg shadow-lg p-6 h-fit relative">
-        <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-br from-green-400 to-green-600 rounded-t-lg"></div>
+    <div className="flex flex-col items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 mt-6">
+        <div className="relative w-full h-1/3 bg-gradient-to-br from-green-400 to-green-600 rounded-t-lg"></div>
 
         <div className="relative flex flex-col items-center mb-6 gap-4 pt-16">
           {user ? (
@@ -94,6 +95,10 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
             <Skeleton variant="circular" width={192} height={192} animation="wave" />
           )}
         </div>
+      </div>
+
+      <div className="w-full max-w-md mt-6">
+        <Feed idUserPage={userId} />
       </div>
     </div>
   );

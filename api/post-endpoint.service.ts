@@ -1,9 +1,8 @@
 'use server';
 
-import { CreatePostModel } from "@/schema/posts.model";
 import api from "./api";
 
-export const fetchPosts = async (page: number, limit: number, groupId?: string, parentId?: string, type?: string) => {
+export const fetchPosts = async (page: number, limit: number, groupId?: string, parentId?: string, type?: string, userId?: string) => {
   try {
     let url = `/posts?page=${page}&limit=${limit}`;
 
@@ -15,6 +14,9 @@ export const fetchPosts = async (page: number, limit: number, groupId?: string, 
     }
     if (type) {
       url += `&type=${type}`;
+    }
+    if (userId) {
+      url += `&userId=${userId}`;	
     }
 
     const response = await api.get(url);

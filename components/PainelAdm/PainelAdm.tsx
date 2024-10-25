@@ -1,50 +1,67 @@
 'use client';
 
 import React, { useState } from 'react';
-import { TextField, Chip, IconButton, Box } from '@mui/material';
+import { TextField, Chip, IconButton, Box, Button, CircularProgress, Snackbar, Alert } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
+import { sendInvitations } from '@/api/invitations-endpoint.service';
 
 export default function PainelAdm() {
   const [emailInput, setEmailInput] = useState('');
   const [emails, setEmails] = useState<string[]>([]);
-
-  const handleAddEmail = () => {
-    if (emailInput && validateEmail(emailInput) && !emails.includes(emailInput)) {
-      setEmails([...emails, emailInput]);
-      setEmailInput('');
-    }
-  };
-
-  const handleDeleteEmail = (emailToDelete: string) => {
-    setEmails(emails.filter(email => email !== emailToDelete));
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const validateEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regex = /^[^\s@]+@[^\s@]+\.(com|br)$/;
     return regex.test(email);
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleAddEmail();
+  const extractEmails = (input: string) => {
+    const emailRegex = /[^\s@]+@[^\s@]+\.(com|br)/g;
+    const matches = input.match(emailRegex);
+    return matches ? matches.filter((email) => validateEmail(email)) : [];
+  };
+
+  const handleAddEmails = () => {
+    const newEmails = extractEmails(emailInput);
+    const uniqueEmails = newEmails.filter((email) => !emails.includes(email));
+    setEmails([...emails, ...uniqueEmails]);
+    setEmailInput('');
+  };
+
+  const handleSendInvitations = async () => {
+    if (emails.length > 0) {
+      setIsLoading(true);
+      const response = await sendInvitations(emails);
+      if (response) {
+        setSuccessMessage('Convites enviados com sucesso!');
+      }
+      console.log(response);
+      setEmails([]);
+      setIsLoading(false);
     }
   };
 
+  const handleCloseSnackbar = () => {
+    setSuccessMessage('');
+  };
+
   return (
-    <Box sx={{ p: 3, maxWidth: 600, margin: '0 auto' }}>
-      <h2>Painel Administrativo - Envio de Emails</h2>
-      
+    <div className='h-screen p-24'>
+      <div className='text-center pb-10'>
+        <h2 className='text-primary font-bold'>Painel Administrativo - Envio de Emails</h2>
+      </div>
+
       <Box display="flex" alignItems="center" mb={2}>
         <TextField
-          label="Digite um email"
+          label="Digite um email ou vários e-mails"
           value={emailInput}
           onChange={(e) => setEmailInput(e.target.value)}
-          onKeyPress={handleKeyPress}
           variant="outlined"
           fullWidth
-          helperText={emailInput && !validateEmail(emailInput) ? 'Email inválido' : ''}
+          helperText="Digite múltiplos e-mails, separados por espaços ou linha"
         />
-        <IconButton color="primary" onClick={handleAddEmail}>
+        <IconButton color="primary" onClick={handleAddEmails} disabled={!emailInput.trim()}>
           <AddCircleOutline />
         </IconButton>
       </Box>
@@ -54,11 +71,33 @@ export default function PainelAdm() {
           <Chip
             key={index}
             label={email}
-            onDelete={() => handleDeleteEmail(email)}
+            onDelete={() => setEmails(emails.filter((e) => e !== email))}
             color="primary"
           />
         ))}
       </Box>
-    </Box>
+
+      <div className='flex justify-center'>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSendInvitations}
+          disabled={emails.length === 0 || isLoading}
+          style={{ marginTop: '1rem', margin: 'auto' }}
+        >
+          {isLoading ? <CircularProgress size={24} /> : 'Enviar Convites'}
+        </Button>
+      </div>
+
+      <Snackbar
+        open={!!successMessage}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 }

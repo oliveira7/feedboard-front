@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { Modal, Box, Button, IconButton, TextField, Avatar, FormControl, Skeleton } from "@mui/material";
+import { Modal, Box, Button, IconButton, TextField, Avatar, FormControl, Skeleton, CircularProgress } from "@mui/material";
 import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
 import { newPost } from "@/api/post-endpoint.service";
@@ -14,6 +14,7 @@ export default function NewPubli() {
   const [showEmojis, setShowEmojis] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const { user, setAtualizarFeed, selectedGroup } = useGroup();
+  const [loading, setLoading] = useState(false);
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
@@ -154,7 +155,7 @@ export default function NewPubli() {
               disabled={!postText.trim() && mediaFiles.length === 0}
               onClick={createPost}
             >
-              Publicar
+             { loading ? <CircularProgress /> : 'Publicar'} 
             </Button>
           </div>
 
@@ -163,7 +164,7 @@ export default function NewPubli() {
               {mediaFiles.map((file, index) => (
                 <Image
                   key={index}
-                  src={URL.createObjectURL(file)} // Mostrar a pré-visualização da imagem
+                  src={URL.createObjectURL(file)} 
                   alt={`Preview ${index + 1}`}
                   className="max-h-40 rounded-lg"
                   width={100}

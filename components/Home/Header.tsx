@@ -195,7 +195,7 @@ export default function Header() {
               </button>
               {user?.role == Role.COORDINATOR && (
                 <button
-                  onClick={() => router.push('/privado/painel-adm')}
+                  onClick={() => router.push('/privado/admin')}
                   className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight"
                 >
                   <AdminPanelSettingsOutlined /> Painel Admin

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MenuOutlined } from '@mui/icons-material';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { Avatar, IconButton, Menu, MenuItem } from '@mui/material';
 import { deletePostById } from '@/api/post-endpoint.service';
 import { useGroup } from '@/context/GroupContext';
 import CommentList from './CommentList';
@@ -40,6 +40,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
     >
       <div className="flex items-center mb-4 justify-between">
         <div className="flex items-center">
+          { user?.avatar ? (
           <Image
             src={author?.avatar || '/default-avatar.png'}
             alt={author?.name}
@@ -47,6 +48,9 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
             width={40}
             height={40}
           />
+        ) : (
+          <Avatar alt="User Avatar" className="w-10 h-10" />
+        )}
           <div>
             <h3 className="font-bold">{author.name}</h3>
           </div>

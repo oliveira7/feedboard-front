@@ -72,7 +72,7 @@ export default function RightBar() {
 
           {groups?.length > 0 ? (
             <ul className="space-y-3">
-              {groups.map((item, index) => (
+              {groups?.map((item, index) => (
                 <li key={index} className="text-sm" onClick={() => setContextGroup(item._id)}>
                   <a
                     className={`hover:underline font-bold cursor-pointer ${selectedGroupFromContext === item._id ? 'text-highlight' : 'text-default'
@@ -99,7 +99,7 @@ export default function RightBar() {
           )}
         </div>
 
-        {groups.length > 0 && (
+        {groups?.length > 0 && (
           <div onClick={backToFeed} className="flex cursor-pointer items-center text-sm hover:text-highlight">
             <ArrowBack
               sx={{
