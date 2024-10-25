@@ -8,7 +8,6 @@ import ReplyList from './ReplyList';
 import { UserModel } from '@/schema/user.model';
 import { PostModel } from '@/schema/posts.model';
 import { getTimeSincePost } from '@/utils/getTimeSincePost';
-import Image from 'next/image';
 import LikeComment from './LikeComment';
 
 interface CommentItemProps {
