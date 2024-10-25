@@ -20,9 +20,9 @@ export default function ReplyItem({ reply, user, onDeleteReply }: ReplyItemProps
   return (
     <div className="bg-primary-50 p-2 rounded-lg flex items-start space-x-2 justify-between">
       <div className="flex items-start space-x-2">
-        {reply.author.avatar_base64 && (
+        {reply.author.avatar && (
           <Image
-            src={reply?.author?.avatar_base64}
+            src={reply?.author?.avatar}
             alt={reply.author.name}
             className="w-8 h-8 rounded-full"
             width={32}

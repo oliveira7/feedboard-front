@@ -81,7 +81,7 @@ export default function CommentList({ postId, user }: CommentListProps) {
                     author: {
                       _id: user._id,
                       name: user.name,
-                      avatar_base64: user?.avatar_base64,
+                      avatar: user?.avatar,
                     },
                     content: commentText,
                     created_at: new Date().toISOString(),
@@ -129,9 +129,9 @@ export default function CommentList({ postId, user }: CommentListProps) {
           )}
 
           <div className="flex items-center space-x-2 mt-4">
-            {user?.avatar_base64 && (
+            {user?.avatar && (
               <Image
-                src={user?.avatar_base64}
+                src={user?.avatar}
                 alt={user?.name}
                 className="w-8 h-8 rounded-full"
                 width={32}

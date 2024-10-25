@@ -59,10 +59,10 @@ export default function NewPubli() {
   return (
     <div className="flex items-center p-4 bg-primary-50 rounded-lg shadow-md">
       {
-        user && user?.avatar_base64 ? (
-          user?.avatar_base64 ? (
+        user && user?.avatar ? (
+          user?.avatar ? (
             <Image
-              src={user?.avatar_base64}
+              src={user?.avatar}
               alt="Profile"
               className="rounded-full w-10 h-10 border-2 border-primary-50 mr-4"
               width={50}

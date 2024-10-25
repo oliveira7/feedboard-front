@@ -41,7 +41,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
       <div className="flex items-center mb-4 justify-between">
         <div className="flex items-center">
           <Image
-            src={author?.avatar_base64 || '/default-avatar.png'}
+            src={author?.avatar || '/default-avatar.png'}
             alt={author?.name}
             className="w-10 h-10 rounded-full mr-2"
             width={40}

@@ -55,7 +55,7 @@ export default function ProfileEdit({
           setName(userData.name);
           setCourse(userData.course);
           setDescription(userData.description);
-          setAvatarBase64(userData.avatar_base64);
+          setAvatarBase64(userData.avatar);
         } catch (e: unknown) {
           if (e instanceof Error) {
             setErrorMessage(e.message || 'Erro ao carregar os dados do usuário.');
@@ -87,15 +87,15 @@ export default function ProfileEdit({
     setSaving(true);
     try {
       let response;
-      if (user?.avatar_base64 !== avatarBase64) {
+      if (user?.avatar !== avatarBase64) {
         const build = {
           name,
           course,
           description,
-          avatar_base64: avatarBase64
+          avatar: avatarBase64
         }
         console.log(build);
-        response = await updateUser(user!._id, { name, course, description, avatar_base64: avatarBase64 });
+        response = await updateUser(user!._id, { name, course, description, avatar: avatarBase64 });
       } else {
         response = await updateUser(user!._id, { name, course, description });
       }

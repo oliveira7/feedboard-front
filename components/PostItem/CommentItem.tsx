@@ -69,7 +69,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
           author: {
             _id: user._id,
             name: user.name,
-            avatar_base64: user?.avatar_base64,
+            avatar: user?.avatar,
           },
           content: replyText,
           created_at: new Date().toISOString(),
@@ -105,9 +105,9 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
       <div className="flex w-full space-x-4">
         <div className="flex items-start space-x-3 w-full justify-between">
           <div className="flex items-center">
-            {comment.author.avatar_base64 && (
+            {comment.author.avatar && (
               <img
-                src={comment?.author?.avatar_base64}
+                src={comment?.author?.avatar}
                 alt={comment?.author?.name}
                 className="w-10 h-10 rounded-full"
                 width={40}
@@ -154,7 +154,6 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
 
       <div className="text-sm mt-2">{comment.content}</div>
 
-      {/* Like and reply input */}
       <div className="flex items-center mt-4 ml-[50px]">
         <LikeComment
           postId={comment._id}
