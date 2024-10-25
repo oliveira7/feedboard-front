@@ -169,7 +169,7 @@ export default function Header() {
           onClick={() => setProfileMenuOpen((prev) => !prev)}
         >
           {user?.avatar ? (
-            <img
+            <Image
               src={user.avatar}
               alt="Profile"
               className="rounded-full w-10 h-10 border-4 border-primary-50 transition-transform duration-300 ease-in-out hover:scale-110"
