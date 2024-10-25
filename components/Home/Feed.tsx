@@ -11,7 +11,7 @@ interface FeedProps {
   idUserPage?: string;
 }
 
-const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }, ref) => {
+const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [limit, setLimit] = useState(5);
   const [loading, setLoading] = useState(false);

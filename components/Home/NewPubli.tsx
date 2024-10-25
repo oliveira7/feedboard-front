@@ -50,12 +50,14 @@ export default function NewPubli() {
       const response = await newPost(formData);
       console.log(response);
       setAtualizarFeed(true);
+      setLoading(true);
       setPostText('');
       setMediaFiles([]);
       setOpenModal(false);
     } catch (e) {
       console.error(e);
     }
+    setLoading(false);
   };
 
   return (
