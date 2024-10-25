@@ -57,48 +57,59 @@ export default function RightBar() {
 
   return (
     <>
-      <div className="w-full bg-primary-50  rounded-lg shadow-lg p-4 h-fit">
+      <div className="w-full bg-primary-50 rounded-lg shadow-lg p-4 h-fit">
         <div className="mb-6">
           <div className="flex items-center w-full justify-between">
-            <h3 className="text-lg font-bold  text-highlight">Feedboard Grupos</h3>
+            <h3 className="text-lg font-bold text-highlight">Feedboard Grupos</h3>
 
             <Tooltip title="Novo grupo" arrow>
-              <IconButton onClick={() => setIsCreateGroupModalOpen(true)}
-              >
-                <AddCircleOutline className="text-highlight"  />
+              <IconButton onClick={() => setIsCreateGroupModalOpen(true)}>
+                <AddCircleOutline className="text-highlight" />
               </IconButton>
             </Tooltip>
           </div>
           <hr className="border-primary-100 pt-4 border-gray-300" />
-          <ul className="space-y-3">
-            {groups?.map((item, index) => (
-              <li key={index} className="text-sm " onClick={() => setContextGroup(item._id)}>
-                <a
-                  className={`hover:underline font-bold cursor-pointer ${selectedGroupFromContext === item._id ? 'text-highlight' : 'text-default'
-                    }`}
-                >
-                  {item.name}
-                </a>
-                <p className="text-gray-300 text-sx">{formatMembers(item.members || [])}</p>
-                { user?._id === item.created_by && (
-                <button
-                  onClick={() => openMembersModal(item)}
-                  className="text-highlight-dark text-xs hover:underline"
-                >
-                  Gerenciar membros
-                </button>
-                 )}
-              </li>
-            ))}
-          </ul>
+
+          {groups.length > 0 ? (
+            <ul className="space-y-3">
+              {groups.map((item, index) => (
+                <li key={index} className="text-sm" onClick={() => setContextGroup(item._id)}>
+                  <a
+                    className={`hover:underline font-bold cursor-pointer ${selectedGroupFromContext === item._id ? 'text-highlight' : 'text-default'
+                      }`}
+                  >
+                    {item.name}
+                  </a>
+                  <p className="text-gray-300 text-sx">{formatMembers(item.members || [])}</p>
+                  {user?._id === item.created_by && (
+                    <button
+                      onClick={() => openMembersModal(item)}
+                      className="text-highlight-dark text-xs hover:underline"
+                    >
+                      Gerenciar membros
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-center text-sm text-gray-500 mt-4">
+              <p>Poxa, você ainda não entrou em nenhum grupo <span className="text-lg">😔</span></p>
+            </div>
+          )}
         </div>
-        <div onClick={backToFeed} className="flex cursor-pointer items-center text-sm hover:text-highlight">
-          <ArrowBack sx={{
-            fontSize: 16,
-            marginRight: 1,
-          }} />
-          Voltar para o feedboard
-        </div>
+
+        {groups.length > 0 && (
+          <div onClick={backToFeed} className="flex cursor-pointer items-center text-sm hover:text-highlight">
+            <ArrowBack
+              sx={{
+                fontSize: 16,
+                marginRight: 1,
+              }}
+            />
+            Voltar para o feedboard
+          </div>
+        )}
       </div>
 
       <CreateGroupModal

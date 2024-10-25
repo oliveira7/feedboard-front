@@ -38,16 +38,12 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
       if (response && response.posts) {
         const newReplies = response.posts;
 
-        setReplies(newReplies);
+        setReplies(reset ? newReplies : [...replies, ...newReplies]);
 
-        if (newReplies.length >= response.totalReplies) {
+        if (newReplies.length < currentLimit) {
           setHasMoreReplies(false);
-        } else {
-          setHasMoreReplies(true);
         }
-      } else {
-        setHasMoreReplies(false);
-      }
+      } 
     } catch (error) {
       console.error('Erro ao carregar respostas:', error);
     } finally {
@@ -158,6 +154,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
 
       <div className="text-sm mt-2">{comment.content}</div>
 
+      {/* Like and reply input */}
       <div className="flex items-center mt-4 ml-[50px]">
         <LikeComment
           postId={comment._id}
@@ -173,6 +170,25 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         >
           Responder
         </a>
+
+        {(comment.totalChildren > 0 || replies.length > 0) && (
+          <>
+            <div className="w-1 h-1 bg-gray-300 rounded-full inline-block mx-2 mt-1"></div>
+            <span
+              className="text-xs mt-1 cursor-pointer hover:text-highlight active:text-highlight"
+              onClick={() => {
+                setShowReplies(!showReplies);
+                if (!showReplies) {
+                  setLimit(5);
+                  setHasMoreReplies(true);
+                  loadReplies(true, 5);
+                }
+              }}
+            >
+              {`${comment.totalChildren} resposta(s)`}
+            </span>
+          </>
+        )}
       </div>
 
       {showReplyInput && (
@@ -190,12 +206,13 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         </div>
       )}
 
+      {/* Replies list */}
       {showReplies && (
         <div className="mt-4">
           {replies.length > 0 && (
             <ReplyList replies={replies} user={user} onDeleteReply={onDelete} />
           )}
-          {hasMoreReplies && replies.length < comment.totalChildren && !loadingReplies && (
+          {hasMoreReplies && !loadingReplies && (
             <button
               onClick={() => {
                 const newLimit = limit + 5;
