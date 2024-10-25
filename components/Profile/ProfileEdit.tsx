@@ -55,7 +55,7 @@ export default function ProfileEdit({
           setName(userData.name);
           setCourse(userData.course);
           setDescription(userData.description);
-          setAvatarPreview(userData.avatar); // Usar o avatar para preview
+          setAvatarPreview(userData.avatar);
         } catch (e: unknown) {
           if (e instanceof Error) {
             setErrorMessage(e.message || 'Erro ao carregar os dados do usuário.');
@@ -77,7 +77,7 @@ export default function ProfileEdit({
       setAvatarFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatarPreview(reader.result as string); // Mostrar preview
+        setAvatarPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }

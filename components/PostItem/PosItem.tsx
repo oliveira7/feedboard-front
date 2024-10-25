@@ -87,7 +87,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
             <div key={idx} className="w-full">
               {item.type === 'image' ? (
                 <Image
-                  src={item?.base64}
+                  src={item?.url}
                   alt="Post media"
                   className="rounded-lg"
                   width={500}
@@ -95,7 +95,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
                 />
               ) : (
                 <video controls className="rounded-lg w-full">
-                  <source src={item.base64} type="video/mp4" />
+                  <source src={item.url} type="video/mp4" />
                 </video>
               )}
             </div>

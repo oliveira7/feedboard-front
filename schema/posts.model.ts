@@ -17,7 +17,7 @@ export interface PostModel {
     content: string;
     created_at: string;
     updated_at?: string;
-    media?: { base64: string; type: 'image' | 'video' }[]; 
+    media?: { url: string; type: 'image' | 'video' }[]; 
     group_id?: string | null;
     parent_id?: string | null;
     pinned?: boolean;
