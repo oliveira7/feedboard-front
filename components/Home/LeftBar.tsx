@@ -24,7 +24,13 @@ export default function LeftBar() {
                 height={128}
               />
             ) : (
-              <Avatar className="border-4 border-white w-32 h-32 shadow-lg">
+              <Avatar    
+               sx={{
+                width: 128, 
+                height: 128,
+                border: '4px solid white',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              }}>
                 {user.name ? user.name.charAt(0) : 'U'}
               </Avatar>
             )}

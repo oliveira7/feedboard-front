@@ -49,7 +49,7 @@ export default function RegisterForm({
 
                 <form onSubmit={handleRegister}>
                     <div className="flex w-full justify-around">
-                        <div className="mb-4 mt-4 w-2/5 ">
+                        <div className="mb-4 mt-4 w-2/5">
                             <InputLabel className="block mb-2" htmlFor="name">Nome</InputLabel>
                             <TextField
                                 id="name"
@@ -57,6 +57,7 @@ export default function RegisterForm({
                                 variant="outlined"
                                 placeholder="Digite seu nome"
                                 fullWidth
+                                value={auth.name}
                                 className="mb-4"
                                 onChange={(e) => setAuth({ ...auth, name: e.target.value })}
                             />
@@ -70,6 +71,7 @@ export default function RegisterForm({
                                 variant="outlined"
                                 placeholder="Digite seu curso"
                                 fullWidth
+                                value={auth.course}
                                 className="mb-4"
                                 onChange={(e) => setAuth({ ...auth, course: e.target.value })}
                             />
@@ -77,7 +79,7 @@ export default function RegisterForm({
                     </div>
 
                     <div className="flex w-full justify-around items-center">
-                        <div className="mb-4 mt-4  w-2/5">
+                        <div className="mb-4 mt-4 w-2/5">
                             <InputLabel className="block mb-2" htmlFor="password">Senha</InputLabel>
                             <TextField
                                 id="password"
@@ -85,6 +87,7 @@ export default function RegisterForm({
                                 variant="outlined"
                                 fullWidth
                                 placeholder="Digite sua senha"
+                                value={auth.password}
                                 className="mb-4"
                                 onChange={(e) => setAuth({ ...auth, password: e.target.value })}
                                 InputProps={{
@@ -111,8 +114,9 @@ export default function RegisterForm({
                                 variant="outlined"
                                 placeholder="Confirme sua senha"
                                 fullWidth
+                                value={auth.confirmPassword} // Certifique-se de que o valor está sendo mostrado
                                 className="mb-4"
-                                onChange={(e) => setAuth({ ...auth, confirmPassword: e.target.value })}
+                                onChange={(e) => setAuth({ ...auth, confirmPassword: e.target.value })} // Atualizando o estado correto
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
@@ -129,6 +133,7 @@ export default function RegisterForm({
                             />
                         </div>
                     </div>
+
                     <div className="flex justify-center mt-6">
                         <Button
                             type="submit"

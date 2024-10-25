@@ -22,7 +22,8 @@ const LoginPage = ({ token }: LoginProps) => {
     email: '',
     password: '',
   });
-  const [registerAuth,] = useState({ 
+  const [registerAuth, setRegisterAuth] = useState({
+    email: '',
     password: '',
     name: '',
     course: '',
@@ -34,10 +35,10 @@ const LoginPage = ({ token }: LoginProps) => {
   const path = usePathname();
   const [role, setRole] = useState<Role | null>(null);
   const [forgotPassword, setForgotPassword] = useState<boolean>(false);
-  const [authPassword, setAuthPassword] = useState({ 
-    token:'',
-    email: '', 
-    newPassword: '', 
+  const [authPassword, setAuthPassword] = useState({
+    token: '',
+    email: '',
+    newPassword: '',
     confirmPassword: ''
   });
   const { showError } = useSnackbar();
@@ -67,7 +68,7 @@ const LoginPage = ({ token }: LoginProps) => {
         showError("Usuário ou senha incorretos.");
       }
     } catch (e: unknown) {
-      if (e instanceof Error) { 
+      if (e instanceof Error) {
         showError(e.message || "Erro ao realizar o login.");
       }
     } finally {
@@ -86,24 +87,28 @@ const LoginPage = ({ token }: LoginProps) => {
       return;
     }
 
-    console.log(token);
-
     try {
       const registerObj = {
         name: registerAuth.name,
         course: registerAuth.course,
-        password: registerAuth.password,
+        password_hash: registerAuth.password,
         token: token
-      }
+      };
       const response = await register(registerObj);
+
       if (response) {
-        await login(auth.email, auth.password);
-        router.push("/privado/home");
+        await login(registerAuth.email, registerAuth.password);
+        if (response && response.access_token) {
+          Cookies.set('token', response.access_token, { expires: 7, secure: true });
+          router.push("/privado/home");
+        } else {
+          showError("Usuário ou senha incorretos.");
+        }
       } else {
         showError("Erro ao realizar o cadastro.");
       }
     } catch (e: unknown) {
-      if (e instanceof Error) { 
+      if (e instanceof Error) {
         showError(e.message || "Erro ao realizar o cadastro.");
       }
     } finally {
@@ -111,61 +116,62 @@ const LoginPage = ({ token }: LoginProps) => {
     }
   };
 
-  const handleSendToken = async () => { 
+
+  const handleSendToken = async () => {
     setErrorMessage("");
     setLoading(true);
     try {
-        setForgotPassword(false);
-        showError("Token enviado com sucesso.");
-      } catch (e: unknown) {
-        if (e instanceof Error) { 
-          showError(e.message || "Erro ao enviar o token.");
-        }
+      setForgotPassword(false);
+      showError("Token enviado com sucesso.");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        showError(e.message || "Erro ao enviar o token.");
+      }
     } finally {
       setLoading(false)
+    }
   }
-}
 
 
   return (
     <div className="flex h-screen">
       {!path.includes('cadastro') && !forgotPassword && (
-        <LoginForm 
-        handleLogin={handleLogin} 
-        setAuth={setAuth} 
-        auth={auth} 
-        loading={loading} 
-        showPassword={showPassword} 
-        handleClickShowPassword={handleClickShowPassword}
-        handleMouseDownPassword={handleMouseDownPassword} 
-        setForgotPassword={setForgotPassword}/>
+        <LoginForm
+          handleLogin={handleLogin}
+          setAuth={setAuth}
+          auth={auth}
+          loading={loading}
+          showPassword={showPassword}
+          handleClickShowPassword={handleClickShowPassword}
+          handleMouseDownPassword={handleMouseDownPassword}
+          setForgotPassword={setForgotPassword} />
       )}
 
-      {!path.includes('cadastro') && forgotPassword && ( 
-        <ForgotPassword 
-        loading={loading} 
-        showPassword={showPassword} 
-        handleClickShowPassword={handleClickShowPassword} 
-        handleMouseDownPassword={handleMouseDownPassword} 
-        authPassword={authPassword} 
-        handleSendToken={handleSendToken}
-        setAuthPassword={setAuthPassword}/>
+      {!path.includes('cadastro') && forgotPassword && (
+        <ForgotPassword
+          loading={loading}
+          showPassword={showPassword}
+          handleClickShowPassword={handleClickShowPassword}
+          handleMouseDownPassword={handleMouseDownPassword}
+          authPassword={authPassword}
+          handleSendToken={handleSendToken}
+          setAuthPassword={setAuthPassword} />
       )}
 
       {path.includes('cadastro') && (
         <RegisterForm
-        handleRegister={handleRegister}
-        setAuth={(auth) => setAuth((prevAuth) => ({ ...prevAuth, ...auth }))}
-        auth={registerAuth}
-        role={role as Role}
-        handleChange={handleChange}
-        loading={loading}
-        showPassword={showPassword}
-        showConfirmPassword={showConfirmPassword}
-        handleClickShowPassword={handleClickShowPassword}
-        handleClickShowConfirmPassword={handleClickShowConfirmPassword}
-        handleMouseDownPassword={handleMouseDownPassword}
-      />      
+          handleRegister={handleRegister}
+          setAuth={(auth) => setRegisterAuth((prevAuth) => ({ ...prevAuth, ...auth }))} // Corrigido para setRegisterAuth
+          auth={registerAuth}
+          role={role as Role}
+          handleChange={handleChange}
+          loading={loading}
+          showPassword={showPassword}
+          showConfirmPassword={showConfirmPassword}
+          handleClickShowPassword={handleClickShowPassword}
+          handleClickShowConfirmPassword={handleClickShowConfirmPassword}
+          handleMouseDownPassword={handleMouseDownPassword}
+        />
       )}
     </div>
   );

@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { getUserById, updateUser } from '@/api/user-endpoint.service';
 import Image from 'next/image';
 import { jwtDecode } from 'jwt-decode';
+import { useSnackbar } from '@/context/SnackBarContext';
 
 const style = {
   position: 'absolute' as const,
@@ -38,6 +39,8 @@ export default function ProfileEdit({
   const [description, setDescription] = useState('');
   const [avatarBase64, setAvatarBase64] = useState('');
 
+  const { showError } = useSnackbar();
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -67,6 +70,10 @@ export default function ProfileEdit({
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith('image/')) {
+        showError('Por favor, envie um arquivo de imagem válido.');
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarBase64(reader.result as string);
@@ -74,12 +81,20 @@ export default function ProfileEdit({
       reader.readAsDataURL(file);
     }
   };
+  
 
   const handleSave = async () => {
     setSaving(true);
     try {
       let response;
       if (user?.avatar_base64 !== avatarBase64) {
+        const build = {
+          name,
+          course,
+          description,
+          avatar_base64: avatarBase64
+        }
+        console.log(build);
         response = await updateUser(user!._id, { name, course, description, avatar_base64: avatarBase64 });
       } else {
         response = await updateUser(user!._id, { name, course, description });

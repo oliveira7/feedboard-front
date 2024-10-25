@@ -22,6 +22,6 @@ export enum Role {
 export interface CreateUsersModel {
     name: string;
     course?: string;
-    password: string;
+    password_hash: string;
   }
   
