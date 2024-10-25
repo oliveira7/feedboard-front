@@ -72,7 +72,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
           },
           content: replyText,
           created_at: new Date().toISOString(),
-          media: [],
+          files: [],
           totalChildren: 0,
           group_id: '',
           parent_id: comment._id,
@@ -204,7 +204,6 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         </div>
       )}
 
-      {/* Replies list */}
       {showReplies && (
         <div className="mt-4">
           {replies.length > 0 && (
