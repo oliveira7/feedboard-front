@@ -12,7 +12,7 @@ export default function NewPubli() {
   const [openModal, setOpenModal] = useState(false);
   const [postText, setPostText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
-  const [mediaFile, setMediaFile] = useState<File | null>(null); // Guardar o arquivo
+  const [mediaFiles, setMediaFiles] = useState<File[]>([]); // Guardar múltiplos arquivos
   const { user, setAtualizarFeed, selectedGroup } = useGroup();
 
   const handleOpenModal = () => setOpenModal(true);
@@ -24,9 +24,9 @@ export default function NewPubli() {
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setMediaFile(file);
+    const files = event.target.files;
+    if (files) {
+      setMediaFiles(prevFiles => [...prevFiles, ...Array.from(files)]);
     }
   };
 
@@ -36,8 +36,10 @@ export default function NewPubli() {
     formData.append('content', postText);
     formData.append('group_id', selectedGroup || '');
 
-    if (mediaFile) {
-      formData.append('media', mediaFile);
+    if (mediaFiles.length > 0) {
+      mediaFiles.forEach((file) => {
+        formData.append('media', file);
+      });
     }
 
     try {
@@ -45,7 +47,7 @@ export default function NewPubli() {
       console.log(response);
       setAtualizarFeed(true);
       setPostText('');
-      setMediaFile(null);
+      setMediaFiles([]);
       setOpenModal(false);
     } catch (e) {
       console.error(e);
@@ -137,6 +139,7 @@ export default function NewPubli() {
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   hidden
                   onChange={handleImageUpload}
                 />
@@ -145,21 +148,25 @@ export default function NewPubli() {
 
             <Button
               variant="contained"
-              disabled={!postText.trim() && !mediaFile}
+              disabled={!postText.trim() && mediaFiles.length === 0}
               onClick={createPost}
             >
               Publicar
             </Button>
           </div>
 
-          {mediaFile && (
-            <div className="mt-4">
-              <Image
-                src={URL.createObjectURL(mediaFile)} // Mostrar a pré-visualização da imagem
-                alt="Preview"
-                className="max-h-40 rounded-lg"
-                width={40}
-              />
+          {mediaFiles.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {mediaFiles.map((file, index) => (
+                <Image
+                  key={index}
+                  src={URL.createObjectURL(file)} // Mostrar a pré-visualização da imagem
+                  alt={`Preview ${index + 1}`}
+                  className="max-h-40 rounded-lg"
+                  width={100}
+                  height={100}
+                />
+              ))}
             </div>
           )}
         </Box>
