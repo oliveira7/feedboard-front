@@ -31,15 +31,19 @@ export const fetchPosts = async (page: number, limit: number, groupId?: string, 
 };
 
 
-export const newPost = async (post: CreatePostModel) => {
+export const newPost = async (formData: FormData) => {
   try {
-    const response = await api.post('/posts', post);
+    const response = await api.post('/posts', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data.data;
   } catch (error) {
     console.error("Erro ao criar nova publicação:", error);
     return null;
   }
-}
+};
 
 export const deletePostById = async (postId: string) => {
   try {

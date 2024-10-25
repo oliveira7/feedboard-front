@@ -65,14 +65,13 @@ export default function CommentList({ postId, user }: CommentListProps) {
     if (!commentText.trim()) return;
 
     try {
-      const newCommentData = {
-        author: user._id,
-        parent_id: postId,
-        content: commentText,
-        pinned: false,
-      };
+      const formData = new FormData();
+      formData.append('author', user._id);
+      formData.append('parent_id', postId);
+      formData.append('content', commentText);
+      formData.append('pinned', 'false');
 
-      const response = await newPost(newCommentData);
+      const response = await newPost(formData);
       if (response) {
         setComments((prevComments) => [
                   ...prevComments,

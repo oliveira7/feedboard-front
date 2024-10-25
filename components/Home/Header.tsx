@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Search, Home, Logout, Person, ArrowDropDown } from '@mui/icons-material';
+import { Search, Home, Logout, Person, ArrowDropDown, PersonOutline, AdminPanelSettingsOutlined } from '@mui/icons-material';
 import { Autocomplete, Avatar, TextField } from '@mui/material';
 import Image from 'next/image';
 import logo from '../../public/assets/logo.svg';
@@ -118,6 +118,7 @@ export default function Header() {
               setSearchQuery(newInputValue);
               debouncedFetchUsers(newInputValue);
             }}
+            disableClearable
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -139,12 +140,6 @@ export default function Header() {
                 InputProps={{
                   ...params.InputProps,
                   className: "text-sm bg-white",
-                  endAdornment: (
-                    <>
-                      {loadingUsers}
-                      {params.InputProps.endAdornment}
-                    </>
-                  ),
                   startAdornment: <Search />,
                 }}
                 InputLabelProps={{
@@ -157,7 +152,16 @@ export default function Header() {
       </div>
 
       <div className="flex space-x-8 items-center">
-        <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
+        <div
+          className={`nav-item ${currentPath.includes('/home') ? 'nav-item-active' : ''}`}
+        >
+          <NavItem
+            icon={<Home />}
+            label="Início"
+            href="/privado/home"
+            active={currentPath.includes('/home')}
+          />
+        </div>
 
         <div
           className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 hover:z-50"
@@ -182,19 +186,19 @@ export default function Header() {
           </div>
 
           {profileMenuOpen && (
-            <div className="absolute right-0 mt-12 w-40 bg-primary rounded-lg shadow-lg py-2" style={{ zIndex: 99999 }}>
+            <div className="absolute right-0 mt-40 w-40 bg-primary rounded-lg shadow-lg py-2" style={{ zIndex: 99999 }}>
               <button
                 onClick={handleModalOpen}
                 className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight"
               >
-                <Person /> Perfil
+                <PersonOutline /> Perfil
               </button>
               {user?.role == Role.COORDINATOR && (
                 <button
                   onClick={() => router.push('/privado/painel-adm')}
                   className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight"
                 >
-                  <Person /> Perfil
+                  <AdminPanelSettingsOutlined /> Painel Admin
                 </button>
               )}
               <button

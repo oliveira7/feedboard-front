@@ -62,7 +62,13 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         pinned: false,
       };
 
-      const response = await newPost(newReplyData);
+      const formData = new FormData();
+      formData.append('author', user._id);
+      formData.append('parent_id', comment._id);
+      formData.append('content', replyText);
+      formData.append('pinned', 'false');
+
+      const response = await newPost(formData);
       if (response) {
         const newReply: PostModel = {
           _id: response._id,

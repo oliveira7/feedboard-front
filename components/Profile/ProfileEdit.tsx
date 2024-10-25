@@ -19,15 +19,15 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: '8px',
-  zIndex: '15'
+  zIndex: '15',
 };
 
 export default function ProfileEdit({
   modalOpen,
-  handleModalClose
+  handleModalClose,
 }: {
-  modalOpen: boolean,
-  handleModalClose: () => void,
+  modalOpen: boolean;
+  handleModalClose: () => void;
 }) {
   const [user, setUser] = useState<UserModel | null>(null);
   const [saving, setSaving] = useState(false);
@@ -37,17 +37,17 @@ export default function ProfileEdit({
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [description, setDescription] = useState('');
-  const [avatarBase64, setAvatarBase64] = useState('');
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   const { showError } = useSnackbar();
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       const token = Cookies.get('token');
       if (token) {
-        const decoded = jwtDecode(token);
+        const decoded: { sub: string } = jwtDecode(token);
         const id = decoded.sub;
         try {
           const userData = await getUserById(id!);
@@ -55,7 +55,7 @@ export default function ProfileEdit({
           setName(userData.name);
           setCourse(userData.course);
           setDescription(userData.description);
-          setAvatarBase64(userData.avatar);
+          setAvatarPreview(userData.avatar); // Usar o avatar para preview
         } catch (e: unknown) {
           if (e instanceof Error) {
             setErrorMessage(e.message || 'Erro ao carregar os dados do usuário.');
@@ -74,31 +74,34 @@ export default function ProfileEdit({
         showError('Por favor, envie um arquivo de imagem válido.');
         return;
       }
+      setAvatarFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatarBase64(reader.result as string);
+        setAvatarPreview(reader.result as string); // Mostrar preview
       };
       reader.readAsDataURL(file);
     }
   };
-  
 
   const handleSave = async () => {
     setSaving(true);
+
     try {
       let response;
-      if (user?.avatar !== avatarBase64) {
-        const build = {
-          name,
-          course,
-          description,
-          avatar: avatarBase64
-        }
-        console.log(build);
-        response = await updateUser(user!._id, { name, course, description, avatar: avatarBase64 });
+      if (avatarFile) {
+        // Se o avatar foi alterado, usar FormData para enviar
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('course', course);
+        formData.append('description', description);
+        formData.append('avatar', avatarFile); // Adiciona o arquivo de imagem
+
+        response = await updateUser(user!._id, formData, true); // Passar FormData
       } else {
+        // Se o avatar não foi alterado, enviar como JSON
         response = await updateUser(user!._id, { name, course, description });
       }
+
       console.log(response);
       if (response) {
         setSnackbarOpen(true);
@@ -124,15 +127,12 @@ export default function ProfileEdit({
 
   return (
     <>
-      <Modal
-        open={modalOpen}
-        onClose={handleModalClose}
-      >
+      <Modal open={modalOpen} onClose={handleModalClose}>
         <Box sx={style}>
           <div className="flex flex-col items-center">
-            {avatarBase64 ? (
+            {avatarPreview ? (
               <Image
-                src={avatarBase64}
+                src={avatarPreview}
                 alt="Profile"
                 width={80}
                 height={80}

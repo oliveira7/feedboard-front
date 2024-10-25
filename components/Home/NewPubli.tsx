@@ -5,7 +5,6 @@ import { Modal, Box, Button, IconButton, TextField, Avatar, FormControl, Skeleto
 import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
 import { newPost } from "@/api/post-endpoint.service";
-import { CreatePostModel } from "../../schema/posts.model";
 import { useGroup } from "@/context/GroupContext";
 import Image from "next/image";
 
@@ -13,7 +12,7 @@ export default function NewPubli() {
   const [openModal, setOpenModal] = useState(false);
   const [postText, setPostText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
-  const [media, setMedia] = useState<{ base64: string; type: 'image' | 'video' }[]>([]);
+  const [mediaFile, setMediaFile] = useState<File | null>(null); // Guardar o arquivo
   const { user, setAtualizarFeed, selectedGroup } = useGroup();
 
   const handleOpenModal = () => setOpenModal(true);
@@ -27,29 +26,26 @@ export default function NewPubli() {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setMedia([{ base64: base64String, type: 'image' }]);
-      };
-      reader.readAsDataURL(file);
+      setMediaFile(file);
     }
   };
 
   const createPost = async () => {
-    const post: CreatePostModel = {
-      author: user._id,
-      content: postText,
-      media: media.length ? media : undefined,
-      group_id: selectedGroup || undefined,
-    };
+    const formData = new FormData();
+    formData.append('author', user._id);
+    formData.append('content', postText);
+    formData.append('group_id', selectedGroup || '');
+
+    if (mediaFile) {
+      formData.append('media', mediaFile);
+    }
 
     try {
-      const response = await newPost(post);
+      const response = await newPost(formData);
       console.log(response);
       setAtualizarFeed(true);
       setPostText('');
-      setMedia([]);
+      setMediaFile(null);
       setOpenModal(false);
     } catch (e) {
       console.error(e);
@@ -149,17 +145,17 @@ export default function NewPubli() {
 
             <Button
               variant="contained"
-              disabled={!postText.trim() && media.length === 0}
+              disabled={!postText.trim() && !mediaFile}
               onClick={createPost}
             >
               Publicar
             </Button>
           </div>
 
-          {media.length > 0 && (
+          {mediaFile && (
             <div className="mt-4">
               <Image
-                src={media[0].base64}
+                src={URL.createObjectURL(mediaFile)} // Mostrar a pré-visualização da imagem
                 alt="Preview"
                 className="max-h-40 rounded-lg"
                 width={40}

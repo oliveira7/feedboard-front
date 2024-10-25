@@ -65,7 +65,7 @@ export default function LikeComment({ postId, peoplesReacted, initialLikes, init
         className={`text-lg ${liked ? 'text-highlight' : ''} hover:text-highlight`}
       />
       {likeMessage && (
-        <span className={`ml-1 text-sm ${liked ? 'text-highlight' : ''}`}>
+        <span className={`ml-1 text-sx ${liked ? 'text-highlight' : ''}`}>
           {likeMessage}
         </span>
       )}

@@ -3,6 +3,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { CustomThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/Home/Header";
 import { GroupProvider } from "@/context/GroupContext";
+import RouteLoader from "../loading";
 
 export default function PrivateLayout({
     children,
@@ -12,10 +13,12 @@ export default function PrivateLayout({
     return (
         <AppRouterCacheProvider>
             <CustomThemeProvider>
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<RouteLoader />}>
                     <GroupProvider>
+                        <div className="bg-primary">
                         <Header />
                         {children}
+                        </div>
                     </GroupProvider>
                 </Suspense>
             </CustomThemeProvider>

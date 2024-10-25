@@ -12,14 +12,27 @@ export const getUserById = async (id: string) => {
     }
 }
 
-export const updateUser = async (id: string, updatedData: Partial<UserModel>) => {
-    try {
-        const response = await api.put(`/users/${id}`, updatedData);
-        return response.data.data;
-    } catch (e) {
-        console.error(e);
+export const updateUser = async (id: string, updatedData: Partial<UserModel> | FormData, isFormData: boolean = false) => {
+  try {
+    let response;
+
+    if (isFormData) {
+      response = await api.put(`/users/${id}`, updatedData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    } else {
+      response = await api.put(`/users/${id}`, updatedData);
     }
+
+    return response.data.data;
+  } catch (e) {
+    console.error('Erro ao atualizar o usuário:', e);
+    throw e;
+  }
 };
+
 
 export const register = async (crateUser: CreateUsersModel) => {
     try {

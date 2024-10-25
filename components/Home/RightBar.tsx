@@ -70,7 +70,7 @@ export default function RightBar() {
           </div>
           <hr className="border-primary-100 pt-4 border-gray-300" />
 
-          {groups.length > 0 ? (
+          {groups?.length > 0 ? (
             <ul className="space-y-3">
               {groups.map((item, index) => (
                 <li key={index} className="text-sm" onClick={() => setContextGroup(item._id)}>
@@ -93,7 +93,7 @@ export default function RightBar() {
               ))}
             </ul>
           ) : (
-            <div className="text-center text-sm text-gray-500 mt-4">
+            <div className="text-center text-sm text-gray-400 mt-4">
               <p>Poxa, você ainda não entrou em nenhum grupo <span className="text-lg">😔</span></p>
             </div>
           )}
