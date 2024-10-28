@@ -22,11 +22,11 @@ api.interceptors.request.use(async config => {
 
 api.interceptors.response.use(response => {
   return response; 
-}, error => {
+}, async error => {
   if (error.response?.status === 401) {
     console.error('Erro 401: Não autorizado, redirecionando para login.');
 
-    (cookies() as unknown as UnsafeUnwrappedCookies).delete('token');
+    (await cookies() as unknown as UnsafeUnwrappedCookies).delete('token');
 
     redirect('/'); 
   }

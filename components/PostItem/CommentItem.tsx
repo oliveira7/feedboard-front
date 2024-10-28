@@ -164,7 +164,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         <span className="ml-2 mr-2">|</span>
         <a
           onClick={() => setShowReplyInput(true)}
-          className="text-sm mt-1 cursor-pointer hover:text-highlight active:text-highlight"
+          className="text-xs mt-1 cursor-pointer hover:text-highlight active:text-highlight"
         >
           Responder
         </a>

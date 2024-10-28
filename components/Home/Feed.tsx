@@ -11,7 +11,7 @@ interface FeedProps {
   idUserPage?: string;
 }
 
-const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }) => {
+const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }, ref) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [limit, setLimit] = useState(5);
   const [loading, setLoading] = useState(false);
@@ -24,14 +24,14 @@ const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }) => {
     try {
       if (loading) return;
       setLoading(true);
+      console.log(idUserPage);
       const currentLimit = reset ? 5 : customLimit || limit;
-      console.log(idUserPage)
-      const { posts: fetchedPosts, totalPages } = await fetchPosts(1, currentLimit, selectedGroup || undefined, idUserPage || undefined);
+      const { posts: fetchedPosts, totalPages, total } = await fetchPosts(1, currentLimit, selectedGroup || undefined, undefined , undefined, idUserPage || undefined);
       console.log(fetchedPosts);
 
       if (fetchedPosts && fetchedPosts.length > 0) {
         setPosts(fetchedPosts);
-        setHasMore(currentLimit < totalPages * 5);
+        setHasMore(currentLimit < total);
       } else if (fetchedPosts && selectedGroup && fetchedPosts.length === 0) {
         setPosts([]);
         setHasMore(false);
@@ -80,10 +80,11 @@ const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }) => {
         await loadPosts(false, newLimit);
       }
     };
-
+  
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [hasMore, loading, limit]);
+  
 
   return (
     <div className="flex flex-col items-center space-y-4">

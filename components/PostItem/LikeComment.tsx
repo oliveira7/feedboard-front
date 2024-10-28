@@ -60,12 +60,12 @@ export default function LikeComment({ postId, peoplesReacted, initialLikes, init
   };
 
   return (
-    <div className="flex items-center cursor-pointer" onClick={handleLike}>
+    <div className="flex items-center cursor-pointer text-sm" onClick={handleLike}>
       <ThumbUpAltOutlined
-        className={`text-lg ${liked ? 'text-highlight' : ''} hover:text-highlight`}
+        className={`text-xs ${liked ? 'text-highlight' : ''} hover:text-highlight`}
       />
       {likeMessage && (
-        <span className={`ml-1 text-sx ${liked ? 'text-highlight' : ''}`}>
+        <span className={`ml-1 text-xs ${liked ? 'text-highlight' : ''}`}>
           {likeMessage}
         </span>
       )}

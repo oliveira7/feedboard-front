@@ -19,6 +19,8 @@ export const fetchPosts = async (page: number, limit: number, groupId?: string, 
       url += `&userId=${userId}`;	
     }
 
+    console.log(url);
+
     const response = await api.get(url);
 
     if (!response) {

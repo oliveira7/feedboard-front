@@ -57,8 +57,9 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 mt-6">
+    <div className="flex flex-col md:flex-row items-start min-h-screen bg-gray-100 p-20">
+      {/* Card do Usuário */}
+      <div className="w-full md:w-1/4 flex-shrink-0 bg-white rounded-lg shadow-lg p-6 mt-6 md:mt-0 md:ml-6">
         <div className="relative w-full h-1/3 bg-gradient-to-br from-green-400 to-green-600 rounded-t-lg"></div>
 
         <div className="relative flex flex-col items-center mb-6 gap-4 pt-16">
@@ -87,7 +88,7 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
 
               <div className="px-4 py-2 bg-gray-100 rounded-md shadow-inner">
                 <p className="text-sm text-gray-600 italic text-center">
-                  💬 {user.description || "Sem descrição disponível"}
+                  💬 {user.description || 'Sem descrição disponível'}
                 </p>
               </div>
             </>
@@ -97,8 +98,11 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
         </div>
       </div>
 
-      <div className="w-full max-w-md mt-6">
+      {/* Feed */}
+      <div className="w-full md:flex-1 mt-6 md:mt-0 md:ml-6">
+      <div className="w-fit bg-background-light p-4 rounded-lg shadow-lg">
         <Feed idUserPage={userId} />
+        </div>
       </div>
     </div>
   );
