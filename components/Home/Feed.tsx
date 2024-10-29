@@ -6,6 +6,9 @@ import { PostModel } from '@/schema/posts.model';
 import { useGroup } from '@/context/GroupContext';
 import { useSnackbar } from '@/context/SnackBarContext';
 import PostItem from '../PostItem/PosItem';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+
 
 interface FeedProps {
   idUserPage?: string;
@@ -19,6 +22,7 @@ const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }, ref) => {
   const [hasMore, setHasMore] = useState(true);
   const { setAtualizarFeed, atualizarFeed, selectedGroup } = useGroup();
   const { showError } = useSnackbar();
+  const router = useRouter();
 
   const loadPosts = async (reset = false, customLimit: number | null = null) => {
     try {
@@ -26,8 +30,7 @@ const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }, ref) => {
       setLoading(true);
       console.log(idUserPage);
       const currentLimit = reset ? 5 : customLimit || limit;
-      const { posts: fetchedPosts, totalPages, total } = await fetchPosts(1, currentLimit, selectedGroup || undefined, undefined , undefined, idUserPage || undefined);
-      console.log(fetchedPosts);
+      const { posts: fetchedPosts, total } = await fetchPosts(1, currentLimit, selectedGroup || undefined, undefined , undefined, idUserPage || undefined);
 
       if (fetchedPosts && fetchedPosts.length > 0) {
         setPosts(fetchedPosts);
@@ -43,10 +46,13 @@ const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }, ref) => {
       setInitialLoad(false);
     } catch (e: unknown) {
       if (e instanceof Error) {
-        showError(e.message);
+        showError('Sessão expirada, você será deslogado.');
+        Cookies.remove('token');
+        router.push('/');
       }      
       setLoading(false);
       setInitialLoad(false);
+      
     }
   };
 
@@ -87,7 +93,7 @@ const Feed = forwardRef<HTMLDivElement, FeedProps>(({ idUserPage }, ref) => {
   
 
   return (
-    <div className="flex flex-col items-center space-y-4">
+    <div ref={ref} className="flex flex-col items-center space-y-4">
       {initialLoad ? (
         <div>Carregando...</div>
       ) : (

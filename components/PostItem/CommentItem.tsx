@@ -9,6 +9,7 @@ import { UserModel } from '@/schema/user.model';
 import { PostModel } from '@/schema/posts.model';
 import { getTimeSincePost } from '@/utils/getTimeSincePost';
 import LikeComment from './LikeComment';
+import Image from 'next/image';
 
 interface CommentItemProps {
   comment: PostModel;
@@ -105,7 +106,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
         <div className="flex items-start space-x-3 w-full justify-between">
           <div className="flex items-center">
             {comment.author.avatar && (
-              <img
+              <Image
                 src={comment?.author?.avatar}
                 alt={comment?.author?.name}
                 className="w-10 h-10 rounded-full"

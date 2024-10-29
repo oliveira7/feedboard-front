@@ -23,12 +23,15 @@ api.interceptors.request.use(async config => {
 api.interceptors.response.use(response => {
   return response; 
 }, async error => {
-  if (error.response?.status === 401) {
+  if (error.response?.status === 401 ||  error.message === 'Network Error' || error.message.includes('failed to fetch')) {
     console.error('Erro 401: Não autorizado, redirecionando para login.');
 
-    (await cookies() as unknown as UnsafeUnwrappedCookies).delete('token');
+    const cookieStore = await cookies();
+    cookieStore.delete('token');
 
     redirect('/'); 
+
+    return new Promise(() => {}); 
   }
   
   return Promise.reject(error);
