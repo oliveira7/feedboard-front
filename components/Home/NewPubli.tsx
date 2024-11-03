@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Modal, Box, Button, IconButton, TextField, Avatar, FormControl, Skeleton, CircularProgress } from "@mui/material";
 import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
@@ -15,6 +15,7 @@ export default function NewPubli() {
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const { user, setAtualizarFeed, selectedGroup } = useGroup();
   const [loading, setLoading] = useState(false);
+  const emojiRef = useRef<HTMLDivElement>(null);
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
@@ -60,25 +61,36 @@ export default function NewPubli() {
     setLoading(false);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (emojiRef.current && !emojiRef.current.contains(event.target as Node)) {
+      setShowEmojis(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showEmojis) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showEmojis]);
+
   return (
     <div className="flex items-center p-4 bg-primary-50 rounded-lg shadow-md">
       {
         user && user?.avatar ? (
-          user?.avatar ? (
-            <Image
-              src={user?.avatar}
-              alt="Profile"
-              className="rounded-full w-10 h-10 border-2 border-primary-50 mr-4"
-              width={50}
-              height={50}
-            />
-          ) : (
-            <Avatar className="rounded-full w-10 h-10 border-2 border-primary-50 mr-4">
-              {user && user.name ? user.name.charAt(0) : 'U'}
-            </Avatar>
-          )
+          <Image
+            src={user?.avatar}
+            alt="Profile"
+            className="rounded-full w-10 h-10 border-2 border-primary-50 mr-4"
+            width={50}
+            height={50}
+          />
         ) : (
-          <Skeleton variant="circular" width={44} height={40} animation="wave" className="rounded-full mr-4"/>
+          <Avatar className="rounded-full w-10 h-10 border-2 border-primary-50 mr-4">
+            {user && user.name ? user.name.charAt(0) : 'U'}
+          </Avatar>
         )
       }
 
@@ -101,10 +113,10 @@ export default function NewPubli() {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 500,
+            width: { xs: '90%', sm: 500 },
             bgcolor: 'background.paper',
             boxShadow: 24,
-            p: 4,
+            p: 2,
             borderRadius: 2,
           }}
         >
@@ -135,7 +147,7 @@ export default function NewPubli() {
               </IconButton>
 
               {showEmojis && (
-                <div className="absolute mt-10" style={{ zIndex: 9999 }}>
+                <div ref={emojiRef} className="absolute mt-10" style={{ zIndex: 9999 }}>
                   <Picker onEmojiClick={handleEmojiClick} />
                 </div>
               )}
@@ -157,7 +169,7 @@ export default function NewPubli() {
               disabled={!postText.trim() && mediaFiles.length === 0}
               onClick={createPost}
             >
-             { loading ? <CircularProgress /> : 'Publicar'} 
+              {loading ? <CircularProgress /> : 'Publicar'}
             </Button>
           </div>
 

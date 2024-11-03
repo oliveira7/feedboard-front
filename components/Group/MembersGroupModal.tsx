@@ -37,7 +37,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
       if (e instanceof Error) {
         setLoadingUsers(false);
         showError(e.message || 'Erro ao buscar usuários:');
-       }
+      }
     }
   };
 
@@ -80,7 +80,6 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
 
       if (groupData && groupData.members && Array.isArray(groupData.members)) {
         setMembers(groupData.members);
-        console.log('Members state after setting:', groupData.members);
       } else {
         showError('Membros não encontrados na resposta.');
       }
@@ -100,42 +99,38 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
     }
   }, [isModalOpen]);
 
-
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center ${isModalOpen ? '' : 'hidden'}`}>
-      <div className="bg-primary-50 rounded-lg shadow-lg p-6 w-[800px] relative">
-        <div className='flex justify-end'>
-          <IconButton
-            onClick={handleClose}
-          >
+      <div className="bg-primary-50 rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-md sm:max-w-lg lg:max-w-xl xl:max-w-3xl relative mx-4 sm:mx-0">
+        <div className="flex justify-end">
+          <IconButton onClick={handleClose}>
             <Close />
           </IconButton>
         </div>
 
-        <h2 className="text-lg font-bold mb-4">Gerenciar Membros: {group.name}</h2>
+        <h2 className="text-lg font-bold mb-4 text-center sm:text-left">Gerenciar Membros: {group.name}</h2>
 
-        <div className="mb-4 overflow-auto">
-          <h3 className="font-semibold mb-2">Membros Atuais</h3>
+        <div className="mb-4 overflow-auto max-h-60 sm:max-h-80 lg:max-h-[500px]">
+          <h3 className="font-semibold mb-2 text-center sm:text-left">Membros Atuais</h3>
           {loadingMembers ? (
             <div className="flex justify-center">
               <CircularProgress />
             </div>
           ) : (
-            <ul className="space-y-4 ">
+            <ul className="space-y-2 sm:space-y-4">
               {members.length > 0 ? (
                 members.map((member) => (
-                  <li key={member._id} className="flex justify-between items-center p-4 shadow rounded-lg bg-primary-50 overflow-auto">
-                    <div className="flex items-center space-x-4 p-4">
-                      <div>
-                        <span className="font-bold">{member.name || 'Nome não disponível'}
-                          {member._id === group.created_by && (
-                            <Star fontSize="small" className="text-yellow-500" />
-                          )}</span>
-                        <p className="text-sm text-scondary">{translateRole(member.role as Role)}</p>
-                        <p className="text-sm text-scondary">{member.course || 'Curso não disponível'}</p>
-                      </div>
+                  <li key={member._id} className="flex justify-between items-center p-4 shadow rounded-lg bg-primary-50">
+                    <div className="flex items-center space-x-4">
+                      <span className="font-bold">{member.name || 'Nome não disponível'}
+                        {member._id === group.created_by && (
+                          <Star fontSize="small" className="text-yellow-500" />
+                        )}
+                      </span>
+                      <p className="text-sm text-secondary">{translateRole(member.role as Role)}</p>
+                      <p className="text-sm text-secondary">{member.course || 'Curso não disponível'}</p>
                     </div>
-                    {user._id === group.created_by && !member._id && (
+                    {user._id === group.created_by && (
                       <button
                         onClick={() => handleRemoveMember(member._id)}
                         className="text-red-500 text-sm hover:underline"
@@ -143,17 +138,17 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
                         Remover
                       </button>
                     )}
-
                   </li>
                 ))
               ) : (
-                <p className="">Nenhum membro encontrado.</p>
+                <p className="text-center">Nenhum membro encontrado.</p>
               )}
             </ul>
           )}
         </div>
+        
         {user._id === group.created_by && (
-          <div className="mb-4 flex justify-center flex-col items-center">
+          <div className="mb-4 flex flex-col items-center">
             <Autocomplete
               options={userOptions}
               getOptionLabel={(option) => option.name}
@@ -164,8 +159,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
                   label="Adicionar membro"
                   variant="outlined"
                   size="small"
-                  fullWidth={false}
-                  style={{ width: '300px' }}
+                  fullWidth
                   onChange={(e) => debouncedFetchUsers(e.target.value)}
                 />
               )}
@@ -175,14 +169,13 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
             />
             <button
               onClick={() => newMember && handleAddMember(newMember)}
-              className="bg-primary-500 text-highlight px-4 py-1 rounded-lg mt-2"
+              className="bg-primary-500 text-highlight px-4 py-1 rounded-lg mt-2 w-full sm:w-auto"
             >
               Adicionar Membro
             </button>
           </div>
         )}
       </div>
-
     </div>
   );
 }

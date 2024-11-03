@@ -47,12 +47,12 @@ export default function PainelAdm() {
   };
 
   return (
-    <div className='h-screen p-24'>
-      <div className='text-center pb-10'>
-        <h2 className='text-primary font-bold'>Painel Administrativo - Envio de Emails</h2>
+    <div className="min-h-screen p-6 sm:p-24 flex flex-col items-center">
+      <div className="text-center pb-6 sm:pb-10 w-full">
+        <h2 className="text-primary font-bold text-lg sm:text-xl">Painel Administrativo - Envio de Emails</h2>
       </div>
 
-      <Box display="flex" alignItems="center" mb={2}>
+      <Box display="flex" alignItems="center" mb={2} className="w-full max-w-md sm:max-w-lg">
         <TextField
           label="Digite um email ou vários e-mails"
           value={emailInput}
@@ -66,7 +66,7 @@ export default function PainelAdm() {
         </IconButton>
       </Box>
 
-      <Box display="flex" flexWrap="wrap" gap={1}>
+      <Box display="flex" flexWrap="wrap" gap={1} className="w-full max-w-md sm:max-w-lg mb-4">
         {emails.map((email, index) => (
           <Chip
             key={index}
@@ -77,7 +77,7 @@ export default function PainelAdm() {
         ))}
       </Box>
 
-      <div className='flex justify-center'>
+      <div className="flex justify-center w-full max-w-md sm:max-w-lg">
         <Button
           variant="contained"
           color="primary"
@@ -93,6 +93,7 @@ export default function PainelAdm() {
         open={!!successMessage}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
           {successMessage}

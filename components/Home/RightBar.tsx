@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import CreateGroupModal from '../Group/CreateGroupModal';
 import ManageMembersModal from '../Group/MembersGroupModal';
 import { AddCircleOutline, ArrowBack } from '@mui/icons-material';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, CircularProgress, Skeleton } from '@mui/material';
 import { UserModel } from '@/schema/user.model';
 import { useSnackbar } from '@/context/SnackBarContext';
 
@@ -16,13 +16,14 @@ export default function RightBar() {
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<GroupModel | null>(null);
-  const { user } = useGroup();
+  const [loading, setLoading] = useState(true);
+  
+  const { user, setSelectedGroup: setContextGroup, selectedGroup: selectedGroupFromContext, setGroupsContext, setAtualizarFeed } = useGroup();
   const { showError } = useSnackbar();
-
-  const { setSelectedGroup: setContextGroup, selectedGroup: selectedGroupFromContext, setGroupsContext, setAtualizarFeed } = useGroup();
 
   const getGroupsAsync = async () => {
     try {
+      setLoading(true);
       const response = await getGroupsByUser();
       setGroups(response);
       setGroupsContext(response);
@@ -30,6 +31,8 @@ export default function RightBar() {
       if (e instanceof Error) {
         showError(e.message || 'Erro ao buscar grupos');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,9 +73,17 @@ export default function RightBar() {
           </div>
           <hr className="border-primary-100 pt-4 border-gray-300" />
 
-          {groups?.length > 0 ? (
+          {loading ? (
+            // Display loading skeleton while groups are being fetched
+            <div className="mt-4 space-y-2">
+              <Skeleton variant="text" width="70%" height={30} />
+              <Skeleton variant="text" width="50%" height={20} />
+              <Skeleton variant="text" width="70%" height={30} />
+              <Skeleton variant="text" width="50%" height={20} />
+            </div>
+          ) : groups?.length > 0 ? (
             <ul className="space-y-3">
-              {groups?.map((item, index) => (
+              {groups.map((item, index) => (
                 <li key={index} className="text-sm" onClick={() => setContextGroup(item._id)}>
                   <a
                     className={`hover:underline font-bold cursor-pointer ${selectedGroupFromContext === item._id ? 'text-highlight' : 'text-default'

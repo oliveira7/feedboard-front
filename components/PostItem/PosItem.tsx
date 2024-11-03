@@ -21,6 +21,8 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
   const { _id, author, content, media, created_at, totalChildren, peoplesReacted } = post;
   const { user } = useGroup();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const MAX_LENGTH = 150;
 
   const handleDeletePost = async () => {
     try {
@@ -36,54 +38,72 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      style={{ backgroundColor: '#f0f4f8', padding: '1.5rem', borderRadius: '0.5rem', width: '100%', maxWidth: '36rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+      style={{
+        backgroundColor: '#f0f4f8',
+        padding: '1.5rem',
+        borderRadius: '0.5rem',
+        width: '100%',
+        maxWidth: '36rem',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      }}
     >
       <div className="flex items-center mb-4 justify-between">
         <div className="flex items-center">
-          { user?.avatar ? (
-          <Image
-            src={author?.avatar || '/default-avatar.png'}
-            alt={author?.name}
-            className="w-10 h-10 rounded-full mr-2"
-            width={40}
-            height={40}
-          />
-        ) : (
-          <Avatar alt="User Avatar" className="w-10 h-10" />
-        )}
+          {author?.avatar ? (
+            <Image
+              src={author.avatar || '/default-avatar.png'}
+              alt={author.name}
+              className="w-10 h-10 rounded-full mr-2"
+              width={40}
+              height={40}
+            />
+          ) : (
+            <Avatar alt="User Avatar" className="w-10 h-10" />
+          )}
           <div>
             <h3 className="font-bold">{author.name}</h3>
           </div>
         </div>
-        <div className='flex items-center'>
-        <span className="text-sm">
-              {getTimeSincePost(created_at)}
-            </span>
-        {user && user._id === author._id && (
-          <div>
-            <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-              <MenuOutlined  />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={() => setAnchorEl(null)}
-            >
-              <MenuItem
-                onClick={() => {
-                  handleDeletePost();
-                  setAnchorEl(null);
-                }}
+        <div className="flex items-center">
+          <span className="text-sm">{getTimeSincePost(created_at)}</span>
+          {user && user._id === author._id && (
+            <div>
+              <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+                <MenuOutlined />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
               >
-                Excluir post
-              </MenuItem>
-            </Menu>
-          </div>
-        )}
+                <MenuItem
+                  onClick={() => {
+                    handleDeletePost();
+                    setAnchorEl(null);
+                  }}
+                >
+                  Excluir post
+                </MenuItem>
+              </Menu>
+            </div>
+          )}
         </div>
       </div>
 
-      <p className="mb-4 ml-4 mr-4">{content}</p>
+      <p className="mb-4 ml-4 mr-4">
+        {isExpanded || content.length <= MAX_LENGTH ? content : `${content.substring(0, MAX_LENGTH)}...`}
+      </p>
+
+      {content.length > MAX_LENGTH && (
+        <div className="ml-4 mb-4">
+          <a
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-sm font-semibold cursor:pointer hover:text-highlight"
+          >
+            {isExpanded ? 'Ver menos' : 'Ver mais'}
+          </a>
+        </div>
+      )}
 
       {media && media.length > 0 && (
         <div className="flex space-x-2 mb-4">
@@ -91,7 +111,7 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
             <div key={idx} className="w-full">
               {item.type === 'image' ? (
                 <Image
-                  src={item?.url}
+                  src={item.url}
                   alt="Post media"
                   className="rounded-lg"
                   width={500}

@@ -27,23 +27,22 @@ export default function ForgotPassword({
 
   const handleNextStep = () => {
     console.log(handleSendToken());
-    // if (currentStep === 1) {
-    //   handleSendToken(); 
-    // }
     setCurrentStep(currentStep + 1);
   };
 
   return (
-    <>
-      <div className="w-1/2 bg-gradient-to-br from-primary-light to-primary-dark flex justify-center items-center">
-        <div className="w-full flex flex-col justify-center items-center">
-          <Image src={logo} alt="logo" width={500} height={500} />
+    <div className="flex flex-col md:flex-row w-full h-screen">
+      {/* Logo Section */}
+      <div className="md:w-1/2 w-full bg-gradient-to-br from-primary-light to-primary-dark flex justify-center items-center p-4 md:p-0">
+        <div className="w-full flex justify-center items-center">
+          <Image src={logo} alt="logo" width={200} height={200} className="md:w-[500px] md:h-[500px]" />
         </div>
       </div>
 
-      <div className="w-1/2 bg-primary flex justify-center items-center relative">
-        <div className="bg-primary-50 p-10 rounded-lg shadow-2xl w-full max-w-md absolute">
-          <h2 className="text-3xl font-bold mb-6 text-center">
+      {/* Form Section */}
+      <div className="md:w-1/2 w-full bg-primary flex justify-center items-center p-4">
+        <div className="bg-primary-50 p-6 md:p-10 rounded-lg shadow-2xl w-full max-w-md">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-center">
             {currentStep === 1 ? 'Recuperar Senha' : 'Redefinir Senha'}
           </h2>
 
@@ -162,6 +161,6 @@ export default function ForgotPassword({
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -57,24 +57,24 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
   }
 
   return (
-    <div className="flex flex-col md:flex-row items-start min-h-screen bg-gray-100 p-20">
+    <div className="flex flex-col md:flex-row items-start min-h-screen bg-gray-100 p-4 md:p-8">
       {/* Card do Usuário */}
-      <div className="w-full md:w-1/4 flex-shrink-0 bg-white rounded-lg shadow-lg p-6 mt-6 md:mt-0 md:ml-6">
-        <div className="relative w-full h-1/3 bg-gradient-to-br from-green-400 to-green-600 rounded-t-lg"></div>
+      <div className="w-full md:w-1/3 lg:w-1/4 bg-white rounded-lg shadow-lg p-4 mb-4 md:mb-0">
+        <div className="relative w-full h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-t-lg"></div>
 
-        <div className="relative flex flex-col items-center mb-6 gap-4 pt-16">
+        <div className="relative flex flex-col items-center mb-4 gap-4 pt-12">
           {user ? (
             <>
-              {user?.avatar ? (
+              {user.avatar ? (
                 <Image
-                  src={user?.avatar}
+                  src={user.avatar}
                   alt="Profile"
-                  className="rounded-full w-48 h-48 mb-4 border-4 border-white shadow-lg"
-                  width={192}
-                  height={192}
+                  className="rounded-full w-32 h-32 mb-4 border-4 border-white shadow-lg"
+                  width={128}
+                  height={128}
                 />
               ) : (
-                <Avatar className="border-4 border-white w-48 h-48 shadow-lg">
+                <Avatar className="border-4 border-white w-32 h-32 shadow-lg">
                   {user.name ? user.name.charAt(0) : 'U'}
                 </Avatar>
               )}
@@ -86,23 +86,21 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
 
               <Divider className="bg-gray-300 w-full my-4" />
 
-              <div className="px-4 py-2 bg-gray-100 rounded-md shadow-inner">
-                <p className="text-sm text-gray-600 italic text-center">
+              <div className="px-4 py-2 bg-gray-100 rounded-md shadow-inner text-center">
+                <p className="text-sm text-gray-600 italic">
                   💬 {user.description || 'Sem descrição disponível'}
                 </p>
               </div>
             </>
           ) : (
-            <Skeleton variant="circular" width={192} height={192} animation="wave" />
+            <Skeleton variant="circular" width={128} height={128} animation="wave" />
           )}
         </div>
       </div>
 
       {/* Feed */}
-      <div className="w-full md:flex-1 mt-6 md:mt-0 md:ml-6">
-      <div className="w-fit bg-background-light p-4 rounded-lg shadow-lg">
+      <div className="w-full md:flex-1 bg-background-light p-4 rounded-lg shadow-lg">
         <Feed idUserPage={userId} />
-        </div>
       </div>
     </div>
   );
