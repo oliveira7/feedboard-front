@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Search, Home, Logout, ArrowDropDown, PersonOutline, AdminPanelSettingsOutlined, Menu, Group } from '@mui/icons-material';
-import { Autocomplete, Avatar, TextField, IconButton, Drawer, Button } from '@mui/material';
+import { Autocomplete, Avatar, TextField, IconButton, Drawer } from '@mui/material';
 import Image from 'next/image';
 import logo from '../../public/assets/logo.svg';
 import { usePathname, useRouter } from 'next/navigation';

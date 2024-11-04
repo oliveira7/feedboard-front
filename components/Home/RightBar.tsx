@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import CreateGroupModal from '../Group/CreateGroupModal';
 import ManageMembersModal from '../Group/MembersGroupModal';
 import { AddCircleOutline, ArrowBack } from '@mui/icons-material';
-import { IconButton, Tooltip, CircularProgress, Skeleton } from '@mui/material';
+import { IconButton, Tooltip, Skeleton } from '@mui/material';
 import { UserModel } from '@/schema/user.model';
 import { useSnackbar } from '@/context/SnackBarContext';
 

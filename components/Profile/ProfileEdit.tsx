@@ -14,10 +14,11 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: '90%', // Ajuste para 90% da largura da tela em dispositivos menores
+  maxWidth: 400,
   bgcolor: 'background.paper',
   boxShadow: 24,
-  p: 4,
+  p: 3, // Reduzido para melhor adaptação em telas menores
   borderRadius: '8px',
   zIndex: '15',
 };
@@ -89,16 +90,14 @@ export default function ProfileEdit({
     try {
       let response;
       if (avatarFile) {
-        // Se o avatar foi alterado, usar FormData para enviar
         const formData = new FormData();
         formData.append('name', name);
         formData.append('course', course);
         formData.append('description', description);
-        formData.append('avatar', avatarFile); // Adiciona o arquivo de imagem
+        formData.append('avatar', avatarFile);
 
-        response = await updateUser(user!._id, formData, true); // Passar FormData
+        response = await updateUser(user!._id, formData, true); 
       } else {
-        // Se o avatar não foi alterado, enviar como JSON
         response = await updateUser(user!._id, { name, course, description });
       }
 
@@ -136,7 +135,7 @@ export default function ProfileEdit({
                 alt="Profile"
                 width={80}
                 height={80}
-                className="rounded-full w-32 h-32 mb-2 border-4 border-primary-50 cursor-pointer hover:opacity-70"
+                className="rounded-full w-20 h-20 sm:w-32 sm:h-32 mb-2 border-4 border-primary-50 cursor-pointer hover:opacity-70"
                 onClick={handleAvatarClick}
               />
             ) : (
@@ -157,7 +156,7 @@ export default function ProfileEdit({
               style={{ display: 'none' }}
             />
 
-            <h2 className="text-xl font-bold mt-4">Editar Perfil</h2>
+            <h2 className="text-lg sm:text-xl font-bold mt-4">Editar Perfil</h2>
           </div>
 
           <form>
@@ -196,6 +195,7 @@ export default function ProfileEdit({
               fullWidth
               onClick={handleSave}
               disabled={saving}
+              sx={{ mt: 2 }}
             >
               {saving ? <CircularProgress size={24} /> : 'Salvar'}
             </Button>

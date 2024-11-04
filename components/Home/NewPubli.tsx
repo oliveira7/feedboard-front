@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from "react";
-import { Modal, Box, Button, IconButton, TextField, Avatar, FormControl, Skeleton, CircularProgress } from "@mui/material";
+import { Modal, Box, Button, IconButton, TextField, Avatar, FormControl, CircularProgress } from "@mui/material";
 import { EmojiEmotions, Add, Close } from "@mui/icons-material";
 import Picker from 'emoji-picker-react';
 import { newPost } from "@/api/post-endpoint.service";
