@@ -13,7 +13,6 @@ import { Role, UserModel } from '@/schema/user.model';
 import { useSnackbar } from '@/context/SnackBarContext';
 import ProfileEdit from '../Profile/ProfileEdit';
 import RightBar from './RightBar';
-import Link from 'next/link';
 import { jwtDecode } from 'jwt-decode';
 import { useGroup } from '@/context/GroupContext';
 
