@@ -70,6 +70,7 @@ export default function Header() {
       try {
         const response = await getUserById(token);
         setUser(response);
+        console.log(response);
       } catch (e: unknown) {
         if (e instanceof Error) {
           showError(e.message || 'Erro ao carregar os dados do usuário.');

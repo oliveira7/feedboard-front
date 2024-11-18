@@ -147,8 +147,8 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
           )}
         </div>
         
-        {user._id === group.created_by && (
-          <div className="mb-4 flex flex-col items-center">
+        {user._id === group.created_by  && (
+          <div className="mb-4 flex flex-col items-center w-2/4">
             <Autocomplete
               options={userOptions}
               getOptionLabel={(option) => option.name}

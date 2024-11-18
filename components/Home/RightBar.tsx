@@ -17,7 +17,7 @@ export default function RightBar() {
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<GroupModel | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   const { user, setSelectedGroup: setContextGroup, selectedGroup: selectedGroupFromContext, setGroupsContext, setAtualizarFeed } = useGroup();
   const { showError } = useSnackbar();
 
@@ -49,8 +49,8 @@ export default function RightBar() {
     setContextGroup(null);
     setAtualizarFeed(true);
   }
-  
-  const formatMembers = (members: UserModel[]) => { 
+
+  const formatMembers = (members: UserModel[]) => {
     if (members.length > 1) {
       return `${members.length} • membros`
     } else {
@@ -74,7 +74,6 @@ export default function RightBar() {
           <hr className="border-primary-100 pt-4 border-gray-300" />
 
           {loading ? (
-            // Display loading skeleton while groups are being fetched
             <div className="mt-4 space-y-2">
               <Skeleton variant="text" width="70%" height={30} />
               <Skeleton variant="text" width="50%" height={20} />
@@ -84,8 +83,9 @@ export default function RightBar() {
           ) : groups?.length > 0 ? (
             <ul className="space-y-3">
               {groups.map((item, index) => (
-                <li key={index} className="text-sm" onClick={() => setContextGroup(item._id)}>
+                <li key={index} className="text-sm">
                   <a
+                    onClick={() => setContextGroup(item._id)}
                     className={`hover:underline font-bold cursor-pointer ${selectedGroupFromContext === item._id ? 'text-highlight' : 'text-default'
                       }`}
                   >
