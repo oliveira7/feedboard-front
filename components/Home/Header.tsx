@@ -29,7 +29,7 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [rightBarOpen, setRightBarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const { setAtualizarFeed } = useGroup();
+  const { setAtualizarFeed, setSelectedGroup: setContextGroup, } = useGroup();
 
   const pathname = usePathname();
   const router = useRouter();
@@ -112,6 +112,11 @@ export default function Header() {
     }
   };
 
+  const backToFeed = () => {
+    setContextGroup(null);
+    setAtualizarFeed(true);
+  }
+
   return (
     <header className="bg-gradient-to-br from-green-400 to-green-600 text-white flex justify-between items-center px-6 py-2 shadow-md">
       <div className="flex items-center justify-center w-full md:w-auto">
@@ -126,7 +131,7 @@ export default function Header() {
               <Menu />
             </IconButton>
             <div className="flex-1 flex justify-center">
-              <div onClick={() => setAtualizarFeed(true)}>
+              <div onClick={backToFeed} className="cursor: pointer">
                 <Image src={logo} alt="Logo" width={100} height={100} />
               </div>
             </div>
@@ -136,7 +141,7 @@ export default function Header() {
           </>
         ) : (
           <>
-            <div onClick={() => setAtualizarFeed(true)}>
+            <div onClick={backToFeed} className="cursor: pointer">
               <Image src={logo} alt="Logo" width={100} height={100} />
             </div>
             <div className="flex items-center rounded-lg px-2 py-1 max-w-xs">
