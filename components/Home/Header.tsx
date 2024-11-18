@@ -182,7 +182,7 @@ export default function Header() {
       </div>
 
       {!isMobile && (
-        <div className="flex space-x-8 items-center">
+        <div className="flex space-x-8 items-center z-99999">
           <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
           
           <div

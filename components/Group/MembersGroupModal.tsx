@@ -153,6 +153,9 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
               options={userOptions}
               getOptionLabel={(option) => option.name}
               loading={loadingUsers}
+              sx={{
+                width: '40%'
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
