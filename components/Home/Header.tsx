@@ -113,6 +113,7 @@ export default function Header() {
   };
 
   const backToFeed = () => {
+    setAtualizarFeed(false);
     setContextGroup(null);
     setAtualizarFeed(true);
   }
@@ -131,9 +132,9 @@ export default function Header() {
               <Menu />
             </IconButton>
             <div className="flex-1 flex justify-center">
-              <div onClick={backToFeed} className="cursor: pointer">
+              <a onClick={backToFeed} className="cursor-pointer">
                 <Image src={logo} alt="Logo" width={100} height={100} />
-              </div>
+              </a>
             </div>
             <IconButton color="inherit" aria-label="groups" onClick={() => setRightBarOpen(true)}>
               <Group />
@@ -141,9 +142,9 @@ export default function Header() {
           </>
         ) : (
           <>
-            <div onClick={backToFeed} className="cursor: pointer">
+            <a onClick={backToFeed} className="cursor-pointer">
               <Image src={logo} alt="Logo" width={100} height={100} />
-            </div>
+            </a>
             <div className="flex items-center rounded-lg px-2 py-1 max-w-xs">
               <Autocomplete
                 freeSolo
