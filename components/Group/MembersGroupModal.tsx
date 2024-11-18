@@ -148,7 +148,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
         </div>
         
         {user._id === group.created_by  && (
-          <div className="mb-4 flex flex-col items-center w-2/4">
+          <div className="mb-4 flex flex-col items-center">
             <Autocomplete
               options={userOptions}
               getOptionLabel={(option) => option.name}
@@ -158,7 +158,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
                   {...params}
                   label="Adicionar membro"
                   variant="outlined"
-                  size="small"
+                  size="medium"
                   fullWidth
                   onChange={(e) => debouncedFetchUsers(e.target.value)}
                 />

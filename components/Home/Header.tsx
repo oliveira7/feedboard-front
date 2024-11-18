@@ -14,6 +14,7 @@ import { useSnackbar } from '@/context/SnackBarContext';
 import ProfileEdit from '../Profile/ProfileEdit';
 import RightBar from './RightBar';
 import Link from 'next/link';
+import { jwtDecode } from 'jwt-decode';
 
 export default function Header() {
   const [currentPath, setCurrentPath] = useState('');
@@ -67,10 +68,11 @@ export default function Header() {
   const getUser = async () => {
     const token = Cookies.get('token');
     if (token) {
+      const decoded: { sub: string } = jwtDecode(token);
+      const id = decoded.sub;
       try {
-        const response = await getUserById(token);
+        const response = await getUserById(id);
         setUser(response);
-        console.log(response);
       } catch (e: unknown) {
         if (e instanceof Error) {
           showError(e.message || 'Erro ao carregar os dados do usuário.');
