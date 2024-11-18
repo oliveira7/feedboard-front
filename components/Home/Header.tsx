@@ -15,6 +15,7 @@ import ProfileEdit from '../Profile/ProfileEdit';
 import RightBar from './RightBar';
 import Link from 'next/link';
 import { jwtDecode } from 'jwt-decode';
+import { useGroup } from '@/context/GroupContext';
 
 export default function Header() {
   const [currentPath, setCurrentPath] = useState('');
@@ -29,6 +30,7 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [rightBarOpen, setRightBarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { setAtualizarFeed } = useGroup();
 
   const pathname = usePathname();
   const router = useRouter();
@@ -125,9 +127,9 @@ export default function Header() {
               <Menu />
             </IconButton>
             <div className="flex-1 flex justify-center">
-              <Link href="/privado/home">
+              <div onClick={() => setAtualizarFeed(true)}>
                 <Image src={logo} alt="Logo" width={100} height={100} />
-              </Link>
+              </div>
             </div>
             <IconButton color="inherit" aria-label="groups" onClick={() => setRightBarOpen(true)}>
               <Group />
@@ -135,9 +137,9 @@ export default function Header() {
           </>
         ) : (
           <>
-            <Link href="/privado/home">
+            <div onClick={() => setAtualizarFeed(true)}>
               <Image src={logo} alt="Logo" width={100} height={100} />
-            </Link>
+            </div>
             <div className="flex items-center rounded-lg px-2 py-1 max-w-xs">
               <Autocomplete
                 freeSolo
@@ -186,7 +188,7 @@ export default function Header() {
           <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
           
           <div
-            className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 hover:z-99999"
+            className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4"
             ref={profileMenuRef}
             onClick={() => setProfileMenuOpen((prev) => !prev)}
           >
@@ -194,12 +196,12 @@ export default function Header() {
               <Image
                 src={user.avatar}
                 alt="Profile"
-                className="rounded-full w-10 h-10 border-4 border-primary-50 transition-transform duration-300 ease-in-out hover:scale-110"
+                className="rounded-full w-10 h-10 border-4 border-primary-50"
                 width={100}
                 height={100}
               />
             ) : (
-              <Avatar alt="User Avatar" className="w-8 h-8 transition-transform duration-300 ease-in-out hover:scale-110" />
+              <Avatar alt="User Avatar" className="w-8 h-8" />
             )}
             <div>
               <span className="text-xs text-white transition-all duration-300 ease-in-out hover:text-primary-50">
@@ -227,12 +229,10 @@ export default function Header() {
         </div>
       )}
 
-      {/* Drawer for mobile menu */}
       <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <div className="w-64 p-4 bg-gradient-to-br from-green-400 to-green-600 text-white h-full">
           <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
           
-          {/* Autocomplete search in drawer */}
           <Autocomplete
             freeSolo
             options={userOptions}
@@ -285,7 +285,6 @@ export default function Header() {
         </div>
       </Drawer>
 
-      {/* Drawer for RightBar */}
       <Drawer anchor="right" open={rightBarOpen} onClose={() => setRightBarOpen(false)}>
         <div className="w-64 p-4 h-full">
           <RightBar />

@@ -114,7 +114,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
                 height={40}
               />
             ) : (
-              <Avatar alt="User Avatar" className="w-10 h-10" />
+              <Avatar alt="User Avatar" className="w-8 h-8" />
             )}
             <div className="text-sm font-bold text-highlight ml-2">
               {comment.author.name}
