@@ -158,9 +158,12 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
                   {...params}
                   label="Adicionar membro"
                   variant="outlined"
-                  size="medium"
+                  size="small"
                   fullWidth
                   onChange={(e) => debouncedFetchUsers(e.target.value)}
+                  sx={{
+                    width: '45%'
+                  }}
                 />
               )}
               onChange={(event, newValue) => {
@@ -168,6 +171,7 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
               }}
             />
             <button
+              disabled={!newMember}
               onClick={() => newMember && handleAddMember(newMember)}
               className="bg-primary-500 text-highlight px-4 py-1 rounded-lg mt-2 w-full sm:w-auto"
             >
