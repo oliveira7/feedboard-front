@@ -186,7 +186,7 @@ export default function Header() {
           <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
           
           <div
-            className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 hover:z-50"
+            className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 hover:z-99999"
             ref={profileMenuRef}
             onClick={() => setProfileMenuOpen((prev) => !prev)}
           >
