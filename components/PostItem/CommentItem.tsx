@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { Avatar, IconButton, Menu, MenuItem } from '@mui/material';
 import { MenuOutlined } from '@mui/icons-material';
 import { fetchPosts, newPost } from '@/api/post-endpoint.service';
 import ReplyList from './ReplyList';
@@ -105,7 +105,7 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
       <div className="flex w-full space-x-4">
         <div className="flex items-start space-x-3 w-full justify-between">
           <div className="flex items-center">
-            {comment.author.avatar && (
+            {comment.author.avatar ? (
               <Image
                 src={comment?.author?.avatar}
                 alt={comment?.author?.name}
@@ -113,6 +113,8 @@ export default function CommentItem({ comment, user, onDelete }: CommentItemProp
                 width={40}
                 height={40}
               />
+            ) : (
+              <Avatar alt="User Avatar" className="w-10 h-10" />
             )}
             <div className="text-sm font-bold text-highlight ml-2">
               {comment.author.name}
