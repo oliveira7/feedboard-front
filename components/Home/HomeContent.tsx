@@ -53,12 +53,10 @@ export default function HomeContent() {
     <div className="flex justify-center p-4 md:p-8 bg-primary min-h-screen">
       <div className="flex flex-col md:flex-row gap-4 md:gap-8 justify-between w-full max-w-7xl">
         
-        {/* Left Sidebar (Hidden on small screens) */}
         <div className="hidden md:block w-1/4 order-2 md:order-1">
           <LeftBar />
         </div>
 
-        {/* Main Feed Section with Right Sidebar on small screens */}
         <div className="flex flex-col w-full md:w-2/4 space-y-4 order-1 md:order-2">
           <div className="w-full bg-background-light p-4 rounded-lg shadow-lg">
             <NewPubli />
@@ -68,8 +66,7 @@ export default function HomeContent() {
           </div>
         </div>
 
-        {/* Right Sidebar (Positioned on top on small screens) */}
-        <div className="w-full md:w-1/4 order-1 md:order-3 md:sticky md:top-4">
+        <div className="w-full md:w-1/4 order-1 md:order-3 md:sticky hidden md:flex">
           <RightBar />
         </div>
       </div>

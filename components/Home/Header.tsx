@@ -31,6 +31,7 @@ export default function Header() {
   const [isMobile, setIsMobile] = useState(false);
   const { setAtualizarFeed, setSelectedGroup: setContextGroup, } = useGroup();
 
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -113,10 +114,9 @@ export default function Header() {
   };
 
   const backToFeed = () => {
-    setAtualizarFeed(false);
-    setContextGroup(null);
     setAtualizarFeed(true);
-  }
+    setContextGroup(null);
+  };
 
   return (
     <header className="bg-gradient-to-br from-green-400 to-green-600 text-white flex justify-between items-center px-6 py-2 shadow-md">
@@ -132,7 +132,7 @@ export default function Header() {
               <Menu />
             </IconButton>
             <div className="flex-1 flex justify-center">
-              <a onClick={backToFeed} className="cursor-pointer">
+              <a onClick={() => backToFeed()} className="cursor-pointer">
                 <Image src={logo} alt="Logo" width={100} height={100} />
               </a>
             </div>
@@ -142,7 +142,7 @@ export default function Header() {
           </>
         ) : (
           <>
-            <a onClick={backToFeed} className="cursor-pointer">
+            <a onClick={() => backToFeed()} className="cursor-pointer">
               <Image src={logo} alt="Logo" width={100} height={100} />
             </a>
             <div className="flex items-center rounded-lg px-2 py-1 max-w-xs">

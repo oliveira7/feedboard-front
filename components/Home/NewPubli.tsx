@@ -49,7 +49,6 @@ export default function NewPubli() {
 
     try {
       const response = await newPost(formData);
-      console.log(response);
       setAtualizarFeed(true);
       setLoading(true);
       setPostText('');

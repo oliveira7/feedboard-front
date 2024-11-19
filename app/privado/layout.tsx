@@ -1,3 +1,5 @@
+'use client';
+
 import { Suspense } from "react";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { CustomThemeProvider } from "@/context/ThemeContext";
