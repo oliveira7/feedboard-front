@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Search, Home, Logout, ArrowDropDown, PersonOutline, AdminPanelSettingsOutlined, Menu, Group } from '@mui/icons-material';
+import { Search, Home, Logout, ArrowDropDown, PersonOutline, AdminPanelSettingsOutlined, Menu, Group, EmailOutlined } from '@mui/icons-material';
 import { Autocomplete, Avatar, TextField, IconButton, Drawer } from '@mui/material';
 import Image from 'next/image';
 import logo from '../../public/assets/logo.svg';
@@ -191,7 +191,7 @@ export default function Header() {
       {!isMobile && (
         <div className="flex space-x-8 items-center z-99999">
           <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
-          
+
           <div
             className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4"
             ref={profileMenuRef}
@@ -225,6 +225,11 @@ export default function Header() {
                     <AdminPanelSettingsOutlined /> Painel Admin
                   </button>
                 )}
+                {/* {user?.role === Role.COORDINATOR && ( */}
+                  <button onClick={() => router.push('/privado/notificacao')} className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight">
+                    <EmailOutlined /> Email Massivo
+                  </button>
+                {/* )} */}
                 <button onClick={() => { Cookies.remove('token'); router.push('/'); }} className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight">
                   <Logout /> Logout
                 </button>
@@ -237,7 +242,7 @@ export default function Header() {
       <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <div className="w-64 p-4 bg-gradient-to-br from-green-400 to-green-600 text-white h-full">
           <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
-          
+
           <Autocomplete
             freeSolo
             options={userOptions}
@@ -284,6 +289,11 @@ export default function Header() {
               <AdminPanelSettingsOutlined /> Painel Admin
             </button>
           )}
+          {/* {user?.role === Role.COORDINATOR && ( */}
+            <button onClick={() => router.push('/privado/notificacao')} className="text-white block w-full text-left px-4 py-2 text-sm hover:text-highlight">
+              <EmailOutlined /> Email Massivo
+            </button>
+           {/* )} */}
           <button onClick={() => { Cookies.remove('token'); router.push('/'); }} className="text-white block w-full text-left px-4 py-2 text-sm hover:text-highlight">
             <Logout /> Logout
           </button>
