@@ -58,8 +58,9 @@ export default function EmailMassivo() {
         setAttachments([]);
         setIsLoading(false);
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       setErrorMessage('Erro ao enviar email. Por favor, tente novamente.');
+      console.log(error);
       setIsLoading(false);
     }
   };
