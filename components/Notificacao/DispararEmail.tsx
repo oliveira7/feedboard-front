@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import {
   TextField,
@@ -12,9 +13,11 @@ import {
   Typography,
 } from '@mui/material';
 import { AttachFile, Send } from '@mui/icons-material';
-import { Editor } from '@tinymce/tinymce-react';
 import { useSnackbar } from '@/context/SnackBarContext';
-// import { sendMassEmail } from '@/api/email-endpoint.service';
+
+const Editor = dynamic(() => import('@tinymce/tinymce-react').then((mod) => mod.Editor), {
+  ssr: false,
+});
 
 export default function EmailMassivo() {
   const [emailSubject, setEmailSubject] = useState('');
@@ -44,18 +47,9 @@ export default function EmailMassivo() {
 
     setIsLoading(true);
     try {
-      // Lógica para envio do email (descomente e ajuste de acordo com o backend)
-      // const response = await sendMassEmail({
-      //   subject: emailSubject,
-      //   content: emailContent,
-      //   attachments,
-      // });
-      // if (response) {
-      //   setSuccessMessage('Email enviado com sucesso!');
-      // }
-      // Simulando sucesso
+      // Simulação de envio
       setTimeout(() => {
-        setSuccessMessage('Email enviado com sucesso!');
+        setSuccessMessage('Emails enviados com sucesso!');
         setEmailSubject('');
         setEmailContent('');
         setAttachments([]);
@@ -63,9 +57,9 @@ export default function EmailMassivo() {
       }, 2000);
     } catch (e: unknown) {
         if (e instanceof Error) {
-          showError(e.message || 'Erro ao enviar email, tente novamente.');
+          showError(e.message || 'Erro ao disparar emails.');
         }
-      }
+    }
   };
 
   const handleCloseSnackbar = () => {
@@ -101,12 +95,12 @@ export default function EmailMassivo() {
             height: 300,
             menubar: false,
             plugins: [
-              'advlist autolink lists link image charmap print preview anchor',
-              'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help wordcount',
+              'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
+              'searchreplace', 'visualblocks', 'code', 'fullscreen',
             ],
             toolbar:
-              'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat',
+              'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+            script_url: 'https://cdn.tiny.cloud/1/ttqmawq6mkv8qzr6zcsb939rarl5rjc77apicawdnfasoc5l/tinymce/6/tinymce.min.js',
           }}
           onEditorChange={(content: string) => setEmailContent(content)}
         />

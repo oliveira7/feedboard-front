@@ -16,13 +16,14 @@ export function middleware(request: NextRequest) {
   const validRoutes = ['/', '/cadastro', '/privado/home'];
   const isUsuarioRoute = pathname.startsWith('/privado/usuario');
   const isPainelAdm = pathname.startsWith('/privado/admin');
+  const isPainelNotificacao = pathname.startsWith('/privado/notificacao');
 
   if (pathname.startsWith('/privado')) {
-    if (!validRoutes.includes(pathname) && !isUsuarioRoute && !isPainelAdm) {
+    if (!validRoutes.includes(pathname) && !isUsuarioRoute && !isPainelAdm && !isPainelNotificacao) {
       return NextResponse.redirect(new URL('/privado/home', request.url));
     }
   } else {
-    if (!validRoutes.includes(pathname) && !isUsuarioRoute && !isPainelAdm) {
+    if (!validRoutes.includes(pathname) && !isUsuarioRoute && !isPainelAdm && !isPainelNotificacao) {
       return NextResponse.redirect(new URL('/', request.url));
     }
   }
