@@ -225,11 +225,11 @@ export default function Header() {
                     <AdminPanelSettingsOutlined /> Painel Admin
                   </button>
                 )}
-                {/* {user?.role === Role.COORDINATOR && ( */}
+              {user?.role === Role.COORDINATOR && ( 
                   <button onClick={() => router.push('/privado/notificacao')} className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight">
                     <EmailOutlined /> Email Massivo
                   </button>
-                {/* )} */}
+                )}
                 <button onClick={() => { Cookies.remove('token'); router.push('/'); }} className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight">
                   <Logout /> Logout
                 </button>
@@ -289,11 +289,11 @@ export default function Header() {
               <AdminPanelSettingsOutlined /> Painel Admin
             </button>
           )}
-          {/* {user?.role === Role.COORDINATOR && ( */}
+         {user?.role === Role.COORDINATOR && (
             <button onClick={() => router.push('/privado/notificacao')} className="text-white block w-full text-left px-4 py-2 text-sm hover:text-highlight">
               <EmailOutlined /> Email Massivo
             </button>
-           {/* )} */}
+           )}
           <button onClick={() => { Cookies.remove('token'); router.push('/'); }} className="text-white block w-full text-left px-4 py-2 text-sm hover:text-highlight">
             <Logout /> Logout
           </button>
