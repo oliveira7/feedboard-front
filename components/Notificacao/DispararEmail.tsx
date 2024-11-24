@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { AttachFile, Send } from '@mui/icons-material';
 import { Editor } from '@tinymce/tinymce-react';
+import { useSnackbar } from '@/context/SnackBarContext';
 // import { sendMassEmail } from '@/api/email-endpoint.service';
 
 export default function EmailMassivo() {
@@ -22,6 +23,8 @@ export default function EmailMassivo() {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { showError } = useSnackbar();
+
 
   const handleAttachmentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -58,11 +61,11 @@ export default function EmailMassivo() {
         setAttachments([]);
         setIsLoading(false);
       }, 2000);
-    } catch (error: any) {
-      setErrorMessage('Erro ao enviar email. Por favor, tente novamente.');
-      console.log(error);
-      setIsLoading(false);
-    }
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+          showError(e.message || 'Erro ao enviar email, tente novamente.');
+        }
+      }
   };
 
   const handleCloseSnackbar = () => {
