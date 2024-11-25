@@ -18,7 +18,7 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post, onDelete }: PostItemProps) {
-  const { _id, author, content, media, created_at, totalChildren, peoplesReacted } = post;
+  const { _id, author, content, media, created_at, totalChildren, peoplesReacted, pinned } = post;
   const { user } = useGroup();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -39,12 +39,13 @@ export default function PostItem({ post, onDelete }: PostItemProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       style={{
-        backgroundColor: '#f0f4f8',
+        backgroundColor: pinned ? '#E8F5E9' : '#f0f4f8',
         padding: '1.5rem',
         borderRadius: '0.5rem',
         width: '100%',
         maxWidth: '36rem',
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        border: pinned ? '1px solid #4CAF50' : 'none',
       }}
     >
       <div className="flex items-center mb-4 justify-between">

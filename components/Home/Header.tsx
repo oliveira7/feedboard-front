@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Search, Home, Logout, ArrowDropDown, PersonOutline, AdminPanelSettingsOutlined, Menu, Group, EmailOutlined } from '@mui/icons-material';
+import { Search, Logout, ArrowDropDown, PersonOutline, AdminPanelSettingsOutlined, Menu, Group, EmailOutlined } from '@mui/icons-material';
 import { Autocomplete, Avatar, TextField, IconButton, Drawer } from '@mui/material';
 import Image from 'next/image';
 import logo from '../../public/assets/logo.svg';
@@ -14,10 +14,9 @@ import { useSnackbar } from '@/context/SnackBarContext';
 import ProfileEdit from '../Profile/ProfileEdit';
 import RightBar from './RightBar';
 import { jwtDecode } from 'jwt-decode';
-import { useGroup } from '@/context/GroupContext';
 
 export default function Header() {
-  const [currentPath, setCurrentPath] = useState('');
+  const [, setCurrentPath] = useState('');
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [userOptions, setUserOptions] = useState<UserModel[]>([]);
@@ -29,7 +28,6 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [rightBarOpen, setRightBarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const { setAtualizarFeed, setSelectedGroup: setContextGroup, } = useGroup();
 
 
   const pathname = usePathname();
@@ -113,11 +111,6 @@ export default function Header() {
     }
   };
 
-  const backToFeed = () => {
-    setAtualizarFeed(true);
-    setContextGroup(null);
-  };
-
   return (
     <header className="bg-gradient-to-br from-green-400 to-green-600 text-white flex justify-between items-center px-6 py-2 shadow-md">
       <div className="flex items-center justify-center w-full md:w-auto">
@@ -132,7 +125,7 @@ export default function Header() {
               <Menu />
             </IconButton>
             <div className="flex-1 flex justify-center">
-              <a onClick={() => backToFeed()} className="cursor-pointer">
+              <a onClick={() => router.push('/privado/home')} className="cursor-pointer">
                 <Image src={logo} alt="Logo" width={100} height={100} />
               </a>
             </div>
@@ -142,7 +135,7 @@ export default function Header() {
           </>
         ) : (
           <>
-            <a onClick={() => backToFeed()} className="cursor-pointer">
+            <a onClick={() => router.push('/privado/home')} className="cursor-pointer">
               <Image src={logo} alt="Logo" width={100} height={100} />
             </a>
             <div className="flex items-center rounded-lg px-2 py-1 max-w-xs">
@@ -190,8 +183,6 @@ export default function Header() {
 
       {!isMobile && (
         <div className="flex space-x-8 items-center z-99999">
-          <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
-
           <div
             className="relative flex items-center space-x-1 cursor-pointer rounded-3xl pr-4"
             ref={profileMenuRef}
@@ -241,8 +232,6 @@ export default function Header() {
 
       <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <div className="w-64 p-4 bg-gradient-to-br from-green-400 to-green-600 text-white h-full">
-          <NavItem icon={<Home />} label="Início" href="/privado/home" active={currentPath.includes('/home')} />
-
           <Autocomplete
             freeSolo
             options={userOptions}
@@ -254,6 +243,8 @@ export default function Header() {
               debouncedFetchUsers(newInputValue);
             }}
             disableClearable
+            noOptionsText=""
+            loadingText="Carregando..."
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -311,17 +302,3 @@ export default function Header() {
   );
 }
 
-const NavItem = ({ icon, label, href, active }: { icon: React.ReactNode; label: string; href: string; active: boolean }) => {
-  const router = useRouter();
-
-  return (
-    <div
-      className={`relative flex flex-col items-center cursor-pointer transition-colors ${active ? 'text-white' : 'text-neutral'
-        } hover:text-white`}
-      onClick={() => router.push(href)}
-    >
-      {icon}
-      <span className="text-xs">{label}</span>
-    </div>
-  );
-};

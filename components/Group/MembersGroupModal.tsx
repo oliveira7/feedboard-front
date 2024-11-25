@@ -156,6 +156,8 @@ export default function ManageMembersModal({ isModalOpen, handleClose, group }: 
               sx={{
                 width: '40%'
               }}
+              noOptionsText=""
+              loadingText="Carregando..."
               renderInput={(params) => (
                 <TextField
                   {...params}

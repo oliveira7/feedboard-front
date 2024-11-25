@@ -57,8 +57,7 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
   }
 
   return (
-    <div className="flex flex-col md:flex-row items-start min-h-screen bg-gray-100 p-4 md:p-8">
-      {/* Card do Usuário */}
+    <div className="flex flex-col justify-around md:flex-row items-start min-h-screen bg-gray-100 p-4 md:p-8">
       <div className="w-full md:w-1/3 lg:w-1/4 bg-white rounded-lg shadow-lg p-4 mb-4 md:mb-0">
         <div className="relative w-full h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-t-lg"></div>
 
@@ -98,9 +97,11 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
         </div>
       </div>
 
-      {/* Feed */}
-      <div className="w-full md:flex-1 bg-background-light p-4 rounded-lg shadow-lg">
-        <Feed idUserPage={userId} />
+      <div className="flex flex-col items-center space-y-4 bg-background-light p-4 rounded-lg shadow-lg max-w-lg w-full md:max-w-lg">
+      <Feed idUserPage={userId} />
+      </div>
+      <div>
+        {''}
       </div>
     </div>
   );
