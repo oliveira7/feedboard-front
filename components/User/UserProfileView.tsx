@@ -73,7 +73,11 @@ export default function UserProfileView({ userId }: UserProfileViewProps) {
                   height={128}
                 />
               ) : (
-                <Avatar className="border-4 border-white w-32 h-32 shadow-lg">
+                <Avatar className="border-4 border-white w-32 h-32 shadow-lg" 
+                sx={{
+                  width: 128,
+                  height: 128,
+                }}>
                   {user.name ? user.name.charAt(0) : 'U'}
                 </Avatar>
               )}
