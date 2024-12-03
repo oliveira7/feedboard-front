@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { AttachFile, Send } from '@mui/icons-material';
 import { useSnackbar } from '@/context/SnackBarContext';
+import { sendInformations } from '@/api/invitations-endpoint.service';
 
 const Editor = dynamic(() => import('@tinymce/tinymce-react').then((mod) => mod.Editor), {
   ssr: false,
@@ -47,14 +48,12 @@ export default function EmailMassivo() {
 
     setIsLoading(true);
     try {
-      // Simulação de envio
-      setTimeout(() => {
+        await sendInformations(emailSubject, emailContent);
         setSuccessMessage('Emails enviados com sucesso!');
         setEmailSubject('');
         setEmailContent('');
         setAttachments([]);
         setIsLoading(false);
-      }, 2000);
     } catch (e: unknown) {
         if (e instanceof Error) {
           showError(e.message || 'Erro ao disparar emails.');

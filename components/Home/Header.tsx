@@ -218,7 +218,7 @@ export default function Header() {
                 )}
               {user?.role === Role.COORDINATOR && ( 
                   <button onClick={() => router.push('/privado/notificacao')} className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight">
-                    <EmailOutlined /> Email Massivo
+                    <EmailOutlined /> Informativos
                   </button>
                 )}
                 <button onClick={() => { Cookies.remove('token'); router.push('/'); }} className="text-secondary block w-full text-left px-4 py-2 text-sm hover:text-highlight">
