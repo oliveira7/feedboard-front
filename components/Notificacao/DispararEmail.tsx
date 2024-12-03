@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -11,30 +10,19 @@ import {
   Alert,
   IconButton,
   Typography,
-} from '@mui/material';
-import { AttachFile, Send } from '@mui/icons-material';
-import { useSnackbar } from '@/context/SnackBarContext';
-import { sendInformations } from '@/api/invitations-endpoint.service';
-
-const Editor = dynamic(() => import('@tinymce/tinymce-react').then((mod) => mod.Editor), {
-  ssr: false,
-});
+} from "@mui/material";
+import { Send } from "@mui/icons-material";
+import { useSnackbar } from "@/context/SnackBarContext";
+import { sendInformations } from "@/api/invitations-endpoint.service";
 
 export default function EmailMassivo() {
-  const [emailSubject, setEmailSubject] = useState('');
-  const [emailContent, setEmailContent] = useState('');
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailContent, setEmailContent] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const { showError } = useSnackbar();
-
-
-  const handleAttachmentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setAttachments([...attachments, ...Array.from(event.target.files)]);
-    }
-  };
 
   const handleRemoveAttachment = (index: number) => {
     setAttachments(attachments.filter((_, i) => i !== index));
@@ -42,28 +30,29 @@ export default function EmailMassivo() {
 
   const handleSendEmail = async () => {
     if (!emailSubject || !emailContent) {
-      setErrorMessage('Por favor, preencha o assunto e o conteúdo do email.');
+      setErrorMessage("Por favor, preencha o assunto e o conteúdo do email.");
       return;
     }
 
     setIsLoading(true);
     try {
-        await sendInformations(emailSubject, emailContent);
-        setSuccessMessage('Emails enviados com sucesso!');
-        setEmailSubject('');
-        setEmailContent('');
-        setAttachments([]);
-        setIsLoading(false);
+      await sendInformations(emailSubject, emailContent);
+      setSuccessMessage("Emails enviados com sucesso!");
+      setEmailSubject("");
+      setEmailContent("");
+      setAttachments([]);
+      setIsLoading(false);
     } catch (e: unknown) {
-        if (e instanceof Error) {
-          showError(e.message || 'Erro ao disparar emails.');
-        }
+      if (e instanceof Error) {
+        showError(e.message || "Erro ao disparar emails.");
+      }
+      setIsLoading(false);
     }
   };
 
   const handleCloseSnackbar = () => {
-    setSuccessMessage('');
-    setErrorMessage('');
+    setSuccessMessage("");
+    setErrorMessage("");
   };
 
   return (
@@ -84,42 +73,16 @@ export default function EmailMassivo() {
           margin="normal"
         />
 
-        <Typography variant="body2" color="textSecondary" gutterBottom>
-          Conteúdo do email:
-        </Typography>
-        <Editor
-          apiKey="ttqmawq6mkv8qzr6zcsb939rarl5rjc77apicawdnfasoc5l"
+        <TextField
+          label="Conteúdo do Email"
           value={emailContent}
-          init={{
-            height: 300,
-            menubar: false,
-            plugins: [
-              'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
-              'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            ],
-            toolbar:
-              'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
-            script_url: 'https://cdn.tiny.cloud/1/ttqmawq6mkv8qzr6zcsb939rarl5rjc77apicawdnfasoc5l/tinymce/6/tinymce.min.js',
-          }}
-          onEditorChange={(content: string) => setEmailContent(content)}
+          onChange={(e) => setEmailContent(e.target.value)}
+          variant="outlined"
+          fullWidth
+          multiline
+          rows={8}
+          margin="normal"
         />
-
-        <Box display="flex" alignItems="center" mt={2}>
-          <Button
-            variant="outlined"
-            component="label"
-            startIcon={<AttachFile />}
-            color="primary"
-          >
-            Anexar Arquivos
-            <input
-              type="file"
-              hidden
-              multiple
-              onChange={handleAttachmentUpload}
-            />
-          </Button>
-        </Box>
 
         <Box mt={2}>
           {attachments.map((file, index) => (
@@ -148,22 +111,22 @@ export default function EmailMassivo() {
         color="primary"
         onClick={handleSendEmail}
         disabled={isLoading}
-        style={{ marginTop: '1rem', margin: 'auto' }}
+        style={{ marginTop: "1rem", margin: "auto" }}
         startIcon={<Send />}
       >
-        {isLoading ? <CircularProgress size={24} /> : 'Enviar Email'}
+        {isLoading ? <CircularProgress size={24} /> : "Enviar Email"}
       </Button>
 
       <Snackbar
         open={!!successMessage || !!errorMessage}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={handleCloseSnackbar}
-          severity={successMessage ? 'success' : 'error'}
-          sx={{ width: '100%' }}
+          severity={successMessage ? "success" : "error"}
+          sx={{ width: "100%" }}
         >
           {successMessage || errorMessage}
         </Alert>
